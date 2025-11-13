@@ -87,6 +87,9 @@
             <div class="extra-links">
                 <a href="<c:url value='/find_password'/>">비밀번호 찾기</a> |
                 <a href="<c:url value='/register'/>">회원가입</a>
+				<a href="<c:url value='/auth/kakao/login' />" class="kakao-login-button">
+				    <img src="/img/kakao_login.png">
+				</a>
             </div>
         </form>
     </div>
