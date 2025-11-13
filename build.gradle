@@ -29,6 +29,10 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.1'
+	// 1. JSON 데이터 처리를 위한 'Jackson'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+	// 2. 외부 API 호출(RestTemplate)을 위한 'HttpClient'
+	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 	compileOnly 'org.projectlombok:lombok'
 	// --- JSP & JSTL ---
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
