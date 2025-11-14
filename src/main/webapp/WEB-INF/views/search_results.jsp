@@ -3,27 +3,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>검색 결과</title>
+    <meta charset="UTF-8">
+    <title>검색 결과</title>
+
+    <!-- 공통 CSS -->
+    <link rel="stylesheet" href="/css/mainpage.css">
+    <!-- 자동완성 검색창 CSS -->
+    <link rel="stylesheet" href="/css/auto_search.css">
+    <!-- 검색결과 전용 CSS -->
+    <link rel="stylesheet" href="/css/search_results.css">
 </head>
 <body>
-  <h2>🔍 검색 결과 목록</h2>
 
-  <table>
-    <tr>
-      <th>키워드</th>
-    </tr>
+<header>
+    <jsp:include page="/WEB-INF/views/common/header.jsp" />
+</header>
 
+<div class="search-result-container">
+    <h2>🔍 검색 결과 목록</h2>
+
+    <!-- 카드형 검색결과 리스트 -->
     <c:forEach var="keyword" items="${keywordList}" varStatus="status">
-      <tr>
-        <td>
-          <a href="${siteurlList[status.index]}" target="_blank">
-            ${keyword}
-          </a>
-        </td>
-      </tr>
+        <div class="result-card">
+            <a href="${siteurlList[status.index]}" target="_blank" class="result-title">
+                ${keyword}
+            </a>
+            <div class="result-url">${siteurlList[status.index]}</div>
+        </div>
     </c:forEach>
-  </table>
+
+</div>
+
+<footer>
+    <jsp:include page="/WEB-INF/views/common/footer.jsp" />
+</footer>
 
 </body>
 </html>
