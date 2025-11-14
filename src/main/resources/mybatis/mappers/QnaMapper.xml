@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.QnaDAO">
+
+    <select id="getQnaList"
+            resultType="com.boot.dto.Mypet_Qna_BoardDTO">
+        SELECT 
+          qna_no,
+          user_no,
+          qna_title,
+          qna_file,
+          is_answered,
+          created_date
+        FROM qna_board
+        ORDER BY qna_no DESC
+    </select>
+
+    <insert id="writeQna" parameterType="com.boot.dto.Mypet_Qna_BoardDTO">
+        INSERT INTO qna_board (
+          qna_no,
+          user_no,
+          user_name,
+          qna_title,
+          qna_content,
+          qna_file,
+          is_answered,
+          created_date
+        ) VALUES (
+          SEQ_QNA_NO.NEXTVAL,
+          #{user_no},
+          (SELECT user_name FROM user_info WHERE user_no = #{user_no}),
+          #{qna_title},
+          #{qna_content},
+          #{qna_file},
+          'N',
+          SYSDATE
+        )
+    </insert>
+
+    <select id="getQnaDetail" parameterType="int"
+            resultType="com.boot.dto.Mypet_Qna_BoardDTO">
+        SELECT 
+          qna_no,
+          user_no,
+          qna_title,
+          qna_content,
+          qna_file,
+          is_answered,
+          created_date
+        FROM qna_board
+        WHERE qna_no = #{qna_no}
+    </select>
+
+    <select id="list2" parameterType="hashmap"
+            resultType="com.boot.dto.Mypet_Qna_BoardDTO">
+        <![CDATA[
+          SELECT qna_no, user_no, qna_title, qna_content, qna_file, 
+                 is_answered, created_date, user_name
+          FROM (
+              SELECT ROWNUM AS rnum, q.*
+              FROM (
+                  SELECT qna_no, user_no, qna_title, qna_content, qna_file,
+                         is_answered, created_date, user_name
+                  FROM qna_board
+                  ORDER BY qna_no DESC
+              ) q
+              WHERE ROWNUM <= #{end}
+          )
+          WHERE rnum >= #{start}
+        ]]>
+    </select>
+
+    <select id="getTotalCount2" resultType="int">
+        SELECT COUNT(*) FROM qna_board
+    </select>
+
+</mapper>

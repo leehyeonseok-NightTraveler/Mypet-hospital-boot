@@ -4,6 +4,12 @@
     "https://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 	 <mappers>
-        <mapper resource="mybatis/mappers/Mypet_Mapper.xml"/>
+        <mapper resource="mybatis/mappers/GroomingMapper.xml"/>
+        <mapper resource="mybatis/mappers/MedicalMapper.xml"/>
+        <mapper resource="mybatis/mappers/NoticeMapper.xml"/>
+        <mapper resource="mybatis/mappers/PetMapper.xml"/>
+        <mapper resource="mybatis/mappers/QnaMapper.xml"/>
+        <mapper resource="mybatis/mappers/UserMapper.xml"/>
+        <mapper resource="mybatis/mappers/Mypet_Kakao_Mapper.xml"/>
     </mappers>
 </configuration>
