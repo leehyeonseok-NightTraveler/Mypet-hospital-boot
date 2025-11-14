@@ -1,0 +1,201 @@
+/* =========================================
+   추가 정보 입력 폼 (register_social.jsp)
+   ========================================= */
+
+/* 로그인 컨테이너 기본 스타일 (register_social 전용) */
+.login-container {
+    max-width: 500px; /* 로그인 폼보다 너비를 약간 넓힘 */
+    margin: 40px auto;
+    padding: 30px 40px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.login-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.login-container p {
+    text-align: center;
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.login-container .input-group {
+    margin-bottom: 20px;
+}
+
+/* 모든 input 태그의 일관성 유지 (text, tel, date 등) */
+.login-container .input-group input[type="tel"],
+.login-container .input-group input[type="date"],
+.login-container .input-group input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box; /* padding이 width를 넘지 않게 함 */
+    font-size: 1em;
+    color: #333; /* 텍스트 색상 */
+}
+
+/* input 포커스 시 스타일 */
+.login-container .input-group input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+
+/* 라벨 스타일 (생년월일, 성별) */
+.login-container .input-group label {
+    display: block;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 0.95em;
+}
+
+/* 생년월일 input의 기본 달력 아이콘 숨기기 (선택 사항) */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0; /* 아이콘 투명하게 */
+    width: 20px; /* 아이콘 클릭 영역 확보 */
+    height: 20px;
+    cursor: pointer;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+/* 생년월일 input에 달력 아이콘 추가 (커스텀 아이콘 사용 시) */
+.input-group input[type="date"] {
+    position: relative; /* 아이콘 배치를 위해 */
+    padding-right: 35px; /* 아이콘 공간 확보 */
+}
+/* 실제 커스텀 아이콘을 사용하려면 아래와 같이 before/after 가상 요소를 활용할 수 있습니다.
+.input-group input[type="date"]::after {
+    content: '📅'; // 유니코드 달력 이모지 (또는 이미지)
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2em;
+    pointer-events: none; // 클릭 이벤트 무시
+    color: #666;
+}
+*/
+
+
+/* 성별 그룹 스타일링 */
+.input-group.gender-group {
+    text-align: left;
+    padding: 10px 15px;
+    border: 1px solid #f0f0f0;
+    border-radius: 5px;
+    background-color: #fcfcfc; /* 배경색 살짝 추가 */
+}
+
+/* 🔻🔻🔻 [수정됨] 성별 라디오 버튼들을 담는 div에 flex 적용 🔻🔻🔻 */
+.gender-group > div { 
+    display: flex;
+    gap: 20px; /* 라디오 버튼 사이 간격 */
+    align-items: center; /* 세로 중앙 정렬 */
+}
+
+/* 성별 라디오 버튼과 라벨 정렬 */
+.gender-group input[type="radio"] {
+    width: 18px; /* 라디오 버튼 크기 조정 */
+    height: 18px;
+    margin-right: 5px;
+    vertical-align: middle;
+    appearance: none; /* 기본 라디오 버튼 스타일 제거 */
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    background-color: white;
+    position: relative;
+    cursor: pointer;
+}
+.gender-group input[type="radio"]:checked {
+    border-color: #007bff; /* 선택 시 테두리 색상 */
+    background-color: #007bff; /* 선택 시 배경 색상 */
+}
+.gender-group input[type="radio"]:checked::before {
+    content: ''; /* 내부 원을 위한 가상 요소 */
+    display: block;
+    width: 8px;
+    height: 8px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.gender-group label[for="male"],
+.gender-group label[for="female"] {
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    color: #555;
+    cursor: pointer;
+    flex-grow: 1; /* 라벨이 공간을 채우도록 */
+    line-height: 18px; /* 라디오 버튼과 텍스트 높이 맞추기 */
+}
+
+
+/* 주소 그룹 (우편번호 + 주소 검색 버튼) */
+.input-group.address-group {
+    display: flex;
+    gap: 10px; /* 입력창과 버튼 사이 간격 */
+    align-items: flex-end; /* 버튼과 인풋 아래 정렬 */
+}
+
+/* 주소 검색 버튼 */
+.address-group .addr-btn {
+    flex-shrink: 0;
+    padding: 12px 18px; /* input과 높이 맞추기 */
+    font-size: 0.95em;
+    font-weight: bold;
+    color: white;
+    background-color: #595959;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    height: 44px; /* input과 동일한 높이 */
+    box-sizing: border-box;
+}
+.address-group .addr-btn:hover {
+    background-color: #333;
+}
+
+/* 상세 주소 입력창의 상단 여백 조절 */
+/* .input-group input[name="user_addr_detail"] {
+    margin-top: 10px; 
+} */
+
+
+/* '가입 완료' 버튼 (login.css의 .submit-btn 스타일과 동일하게) */
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 20px; /* 폼 요소들과 충분한 간격 */
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}

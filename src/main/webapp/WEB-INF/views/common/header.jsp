@@ -1,14 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<!-- 헤더 + 플로팅 아이콘 전체 -->
-
+<!-- 플로팅 아이콘 -->
 <div class="floating-icons">
     <a href="https://www.instagram.com/khieiorkr/" target="_blank" class="icon-instagram">
         <img src="https://img.icons8.com/fluent/48/000000/instagram-new.png" alt="인스타그램"/>
     </a>
     <a href="https://www.youtube.com/@KH_academy" target="_blank" class="icon-youtube">
-       <img src="https://img.icons8.com/color/48/youtube-play.png" alt="유튜브"/>
+        <img src="https://img.icons8.com/color/48/youtube-play.png" alt="유튜브"/>
     </a>
     <a href="/map" class="icon-map">
         <img src="https://img.icons8.com/color/48/000000/map-marker.png" alt="오시는길"/>
