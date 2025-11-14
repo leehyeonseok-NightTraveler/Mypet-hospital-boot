@@ -3,10 +3,12 @@
 <html>
 <head>
     <title>회원 관리</title>
-    <link rel="stylesheet" href="<c:url value='/css/manage.css'/>"/>
+    <link rel="stylesheet" href="<c:url value="/css/grooming_manage.css"/>">
+    <link rel="stylesheet" href="<c:url value="/css/mainpage.css"/>">
     <script src="<c:url value='/js/jquery.js'/>"></script>
 </head>
 <body>
+<jsp:include page="/WEB-INF/views/common/header.jsp" />
 <main>
     <div class="floating-wrapper">
         <div class="floating-menu">
@@ -16,21 +18,12 @@
         </div>
     </div>
 
+
     <div>
         <h2>미용예약관리</h2>
         <hr>
     </div>
-
-    <div>
-        <table>
-            <tr>
-                <th>번호</th>
-                <th></th>
-                <th>번호</th>
-                <th>번호</th>
-            </tr>
-        </table>
-    </div>
 </main>
+<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 </body>
 </html>
