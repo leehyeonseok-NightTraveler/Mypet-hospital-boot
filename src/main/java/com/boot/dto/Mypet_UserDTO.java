@@ -21,6 +21,7 @@ public class Mypet_UserDTO {
     private String user_email;     // 이메일
     private Date user_regidate;    // 가입일 (Date로 수정)
     private String user_addr;      // 주소
+    private String user_addr_detail;
     private String user_status;    // 상태
     private String user_img;       // 프로필 이미지 URL
     private String user_img_temp;  // 이미지 해시값 (중복 방지용)
