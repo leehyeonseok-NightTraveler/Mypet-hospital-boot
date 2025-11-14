@@ -76,3 +76,10 @@ body {
 .extra-links a:hover {
     text-decoration: underline;
 }
+
+.kakao-login-button img {
+    width: 200px; /* 원하는 너비로 조절하세요 (예: 200px, 50%, 15em 등) */
+    height: auto; /* 비율을 유지하기 위해 높이는 자동으로 설정합니다 */
+    display: block; /* 링크 내 이미지 여백 제거 */
+    margin: 10px auto; /* 중앙 정렬 및 위아래 여백 추가 (선택 사항) */
+}
