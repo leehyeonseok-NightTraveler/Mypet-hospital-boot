@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <footer>
     <div class="inner">
@@ -16,19 +15,3 @@
         </div>
     </div>
 </footer>
-
-<!-- 공통 JS -->
-<script src="/js/jquery.js"></script>
-<script src="/js/jquery.bxslider.js"></script>
-
-<!-- 페이지별 JS (mainpage 슬라이더) -->
-<c:if test="${pageName == 'mainpage'}">
-<script>
-    $(document).ready(function(){
-        $('.slide_gallery').bxSlider({
-            auto: true,
-            pause: 5000
-        });
-    });
-</script>
-</c:if>
