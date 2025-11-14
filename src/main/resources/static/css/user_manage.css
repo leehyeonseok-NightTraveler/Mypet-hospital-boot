@@ -7,8 +7,9 @@
 }
 
 main {
-    width: 70%;
-    margin: 0 auto;
+    width: 80%;
+    min-height: 200px;
+    margin-left: 200px;
 }
 
 /* Floating Menu */
@@ -142,6 +143,11 @@ main {
 }
 
 .col-status, .user-status {
+    width: 100px;
+    font-weight: bold;
+}
+
+.col-status, .user-view {
     width: 100px;
     font-weight: bold;
 }

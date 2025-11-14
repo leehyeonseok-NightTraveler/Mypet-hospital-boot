@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!DOCTYPE html>
@@ -18,7 +18,7 @@
 <body>
 
 <!-- HEADER -->
-<jsp:include page="/WEB-INF/views/common/header.jsp" />
+<jsp:include page="/WEB-INF/views/common/header.jsp"/>
 
 <!-- 메인 슬라이드 -->
 <figure>
@@ -72,17 +72,21 @@
 </section>
 
 <!-- FOOTER -->
-<jsp:include page="/WEB-INF/views/common/footer.jsp" />
+<jsp:include page="/WEB-INF/views/common/footer.jsp"/>
 
 <!-- 슬라이더 실행 -->
 <script>
-$(document).ready(function(){
-    $('.slide_gallery').bxSlider({
-        auto: true,
-        pause: 5000
+    <c:if test="${not empty alertMsg}">
+    alert("${alertMsg}");
+    </c:if>
+    $(document).ready(function () {
+        $('.slide_gallery').bxSlider({
+            auto: true,
+            pause: 5000
+        });
     });
-});
 </script>
+
 
 </body>
 </html>

@@ -31,16 +31,18 @@
                 <th class="col-name">이름</th>
                 <th class="col-phone">전화번호</th>
                 <th class="col-status">활동상태</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
-            <c:forEach var="list" items="${userList}">
+            <c:forEach var="list" items="${UserList}">
                 <tr class="list-row">
                     <td class="user-no">${list.user_no}</td>
                     <td class="user-id">${list.user_id}</td>
                     <td class="user-name">${list.user_name}</td>
                     <td class="user-phone">${list.user_phone}</td>
                     <td class="user-status">${list.user_status}</td>
+                    <td class="user-view"><a href="<c:out value='user_detail?user_no=${list.user_no}'/>">상세정보</a></td>
                 </tr>
             </c:forEach>
             </tbody>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.ManageDAO">
+    <select id="UserList" resultType="com.boot.dto.Mypet_UserDTO">
+        SELECT *
+        FROM user_info
+    </select>
+
+    <select id="UserInfo" resultType="com.boot.dto.Mypet_UserDTO">
+        SELECT *
+        FROM user_info
+        WHERE user_no = #{user_no}
+    </select>
+
+    <select id="PetList" resultType="com.boot.dto.Mypet_PetDTO">
+        SELECT *
+        FROM pet_info
+        WHERE user_no = #{user_no}
+    </select>
+
+
+</mapper>
