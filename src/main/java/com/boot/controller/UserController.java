@@ -7,6 +7,7 @@ import javax.servlet.http.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.boot.dto.Mypet_AdminDTO;
 import com.boot.dto.Mypet_UserDTO;
+import com.boot.service.UploadService;
 import com.boot.service.UserService;
 
 @Slf4j
@@ -24,6 +26,8 @@ import com.boot.service.UserService;
 public class UserController {
 
     private final UserService userService;
+    
+    private final UploadService uploadService;
 
     /* ============================
      *          회원가입
@@ -253,6 +257,18 @@ public class UserController {
             rttr.addFlashAttribute("error", "비밀번호 변경 중 오류가 발생했습니다.");
             return "redirect:/findPassword";
         }
+    }
+
+    
+    @PostMapping("/user/uploadImg")
+    public ResponseEntity<String> uploadUserImg(@RequestParam MultipartFile file,
+                                                @RequestParam int userNo) {
+
+        String saved = uploadService.saveImageWithHash(file, "user");
+
+        userDAO.updateUserImg(userNo, saved);
+
+        return ResponseEntity.ok(saved);
     }
 
     

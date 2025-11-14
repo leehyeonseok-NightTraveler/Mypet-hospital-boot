@@ -10,14 +10,17 @@ import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.boot.dto.Mypet_PetDTO;
 import com.boot.dto.Mypet_UserDTO;
 import com.boot.service.PetService;
+import com.boot.service.UploadService;
 
 @Slf4j
 @Controller
@@ -25,6 +28,7 @@ import com.boot.service.PetService;
 public class PetController {
 
     private final PetService petService;
+    private final UploadService uploadService;
 
     @GetMapping("/mypage_petinfo")
     public String mypagePetInfo(
@@ -158,4 +162,16 @@ public class PetController {
         ra.addFlashAttribute("message", "펫 정보가 성공적으로 수정되었습니다!");
         return "redirect:/mypage_petinfo?pet_no=" + pet_no;
     }
+    
+    @PostMapping("/pet/uploadImg")
+    public ResponseEntity<String> uploadPetImg(@RequestParam MultipartFile file,
+                                               @RequestParam int petNo) {
+
+        String saved = uploadService.saveImageWithHash(file, "pet");
+
+        petDAO.updatePetImg(petNo, saved);
+
+        return ResponseEntity.ok(saved);
+    }
+
 }
