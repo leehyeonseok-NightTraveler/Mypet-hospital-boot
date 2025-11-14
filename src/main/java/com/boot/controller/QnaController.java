@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.boot.dto.Mypet_Qna_BoardDTO;
+import com.boot.dto.Mypet_Qna_ReplyDTO;
 import com.boot.dto.Mypet_UserDTO;
 import com.boot.service.QnaService;
 
@@ -94,4 +95,18 @@ public class QnaController {
         ra.addFlashAttribute("message", "문의가 등록되었습니다!");
         return "redirect:/qna_page";
     }
+    
+//    @GetMapping("/qna_view")
+//    public String qnaView(
+//            @RequestParam("qna_no") int qna_no,
+//            Model model) {
+//
+//        Mypet_Qna_BoardDTO dto = service.getQna(qna_no); // 질문
+//        Mypet_Qna_ReplyDTO reply = service.getReply(qna_no); // 답변
+//
+//        model.addAttribute("dto", dto);
+//        model.addAttribute("reply", reply);
+//
+//        return "qna_content_view";
+//    }
 }
