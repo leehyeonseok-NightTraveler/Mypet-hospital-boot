@@ -1,5 +1,6 @@
 package com.boot.controller;
 
+import com.boot.dto.MedicalResDTO;
 import com.boot.dto.Mypet_PetDTO;
 import com.boot.dto.Mypet_UserDTO;
 import com.boot.service.ManageService;
@@ -55,17 +56,24 @@ public class ManageController {
         return "user_detail";
     }
 
+    @GetMapping("/veterinaryRes_manage")
+    public String VeterinaryResManagePage(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+        String Role = (String) session.getAttribute("role");
 
+        if (!"ADMIN".equals(Role)) {
+            redirectAttributes.addFlashAttribute("alertMsg", "관리자만 접근 가능합니다.");
+            return "redirect:/mainpage"; // 메인페이지로 이동
+        }
 
-    @GetMapping("/veterinary_manage")
-    public String VeterinaryManagePage() {
+        List<MedicalResDTO> VeterinaryResList = manageService.VeterinaryResList();
+        model.addAttribute("VeterinaryResList", VeterinaryResList);
 
-        return "veterinary_manage";
+        return "veterinaryRes_manage";
     }
 
-    @GetMapping("/grooming_manage")
-    public String GroomingManagePage() {
+    @GetMapping("/groomingRes_manage")
+    public String GroomingResManagePage() {
 
-        return "grooming_manage";
+        return "groomingRes_manage";
     }
 }

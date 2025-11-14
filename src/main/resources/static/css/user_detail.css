@@ -223,6 +223,17 @@ main {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
+.user-pet-box h3 {
+    background-color: transparent;
+    color: #6c757d;
+    font-weight: 700;
+    padding: 10px 16px;
+    text-align: center;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 /* 테이블 전체 */
 .user-pet-table {
     width: 100%;

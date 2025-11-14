@@ -1,6 +1,7 @@
 package com.boot.service;
 
 import com.boot.dao.ManageDAO;
+import com.boot.dto.MedicalResDTO;
 import com.boot.dto.Mypet_PetDTO;
 import com.boot.dto.Mypet_UserDTO;
 import org.apache.ibatis.session.SqlSession;
@@ -31,5 +32,11 @@ public class ManageServiceImpl implements ManageService {
     public List<Mypet_PetDTO> PetList(int user_no) {
         ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
         return dao.PetList(user_no);
+    }
+
+    @Override
+    public List<MedicalResDTO> VeterinaryResList() {
+        ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
+        return dao.VeterinaryResList();
     }
 }
