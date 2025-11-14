@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 
 <mapper namespace="com.boot.dao.PetDAO">
+
 
     <select id="selectPetsByUserNo" parameterType="hashmap"
             resultType="com.boot.dto.Mypet_PetDTO">
@@ -11,55 +13,55 @@
 
     <select id="getPetInfo" parameterType="hashmap"
             resultType="com.boot.dto.Mypet_PetDTO">
-        SELECT 
-          pet_no, user_no, pet_name, pet_age, pet_birthday,
-          pet_gender, pet_species, pet_breed, pet_regdate,
-          pet_neutered, pet_haschip, pet_chip_regdate,
-          pet_img, pet_img_temp
+        SELECT
+        pet_no, user_no, pet_name, pet_age, pet_birthday,
+        pet_gender, pet_species, pet_breed, pet_regdate,
+        pet_neutered, pet_haschip, pet_chip_regdate,
+        pet_img, pet_img_temp
         FROM pet_info
         WHERE pet_no = #{pet_no}
-          AND user_no = #{user_no}
+        AND user_no = #{user_no}
     </select>
 
     <insert id="petjoin" parameterType="com.boot.dto.Mypet_PetDTO">
         INSERT INTO pet_info (
-          pet_no, user_no, pet_name, pet_age, pet_birthday,
-          pet_gender, pet_species, pet_breed, pet_regdate,
-          pet_neutered, pet_haschip, pet_chip_regdate,
-          pet_img, pet_img_temp
+        pet_no, user_no, pet_name, pet_age, pet_birthday,
+        pet_gender, pet_species, pet_breed, pet_regdate,
+        pet_neutered, pet_haschip, pet_chip_regdate,
+        pet_img, pet_img_temp
         ) VALUES (
-          SEQ_PET_NO.NEXTVAL,
-          #{user_no},
-          #{pet_name},
-          #{pet_age},
-          #{pet_birthday},
-          #{pet_gender},
-          #{pet_species},
-          #{pet_breed},
-          SYSDATE,
-          #{pet_neutered},
-          #{pet_haschip},
-          #{pet_chip_regdate},
-          #{pet_img},
-          #{pet_img_temp}
+        SEQ_PET_NO.NEXTVAL,
+        #{user_no},
+        #{pet_name},
+        #{pet_age},
+        #{pet_birthday},
+        #{pet_gender},
+        #{pet_species},
+        #{pet_breed},
+        SYSDATE,
+        #{pet_neutered},
+        #{pet_haschip},
+        #{pet_chip_regdate},
+        #{pet_img},
+        #{pet_img_temp}
         )
     </insert>
 
     <update id="updatePetInfo" parameterType="hashmap">
         UPDATE pet_info
-        SET 
-          pet_name = #{pet_name},
-          pet_age = #{pet_age},
-          pet_birthday = CASE
-                            WHEN #{pet_birthday} IS NOT NULL AND #{pet_birthday} != ''
-                            THEN TO_DATE(#{pet_birthday}, 'YYYY-MM-DD')
-                            ELSE pet_birthday
-                         END,
-          pet_gender = #{pet_gender},
-          pet_species = #{pet_species},
-          pet_breed = #{pet_breed}
+        SET
+        pet_name = #{pet_name},
+        pet_age = #{pet_age},
+        pet_birthday = CASE
+        WHEN #{pet_birthday} IS NOT NULL AND #{pet_birthday} != ''
+        THEN TO_DATE(#{pet_birthday}, 'YYYY-MM-DD')
+        ELSE pet_birthday
+        END,
+        pet_gender = #{pet_gender},
+        pet_species = #{pet_species},
+        pet_breed = #{pet_breed}
         WHERE user_no = #{user_no}
-          AND pet_no = #{pet_no}
+        AND pet_no = #{pet_no}
     </update>
 
     <select id="checkDuplicatePetImage" parameterType="string" resultType="int">
@@ -69,7 +71,7 @@
     <update id="updatePetImage" parameterType="hashmap">
         UPDATE pet_info
         SET pet_img = #{pet_img},
-            pet_img_temp = #{pet_img_temp}
+        pet_img_temp = #{pet_img_temp}
         WHERE pet_no = #{pet_no}
     </update>
 
