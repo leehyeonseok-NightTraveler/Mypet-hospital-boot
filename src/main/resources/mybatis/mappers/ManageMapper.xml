@@ -19,5 +19,10 @@
         WHERE user_no = #{user_no}
     </select>
 
+    <select id="VeterinaryResList" resultType="com.boot.dto.MedicalResDTO">
+        SELECT vr.*, p.pet_breed
+        FROM veterinary_res vr
+        JOIN pet_info p ON vr.pet_no = p.pet_no
+    </select>
 
 </mapper>

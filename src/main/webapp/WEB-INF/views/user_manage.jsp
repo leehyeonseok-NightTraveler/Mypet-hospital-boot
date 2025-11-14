@@ -13,9 +13,9 @@
 <main id="user-manage-main">
     <div class="floating-wrapper">
         <nav class="floating-menu" id="manage-menu">
-            <a href="<c:url value='/user_manage'/>" class="menu-link active" id="menu-user">회원정보관리</a>
-            <a href="<c:url value='/veterinary_manage'/>" class="menu-link" id="menu-veterinary">진료예약관리</a>
-            <a href="<c:url value='/grooming_manage'/>" class="menu-link" id="menu-grooming">미용예약관리</a>
+            <a href="<c:url value='/user_manage'/>" class="menu-link active" id="menu-user">회원정보 관리</a>
+            <a href="<c:url value='/veterinaryRes_manage'/>" class="menu-link" id="menu-veterinary">진료예약 관리</a>
+            <a href="<c:url value='/groomingRes_manage'/>" class="menu-link" id="menu-grooming">미용예약 관리</a>
         </nav>
     </div>
 

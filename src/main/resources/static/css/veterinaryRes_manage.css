@@ -1,0 +1,185 @@
+@charset "utf-8";
+
+/* 기본 초기화 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 메인 영역 */
+main#res-manage-main {
+    width: 80%;
+    min-height: 200px;
+    margin-left: 200px;
+    padding: 40px 20px;
+}
+
+/* Floating 메뉴 */
+.floating-wrapper {
+    position: fixed;
+    top: 50%;
+    left: 30px;
+    transform: translateY(-50%);
+    z-index: 1000;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.floating-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.floating-menu a {
+    display: block;
+    width: 120px;
+    padding: 10px 15px;
+    background-color: #ffffff;
+    color: #333;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.floating-menu a:hover {
+    background-color: #e9ecef;
+    color: #000;
+}
+
+.floating-menu a.active {
+    background-color: #4a90e2;
+    color: white;
+}
+
+/* 섹션 영역 */
+#res-list-section {
+    padding: 40px 20px;
+    background-color: #ffffff;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.section-divider {
+    border: none;
+    border-top: 2px solid #ccc;
+    margin-bottom: 20px;
+}
+
+/* 예약 테이블 */
+#reservation-list-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+#reservation-list-table thead th {
+    background-color: #ffffff;
+    padding: 12px 15px;
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 14px;
+}
+
+#reservation-list-table tbody td {
+    padding: 10px 15px;
+    text-align: center;
+    border-bottom: 1px solid #e9ecef;
+    color: #555;
+    font-size: 13px;
+}
+
+#reservation-list-table tbody tr:hover {
+    background-color: #e9ecef;
+    transition: background-color 0.3s ease;
+}
+
+/* 버튼 스타일 */
+#reservation-list-table button {
+    padding: 6px 12px;
+    margin: 2px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+#reservation-list-table button[type="submit"] {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+#reservation-list-table button[type="button"] {
+    background-color: #f44336;
+    color: #fff;
+}
+
+#modalOverlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4); /* 어두운 반투명 배경 */
+    z-index: 1001;
+}
+
+
+/* 모달창 */
+#cancelModal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    z-index: 1002;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* 모달 버튼 */
+.btn-cancel-submit {
+    background-color: #c62828;
+    color: #fff;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-cancel-close {
+    background-color: #e0e0e0;
+    color: #333;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+}
