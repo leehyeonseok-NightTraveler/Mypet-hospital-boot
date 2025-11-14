@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.boot.dao.NoticeDAO">
 
@@ -27,45 +27,45 @@
     </select>
 
     <select id="selectNotices" resultType="com.boot.dto.Mypet_NoticesDTO">
-        SELECT 
-          notice_no, admin_no, notice_title, view_count,
-          is_fixed, created_date, updated_date, notice_file
+        SELECT
+        notice_no, admin_no, notice_title, view_count,
+        is_fixed, created_date, updated_date, notice_file
         FROM notices
         ORDER BY is_fixed DESC, notice_no DESC
     </select>
 
     <select id="selectNoticeByNo" parameterType="int"
             resultType="com.boot.dto.Mypet_NoticesDTO">
-        SELECT 
-          notice_no, admin_no, notice_title, notice_content,
-          view_count, is_fixed, created_date, updated_date, notice_file
+        SELECT
+        notice_no, admin_no, notice_title, notice_content,
+        view_count, is_fixed, created_date, updated_date, notice_file
         FROM notices
         WHERE notice_no = #{notice_no}
     </select>
 
     <insert id="insertNotice" parameterType="com.boot.dto.Mypet_NoticesDTO">
         INSERT INTO notices (
-          notice_no, admin_no, notice_title, notice_content,
-          notice_file, is_fixed, created_date, view_count
+        notice_no, admin_no, notice_title, notice_content,
+        notice_file, is_fixed, created_date, view_count
         ) VALUES (
-          SEQ_NOTICE_NO.NEXTVAL,
-          #{admin_no},
-          #{notice_title},
-          #{notice_content},
-          #{notice_file},
-          #{is_fixed},
-          SYSDATE,
-          0
+        SEQ_NOTICE_NO.NEXTVAL,
+        #{admin_no},
+        #{notice_title},
+        #{notice_content},
+        #{notice_file},
+        #{is_fixed},
+        SYSDATE,
+        0
         )
     </insert>
 
     <update id="updateNotice" parameterType="com.boot.dto.Mypet_NoticesDTO">
         UPDATE notices
         SET
-          notice_title = #{notice_title},
-          notice_content = #{notice_content},
-          notice_file = #{notice_file},
-          updated_date = SYSDATE
+        notice_title = #{notice_title},
+        notice_content = #{notice_content},
+        notice_file = #{notice_file},
+        updated_date = SYSDATE
         WHERE notice_no = #{notice_no}
     </update>
 

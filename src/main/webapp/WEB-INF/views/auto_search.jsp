@@ -9,7 +9,7 @@
 <body>
   <h2>자동완성 검색</h2>
 
-  <!-- ✅ 폼 -->
+  <!-- 폼 -->
   <form id="searchForm" action="/search_results" method="get">
     <input type="hidden" name="siteurl" id="siteurl">
     <input type="hidden" name="keyword" id="keyword">

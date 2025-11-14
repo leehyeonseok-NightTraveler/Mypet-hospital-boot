@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.boot.dao.MedicalDAO">
 
@@ -8,25 +8,25 @@
             resultType="com.boot.dto.MedicalResDTO">
         SELECT * FROM veterinary_res
         WHERE user_name = #{userName}
-          AND user_phone = #{userPhone}
+        AND user_phone = #{userPhone}
         ORDER BY res_date DESC
     </select>
 
     <insert id="createMedicalReservation"
             parameterType="com.boot.dto.MedicalResDTO">
         INSERT INTO veterinary_res (
-            res_no, user_name, user_no, pet_name, pet_no,
-            user_phone, service_item, res_date, memo
+        res_no, user_name, user_no, pet_name, pet_no,
+        user_phone, service_item, res_date, memo
         ) VALUES (
-            seq_veterinary_no.NEXTVAL,
-            #{user_name},
-            #{user_no},
-            #{pet_name},
-            #{pet_no},
-            #{user_phone},
-            #{service_item},
-            #{res_date},
-            #{memo}
+        seq_veterinary_no.NEXTVAL,
+        #{user_name},
+        #{user_no},
+        #{pet_name},
+        #{pet_no},
+        #{user_phone},
+        #{service_item},
+        #{res_date},
+        #{memo}
         )
     </insert>
 

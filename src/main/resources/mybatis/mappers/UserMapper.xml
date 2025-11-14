@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.boot.dao.UserDAO">
 
     <!-- 회원가입 -->
     <insert id="join" parameterType="com.boot.dto.Mypet_UserDTO">
         INSERT INTO user_info (
-          user_no, user_id, user_pwd, user_name, user_gender,
-          user_birthday, user_phone, user_email, user_addr,
-          user_status, user_img, user_img_temp
+        user_no, user_id, user_pwd, user_name, user_gender,
+        user_birthday, user_phone, user_email, user_addr,
+        user_status, user_img, user_img_temp
         ) VALUES (
-          SEQ_USER_NO.NEXTVAL,
-          #{user_id, jdbcType=VARCHAR},
-          #{user_pwd, jdbcType=VARCHAR},
-          #{user_name, jdbcType=VARCHAR},
-          #{user_gender, jdbcType=CHAR},
-          #{user_birthday, jdbcType=DATE},
-          #{user_phone, jdbcType=VARCHAR},
-          #{user_email, jdbcType=VARCHAR},
-          #{user_addr, jdbcType=VARCHAR},
-          #{user_status, jdbcType=VARCHAR},
-          #{user_img, jdbcType=VARCHAR},
-          #{user_img_temp, jdbcType=VARCHAR}
+        SEQ_USER_NO.NEXTVAL,
+        #{user_id, jdbcType=VARCHAR},
+        #{user_pwd, jdbcType=VARCHAR},
+        #{user_name, jdbcType=VARCHAR},
+        #{user_gender, jdbcType=CHAR},
+        #{user_birthday, jdbcType=DATE},
+        #{user_phone, jdbcType=VARCHAR},
+        #{user_email, jdbcType=VARCHAR},
+        #{user_addr, jdbcType=VARCHAR},
+        #{user_status, jdbcType=VARCHAR},
+        #{user_img, jdbcType=VARCHAR},
+        #{user_img_temp, jdbcType=VARCHAR}
         )
     </insert>
 
@@ -31,13 +31,13 @@
         SELECT user_no AS no
         FROM user_info
         WHERE user_id = #{user_id}
-          AND user_pwd = #{user_pwd}
-          AND user_status = 'ACTIVE'
+        AND user_pwd = #{user_pwd}
+        AND user_status = 'ACTIVE'
         UNION ALL
         SELECT admin_no AS no
         FROM admin_info
         WHERE admin_id = #{user_id}
-          AND admin_pwd = #{user_pwd}
+        AND admin_pwd = #{user_pwd}
     </select>
 
     <!-- 유저 조회 -->
@@ -75,7 +75,7 @@
     <update id="updateUserImage" parameterType="hashmap">
         UPDATE user_info
         SET user_img = #{user_img},
-            user_img_temp = #{user_img_temp}
+        user_img_temp = #{user_img_temp}
         WHERE user_no = #{user_no}
     </update>
 
@@ -84,9 +84,9 @@
         SELECT COUNT(*)
         FROM user_info
         WHERE user_id = #{user_id}
-          AND user_name = #{user_name}
-          AND user_email = #{user_email}
-          AND user_status = 'ACTIVE'
+        AND user_name = #{user_name}
+        AND user_email = #{user_email}
+        AND user_status = 'ACTIVE'
     </select>
 
     <!-- 비밀번호 변경 -->

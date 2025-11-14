@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration
-    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-    "https://mybatis.org/dtd/mybatis-3-config.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-	 <mappers>
+    <settings>
+        <setting name="jdbcTypeForNull" value="VARCHAR"/>
+    </settings>
+    <mappers>
         <mapper resource="mybatis/mappers/GroomingMapper.xml"/>
         <mapper resource="mybatis/mappers/MedicalMapper.xml"/>
         <mapper resource="mybatis/mappers/NoticeMapper.xml"/>
