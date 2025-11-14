@@ -28,13 +28,16 @@
                 <input type="text" name="user_id" value="${loginUser.user_id}" readonly>
             </div>
 
-            <!-- 비밀번호 -->
-            <div class="input-group">
-                <input type="password" name="user_pwd" placeholder="새 비밀번호 (변경 시 입력)">
-            </div>
-            <div class="input-group">
-                <input type="password" name="user_pwd_confirm" placeholder="새 비밀번호 확인">
-            </div>
+			<!-- 비밀번호 변경 영역 (카카오가 아닌 경우에만 표시) -->
+			<c:if test="${loginUser.social_type ne 'kakao'}">
+			    <div class="input-group">
+			        <input type="password" name="user_pwd" placeholder="새 비밀번호 (변경 시 입력)">
+			    </div>
+			    <div class="input-group">
+			        <input type="password" name="user_pwd_confirm" placeholder="새 비밀번호 확인">
+			    </div>
+			</c:if>
+
 
             <!-- 연락처 -->
             <div class="input-group">

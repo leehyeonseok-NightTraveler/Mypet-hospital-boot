@@ -1,0 +1,82 @@
+/* 검색창 전체 컨테이너 */
+.search-center {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+}
+
+/* 검색창 영역 */
+.search-area {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* 검색 input */
+.search-area input#query {
+    width: 200px !important;
+    padding: 6px 10px !important;
+    font-size: 14px !important;
+
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+
+    outline: none !important;
+    box-shadow: none !important;
+    background: #fff !important;
+}
+
+/* 검색 버튼 */
+#sendBtn {
+    padding: 6px 12px;
+    font-size: 14px;
+    border: none;
+    background-color: #4a90e2;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#sendBtn:hover {
+    background-color: #357ab8;
+}
+
+/* 자동완성 박스 */
+.autocomplete-box {
+    position: absolute;
+    top: 36px;
+    left: 0;
+    width: 200px;
+
+    background: white;
+    border: 1px solid #ccc;
+    border-top: none;
+
+    max-height: 220px;
+    overflow-y: auto;
+    border-radius: 0 0 4px 4px;
+
+    z-index: 99999;
+}
+
+/* 자동완성 항목 */
+.autocomplete-box .item {
+    padding: 8px 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #f4f4f4;
+}
+
+.autocomplete-box .item:hover {
+    background: #f5f5f5;
+}
+
+/* 🍀 자동완성 박스가 비어 있을 때 밑줄처럼 보이는 border 제거 */
+.autocomplete-box:empty {
+    display: none !important;
+    border: none !important;
+}
