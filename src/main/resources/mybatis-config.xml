@@ -14,5 +14,6 @@
         <mapper resource="mybatis/mappers/QnaMapper.xml"/>
         <mapper resource="mybatis/mappers/UserMapper.xml"/>
         <mapper resource="mybatis/mappers/Mypet_Kakao_Mapper.xml"/>
+        <mapper resource="mybatis/mappers/ManageMapper.xml"/>
     </mappers>
 </configuration>
