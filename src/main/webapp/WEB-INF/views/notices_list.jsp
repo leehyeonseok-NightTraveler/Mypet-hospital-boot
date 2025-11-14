@@ -8,70 +8,14 @@
   <meta charset="UTF-8">
   <title>공지사항</title>
 
-  <!-- ⭐ 정적 리소스 경로 Spring Boot 표준 적용 -->
+  <!-- 정적 리소스 경로 Spring Boot 표준 적용 -->
   <link rel="stylesheet" href="/css/mainpage.css">
   <link rel="stylesheet" href="/css/notices_list.css">
 </head>
 <body>
 
-<div class="floating-icons">
-  <a href="https://www.instagram.com/khieiorkr/" target="_blank" class="icon-instagram">
-    <img src="https://img.icons8.com/fluent/48/000000/instagram-new.png" />
-  </a>
-
-  <a href="https://www.youtube.com/@KH_academy" target="_blank" class="icon-youtube">
-    <img src="https://img.icons8.com/color/48/youtube-play.png" />
-  </a>
-
-  <a href="/map" class="icon-map">
-    <img src="https://img.icons8.com/color/48/000000/map-marker.png" />
-  </a>
-</div>
-
-<header>
-  <div class="inner">
-      <h1>
-        <a href="/mainpage">
-            <img src="/img/mypet.png">MY PET 동물병원
-        </a>
-      </h1>
-
-      <ul id="gnb">
-          <li><a href="/hospital_info">병원소개</a></li>
-
-          <li class="dropdown-parent">
-            <a href="#">게시판</a>
-            <ul class="submenu">
-              <li><a href="/notices_list">공지사항</a></li>
-              <li><a href="#">자유게시판</a></li>
-              <li><a href="/qna_page">Q&A</a></li>
-            </ul>
-          </li>
-
-          <c:choose>
-            <c:when test="${sessionScope.role == 'ADMIN' || sessionScope.role == 'USER'}">
-                <li><a href="/reservation">예약</a></li>
-            </c:when>
-            <c:otherwise>
-                <li><a href="/login">예약</a></li>
-            </c:otherwise>
-          </c:choose>
-      </ul>
-
-      <ul class="util">
-          <c:choose>
-            <c:when test="${sessionScope.role == 'ADMIN' || sessionScope.role == 'USER'}">
-              <li><a href="/mypage_userinfo">마이페이지</a></li>
-              <li><a href="/logout">로그아웃</a></li>
-            </c:when>
-            <c:otherwise>
-              <li><a href="/login">로그인</a></li>
-              <li><a href="/register">회원가입</a></li>
-            </c:otherwise>
-          </c:choose>
-      </ul>
-  </div>
-</header>
+<!-- 공통 헤더 include -->
+<jsp:include page="/WEB-INF/views/common/header.jsp" />
 
 <main>
   <h2 class="notice-title">공지사항</h2>
@@ -98,11 +42,14 @@
             </a>
           </td>
           <td>관리자</td>
-          <td><fmt:formatDate value="${dto.created_date}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+          <td>
+            <fmt:formatDate value="${dto.created_date}" pattern="yyyy-MM-dd HH:mm:ss" />
+          </td>
           <td>${dto.view_count}</td>
         </tr>
       </c:forEach>
 
+      <!-- 관리자 전용 버튼 -->
       <c:if test="${sessionScope.role == 'ADMIN'}">
         <tr class="divider_tr"><td colspan="5"></td></tr>
         <tr class="button_tr">
@@ -139,21 +86,8 @@
   </div>
 </main>
 
-<footer>
-  <div class="inner">
-    <div class="footer-logo">
-      <a href="/mainpage">MY PET 동물병원</a>
-    </div>
-
-    <div class="footer-info">
-      <p>주소: 부산광역시 OO구 OO로 123번길 45 | 대표: 김원장</p>
-      <p>TEL: 051-123-4567 | E-MAIL: contact@mypet.com</p>
-      <p class="copyright">
-        &copy; 2025 MY PET Animal Hospital. All Rights Reserved.
-      </p>
-    </div>
-  </div>
-</footer>
+<!-- 공통 푸터 include -->
+<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 
 </body>
 </html>
