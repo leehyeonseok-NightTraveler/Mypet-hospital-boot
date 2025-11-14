@@ -1,0 +1,57 @@
+/* 페이지 전체 컨테이너 */
+.search-result-container {
+    width: 1180px;
+    margin: 60px auto;
+    padding: 40px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+/* 제목 */
+.search-result-container h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 카드 하나 */
+.result-card {
+    background: #ffffff;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    transition: all 0.15s ease-in-out;
+}
+
+/* 호버 시 애니메이션 */
+.result-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+}
+
+/* 제목 링크 */
+.result-card .result-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #4a90e2;
+    text-decoration: none;
+}
+
+.result-card .result-title:hover {
+    color: #357ab8;
+    text-decoration: underline;
+}
+
+/* URL 표시 */
+.result-card .result-url {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #777;
+}
