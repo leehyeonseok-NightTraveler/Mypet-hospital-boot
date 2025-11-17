@@ -13,6 +13,16 @@
     <!-- 개별 페이지 CSS -->
     <link rel="stylesheet" href="/css/mainpage.css">
     <link rel="stylesheet" href="/css/find_password.css">
+    <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
+	<script src="${pageContext.request.contextPath}/js/findPW.js"></script>
+
+    <script>
+        const findFail = "${findFail}";
+        if (findFail === "true") {
+            alert("계정 정보를 찾지 못했습니다.");
+            history.replaceState(null, null, location.href);
+        }
+    </script>
 </head>
 <body>
 
@@ -40,7 +50,7 @@
                     <input type="text" name="account_email" placeholder="이메일" required>
                 </div>
                 <div>
-                    <button type="submit" class="submit-btn">확인</button>
+                    <button type="submit" class="submit-btnp">확인</button>
                 </div>
                 <div>
                     <input class="submit-btn2" type="button" onclick="location.href='login'" value="로그인 페이지 이동">  
@@ -58,13 +68,6 @@
 
     <!-- 공통 FOOTER -->
     <jsp:include page="/WEB-INF/views/common/footer.jsp" />
-
-    <!-- 비밀번호 찾기 메시지 alert -->
-    <c:if test="${not empty message}">
-        <script>
-            alert("${message}");
-        </script>
-    </c:if>
 
 </body>	
 </html>

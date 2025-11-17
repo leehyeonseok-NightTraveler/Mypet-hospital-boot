@@ -51,7 +51,7 @@ body {
 .submit-btn {
     width: 100%;
     padding: 13px;
-    background-color: #5c6bc0; /* 포인트 컬러 변경 */
+    background-color: #26a69a; /* 포인트 컬러 변경 */
     border: none;
     border-radius: 5px;
     color: white;
@@ -59,12 +59,16 @@ body {
     font-weight: bold;
     cursor: pointer;
     margin-bottom: 20px;
+}
+
+.submit-btn:hover {
+    background-color: #00897b;
 }
 
 .submit-btn2 {
     width: 100%;
     padding: 13px;
-    background-color: #5c6bc0; /* 포인트 컬러 변경 */
+    background-color: #26a69a; /* 포인트 컬러 변경 */
     border: none;
     border-radius: 5px;
     color: white;
@@ -75,8 +79,8 @@ body {
 }
 
 
-.submit-btn:hover {
-    background-color: #3f51b5;
+.submit-btn2:hover {
+    background-color: #00897b;
 }
 
 /* 추가 옵션 링크 */

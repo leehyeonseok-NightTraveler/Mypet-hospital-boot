@@ -26,7 +26,7 @@
             <div class="link_wrap">
                 <a href="findAccount" class="link">아이디 찾기</a>
                 &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
-                <a href="findPW" class="link">비밀번호 찾기</a>
+                <a href="find_password" class="link">비밀번호 찾기</a>
                 &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
                 <a href="register" class="link">회원가입</a>
             </div>

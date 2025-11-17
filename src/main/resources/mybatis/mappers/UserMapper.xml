@@ -103,26 +103,27 @@
 	
 <!--	비밀번호 찾기 기능-->
 	<select id="findPW" resultType="com.boot.dto.FindAccountDTO">
-		SELECT 
-            USER_ID AS account_id,
-	        USER_EMAIL as account_email,
+	    SELECT 
+	        USER_ID AS account_id,
+	        USER_EMAIL AS account_email,
 	        USER_PHONE AS account_phone
-        FROM USER_INFO
-        WHERE USER_EMAIL = #{account_email}
-          AND USER_PHONE = #{account_phone}
-          AND USER_ID = #{account_id}
-
-        UNION ALL
-
-        SELECT 
-            ADMIN_ID AS account_id,
-	        ADMIN_EMAIL as account_email,
+	    FROM USER_INFO
+	    WHERE USER_EMAIL = #{account_email}
+	      AND REPLACE(USER_PHONE, '-', '') = #{account_phone}
+	      AND USER_ID = #{account_id}
+	
+	    UNION ALL
+	
+	    SELECT 
+	        ADMIN_ID AS account_id,
+	        ADMIN_EMAIL AS account_email,
 	        ADMIN_PHONE AS account_phone
-        FROM ADMIN_INFO
-        WHERE ADMIN_EMAIL = #{account_email}
-          AND ADMIN_PHONE = #{account_phone}
-          AND ADMIN_ID = #{account_id}
+	    FROM ADMIN_INFO
+	    WHERE ADMIN_EMAIL = #{account_email}
+	      AND REPLACE(ADMIN_PHONE, '-', '') = #{account_phone}
+	      AND ADMIN_ID = #{account_id}
 	</select>
+
 	
 	
 	<update id="updateUserPwd">
