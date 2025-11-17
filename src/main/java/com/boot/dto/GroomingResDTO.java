@@ -14,11 +14,11 @@ public class GroomingResDTO {
     private int pet_no;
     private String user_phone;
     private String service_item;
-
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date res_date;
-
     private String res_status;
     private Date reg_date;
     private String memo;
+    private String pet_breed;
+    private String  cancel_reason;
 }

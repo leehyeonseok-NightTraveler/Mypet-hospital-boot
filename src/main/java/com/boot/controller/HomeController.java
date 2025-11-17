@@ -2,6 +2,7 @@ package com.boot.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class HomeController {
@@ -24,11 +25,16 @@ public class HomeController {
     @GetMapping("/map")
     public String map() { return "map"; }
 
+//    아이디 찾기
+    @RequestMapping("/findAccount")
+    public String find_account() { return "findAccount"; }
+    
     @GetMapping("/find_password")
     public String findPassword() { return "find_password"; }
-
-    @GetMapping("/reset_password")
-    public String resetPassword() { return "reset_password"; }
+    
+//    아이디/비밀번호 찾기 완료 페이지
+	@RequestMapping("/findOK")
+	public String infdOK() { return "findOK"; }
 
     @GetMapping("/reservation")
     public String reservation() { return "reservation"; }
