@@ -48,7 +48,7 @@
   <div class="container">
     <h3>공지사항 작성</h3>
 
-    <form method="post" action="/notices_write">
+    <form method="post" action="/notices_write"  enctype="multipart/form-data">
       <table class="table">
         <tr>
           <td class="label">제목</td>
@@ -60,7 +60,7 @@
         <tr>
           <td class="label">첨부파일</td>
           <td>
-            <input type="text" class="form-control" name="notice_file">
+			<input type="file" name="notice_file_upload" class="form-control">
           </td>
         </tr>
       </table>

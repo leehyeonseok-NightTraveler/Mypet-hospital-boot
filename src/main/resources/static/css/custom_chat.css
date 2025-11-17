@@ -1,0 +1,203 @@
+/* ---------------------------------------------------- */
+/* 0. 기본 설정 및 숨김 클래스 */
+/* ---------------------------------------------------- */
+.hidden {
+    display: none !important;
+}
+
+/* ---------------------------------------------------- */
+/* 1. 위젯 아이콘 (화면 고정 버튼) - image_28cb25.png 디자인 반영 */
+/* ---------------------------------------------------- */
+.chat-toggle-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 55px; 
+    height: 55px;
+    background-color: lightblue; /* 밝은 녹색/민트색 배경 */
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    cursor: pointer;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* SVG 아이콘 (#chat-icon-open-img) 스타일 */
+#chat-icon-open-img {
+    width: 60%; 
+    height: 60%;
+    /* chatbot.svg 색상을 진한 녹색으로 변경 */
+    filter: invert(30%) sepia(85%) saturate(300%) hue-rotate(90deg) brightness(80%) contrast(100%); 
+}
+
+/* 닫기 아이콘 (#chat-icon-close) 스타일 */
+#chat-icon-close {
+    font-size: 1.5rem;
+    color: white; /* X 버튼은 흰색 */
+    position: absolute; 
+}
+
+/* ---------------------------------------------------- */
+/* 2. 메뉴 팝업 스타일 (image_2b3382.png 디자인 반영) */
+/* ---------------------------------------------------- */
+.chat-menu-popup {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 300px; 
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    overflow: hidden;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    z-index: 9998;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border-radius: 8px;
+    margin-bottom: 5px; 
+}
+.menu-item:hover {
+    background-color: #f0f0f0; 
+}
+.menu-item:last-child {
+    margin-bottom: 0;
+}
+
+/* 이미지에서 보이는 메뉴 항목별 배경색 및 테두리 */
+.menu-item:first-child,
+.menu-item:nth-child(2) {
+    background-color: #ffffff; /* 취업특톡, 고객센터 항목처럼 흰색 배경 */
+}
+.menu-item.last-menu-item {
+    background-color: #f7f7f7; /* 신고하기 항목처럼 옅은 회색 배경 */
+    border: 1px solid #eee;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+
+/* 메뉴 아이콘 스타일 */
+.menu-icon {
+    font-size: 1.5rem;
+    margin-right: 15px;
+    width: 30px; 
+    text-align: center;
+}
+.menu-item:nth-child(1) .menu-icon { color: #55c57a; } /* FAQ 챗봇 (초록) */
+.menu-item:nth-child(2) .menu-icon { color: #007bff; } /* 상담원 연결 (파랑) */
+.menu-item:nth-child(3) .menu-icon { color: #ffc107; } /* 병원 정보 안내 (노랑) */
+
+
+.menu-text {
+    display: flex;
+    flex-direction: column;
+}
+.menu-title {
+    font-weight: bold;
+    color: #333;
+    font-size: 0.95rem;
+}
+.menu-desc {
+    font-size: 0.8rem;
+    color: #777;
+}
+
+/* ---------------------------------------------------- */
+/* 3. 채팅 팝업 컨테이너 (image_28cb41.png 디자인 반영) */
+/* ---------------------------------------------------- */
+.chat-popup-container {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 340px; 
+    height: 500px; 
+    background: #f4f7f9;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 9998;
+}
+
+.popup-header {
+    background-color: #fff; 
+    color: #333;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+}
+
+.popup-messages {
+    flex-grow: 1; 
+    padding: 15px;
+    overflow-y: auto; 
+    display: flex;
+    flex-direction: column; 
+}
+
+.bot-message {
+    background-color: white;
+    padding: 10px 12px;
+    border-radius: 15px 15px 15px 3px; 
+    margin-bottom: 10px;
+    max-width: 85%;
+    align-self: flex-start;
+    box-shadow: 0 0 5px rgba(0,0,0,0.05); 
+    word-wrap: break-word;
+}
+
+.user-message {
+    background-color: #ebebeb; /* 연한 회색 */
+    padding: 10px 12px;
+    border-radius: 15px 15px 3px 15px;
+    margin-bottom: 10px;
+    max-width: 85%;
+    align-self: flex-end;
+    margin-left: auto; 
+    word-wrap: break-word;
+}
+
+.popup-input-area {
+    display: flex;
+    padding: 8px 10px;
+    border-top: 1px solid #ddd;
+    background: white;
+}
+.popup-input-area input {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: none; 
+    border-radius: 0;
+    margin-right: 8px;
+    outline: none;
+    font-size: 0.9rem;
+}
+.send-btn {
+    background-color: #573dec55; 
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.send-btn i {
+    font-size: 1rem;
+}

@@ -3,6 +3,8 @@ package com.boot.service;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.boot.dto.Mypet_PetDTO;
 
 public interface PetService {
@@ -17,5 +19,6 @@ public interface PetService {
 
     Mypet_PetDTO getPetByNo(int pet_no);
     
-    boolean uploadPetImage(int pet_no, String fileName, byte[] bytes);
+    void updatePetImg(int pet_no, String imgPath, String imgHash);
+    void replacePetImage(int petNo, MultipartFile file);
 }

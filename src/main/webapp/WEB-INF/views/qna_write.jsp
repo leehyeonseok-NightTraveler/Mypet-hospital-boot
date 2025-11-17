@@ -24,7 +24,7 @@
         <h2 align="center" id="h22">Q&A</h2>
         <br>
 
-        <form method="post" action="/qna_write_ok">
+        <form method="post" action="/qna_write_ok" enctype="multipart/form-data">
             <table class="table">
                 <tr>
                     <td width="80" id="center1">제목</td>
@@ -32,8 +32,7 @@
                 </tr>
                 <tr>
                     <td id="center2">첨부파일</td>
-                    <td><input type="text" class="form-control" name="qna_file"></td>
-                </tr>
+                    <td><input type="file" class="form-control" name="qna_file_upload"></td>
             </table>
 
             <table id="table2">

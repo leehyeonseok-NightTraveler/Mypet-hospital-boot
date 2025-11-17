@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.boot.dao.UserDAO;
 import com.boot.dto.Mypet_AdminDTO;
 import com.boot.dto.Mypet_UserDTO;
 import com.boot.service.UploadService;
@@ -176,10 +177,15 @@ public class UserController {
             }
             map.put("user_pwd", user_pwd);
         }
-
+        
         try {
             userService.updateUserInfo(map);
-
+            
+            // 이미지 업로드 처리 추가
+            if (user_img != null && !user_img.isEmpty()) {
+                userService.replaceUserImage(loginUser.getUser_no(), user_img);
+            }
+            
             // DB 기준 세션 갱신
             Mypet_UserDTO updatedUser = userService.getUserByNo(loginUser.getUser_no());
             if (updatedUser != null) {
@@ -261,16 +267,22 @@ public class UserController {
 
     
     @PostMapping("/user/uploadImg")
-    public ResponseEntity<String> uploadUserImg(@RequestParam MultipartFile file,
-                                                @RequestParam int userNo) {
+    @ResponseBody
+    public ResponseEntity<String> uploadUserImg(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("userNo") int userNo) {
 
-        String saved = uploadService.saveImageWithHash(file, "user");
+        try {
+            boolean ok = userService.replaceUserImage(userNo, file);
 
-        userDAO.updateUserImg(userNo, saved);
+            if (!ok) return ResponseEntity.status(400).body("duplicate");
 
-        return ResponseEntity.ok(saved);
+            return ResponseEntity.ok("success");
+
+        } catch (Exception e) {
+            log.error("유저 이미지 업로드 실패", e);
+            return ResponseEntity.status(500).body("fail");
+        }
     }
 
-    
-    
 }

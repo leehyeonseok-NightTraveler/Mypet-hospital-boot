@@ -4,13 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import com.boot.dao.UserDAO;
 import com.boot.dao.PetDAO;
 import com.boot.dto.Mypet_UserDTO;
-import com.boot.util.ImageHashUtil;
 import com.boot.dto.Mypet_PetDTO;
 
 @Slf4j
@@ -20,6 +21,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserDAO userDAO;
     private final PetDAO petDAO;
+    private final UploadService uploadService;
 
     @Override
     public void join(Mypet_UserDTO dto) {
@@ -54,27 +56,52 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public boolean uploadUserImage(int user_no, String fileName, byte[] fileBytes) {
-        try {
-            String hash = ImageHashUtil.getReadableHash(fileBytes);
+    public void updateUserImg(int user_no, String imgPath, String imgHash) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("user_no", user_no);
+        map.put("user_img", imgPath);
+        map.put("user_img_temp", imgHash);
 
-            if (userDAO.checkDuplicateUserImage(hash) > 0) {
-                return false;  // 중복 이미지
+        userDAO.updateUserImage(map);
+    }
+    
+    @Override
+    public boolean replaceUserImage(int userNo, MultipartFile file) {
+
+        // 1) 기존 유저 정보 조회
+        Mypet_UserDTO user = userDAO.selectUserByNo(userNo);
+        if (user == null) return false;
+
+        String oldImg = user.getUser_img();  // 기존 이미지 경로 (/YYYY/MM/DD/UUID_HASH_name.jpg)
+
+        try {
+            // 2) 새 이미지 저장
+            String saved = uploadService.saveImageWithHash(file, "user");
+
+            // 3) 해시 추출
+            String fileName = saved.substring(saved.lastIndexOf("/") + 1);
+            String hash = fileName.split("_")[1];
+
+            // 4) DB 업데이트
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("user_no", userNo);
+            map.put("user_img", saved);
+            map.put("user_img_temp", hash);
+            userDAO.updateUserImage(map);
+
+            // 5) 기존 파일 삭제
+            if (oldImg != null && !oldImg.isEmpty()) {
+                uploadService.deleteFile(oldImg);
             }
 
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("user_no", user_no);
-            map.put("user_img", "/resources/upload/user/" + fileName);
-            map.put("user_img_temp", hash);
-
-            userDAO.updateUserImage(map);
             return true;
 
         } catch (Exception e) {
-            log.error("User image upload failed", e);
-            return false;
+            log.error("유저 이미지 교체 오류", e);
+            throw new RuntimeException("유저 이미지 변경 실패");
         }
     }
+
 
 
     @Override

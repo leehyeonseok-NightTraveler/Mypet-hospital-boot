@@ -1,14 +1,11 @@
 package com.boot.service;
 
-import java.util.HashMap;
-import java.util.List;
-
 import org.springframework.web.multipart.MultipartFile;
 
-import com.boot.dto.GroomingResDTO;
-
 public interface UploadService {
-    String saveImage(MultipartFile file, String folder);           // 일반 파일 저장
-    String saveImageWithHash(MultipartFile file, String folder);   // 해시 포함 저장
-    boolean deleteFile(String fullPath);                           // 삭제
+    String saveImage(MultipartFile file, String folder);
+    String saveImageWithHash(MultipartFile file, String folder);
+    boolean deleteFile(String fullPath);
+    // 새로 추가한 공지사항/파일용 업로드(원본 유지 + 중복시 번호 붙이기)
+    String saveRawFile(MultipartFile file, String folder);
 }

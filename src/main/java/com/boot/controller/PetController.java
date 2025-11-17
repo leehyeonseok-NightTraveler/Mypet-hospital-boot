@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.boot.dao.PetDAO;
 import com.boot.dto.Mypet_PetDTO;
 import com.boot.dto.Mypet_UserDTO;
 import com.boot.service.PetService;
@@ -55,6 +56,10 @@ public class PetController {
             @RequestParam("pet_gender") String petGender,
             @RequestParam("pet_birthday") String petBirthdayStr,
             @RequestParam("pet_neutered") String petNeutered,
+
+            // ⭐ 추가!
+            @RequestParam(value = "pet_img", required = false) MultipartFile pet_img,
+
             HttpSession session
     ) {
 
@@ -69,6 +74,7 @@ public class PetController {
         petDTO.setPet_gender(petGender);
         petDTO.setPet_neutered(petNeutered);
 
+        // 생일 처리
         try {
             if (petBirthdayStr != null && !petBirthdayStr.isEmpty()) {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -80,11 +86,31 @@ public class PetController {
             return "errorPage";
         }
 
-        petService.petjoin(petDTO);
-        log.info("펫 등록 완료: {} (user_no={})", petName, loginUser.getUser_no());
+        try {
+            // ⭐ 신규 이미지 파일이 있으면 저장
+            if (pet_img != null && !pet_img.isEmpty()) {
+
+                String saved = uploadService.saveImageWithHash(pet_img, "pet");
+                petDTO.setPet_img(saved);
+
+                // 해시값 저장
+                String fileName = saved.substring(saved.lastIndexOf("/") + 1);
+                String hash = fileName.split("_")[1];
+                petDTO.setPet_img_temp(hash);
+            }
+
+            petService.petjoin(petDTO);
+
+            log.info("펫 등록 완료(이미지 적용): {} / img={}", petName, petDTO.getPet_img());
+
+        } catch (Exception e) {
+            log.error("펫 등록 오류", e);
+            return "errorPage";
+        }
 
         return "redirect:/mypage_petlist";
     }
+
 
     @GetMapping("/mypage_petlist")
     public String mypagePetList(
@@ -134,6 +160,7 @@ public class PetController {
             @RequestParam("pet_gender") String pet_gender,
             @RequestParam("pet_species") String pet_species,
             @RequestParam("pet_breed") String pet_breed,
+            @RequestParam(value = "pet_img", required = false) MultipartFile pet_img,
             HttpSession session,
             RedirectAttributes ra
     ) {
@@ -152,6 +179,14 @@ public class PetController {
 
         try {
             petService.updatePetInfo(map);
+            
+            // 이미지 파일 있을 때만 업로드 적용
+            if (pet_img != null && !pet_img.isEmpty()) {
+                petService.replacePetImage(pet_no, pet_img);
+
+                log.info("펫 이미지 변경 완료: pet_no={}", pet_no);
+            }
+            
             log.info("펫 정보 수정 완료: {} (user_no={})", pet_name, loginUser.getUser_no());
         } catch (Exception e) {
             log.error("펫 정보 수정 중 오류 발생", e);
@@ -164,14 +199,20 @@ public class PetController {
     }
     
     @PostMapping("/pet/uploadImg")
-    public ResponseEntity<String> uploadPetImg(@RequestParam MultipartFile file,
-                                               @RequestParam int petNo) {
+    public ResponseEntity<String> uploadPetImg(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("petNo") int petNo) {
 
-        String saved = uploadService.saveImageWithHash(file, "pet");
+        try {
+            petService.replacePetImage(petNo, file);
+            return ResponseEntity.ok("success");
 
-        petDAO.updatePetImg(petNo, saved);
-
-        return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            log.error("펫 이미지 업로드 실패", e);
+            return ResponseEntity.status(500).body("fail");
+        }
     }
+
+
 
 }

@@ -1,64 +1,55 @@
 package com.boot.controller;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.boot.util.ImageHashUtil;
+import com.boot.service.UploadService;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @Slf4j
+@RequiredArgsConstructor
 public class UploadController {
 
+    private final UploadService uploadService;
     private final String uploadRoot = "C:/dev/upload";
 
-    /** 파일 업로드 */
+    /** 단일 업로드 (이미지/첨부파일 공용) */
     @PostMapping("/upload")
     @ResponseBody
-    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) {
-
+    public ResponseEntity<String> upload(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "folder", defaultValue = "etc") String folder
+    ) {
         try {
-            // 1) 바이트 읽기
-            byte[] bytes = file.getBytes();
-
-            // 2) 해시 생성
-            String hash = ImageHashUtil.getReadableHash(bytes);
-
-            // 3) 업로드 파일명 최종 결정
-            String uploadName = hash + "_" + file.getOriginalFilename();
-
-            // 4) 폴더 생성 (연/월/일)
-            String folder = getFolder();
-            File uploadPath = new File(uploadRoot, folder);
-            if (!uploadPath.exists()) uploadPath.mkdirs();
-
-            // 5) 실제 파일 저장
-            File saveFile = new File(uploadPath, uploadName);
-            file.transferTo(saveFile);
-
-            return ResponseEntity.ok(folder + "/" + uploadName);
+            // 유저/펫 외에는 일반 저장 방식 사용
+            String saved = uploadService.saveImage(file, folder);
+            return ResponseEntity.ok(saved);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("업로드 실패", e);
             return ResponseEntity.status(500).body("fail");
         }
     }
 
-    /** display - 이미지 출력 */
+    /** 이미지 출력 */
     @GetMapping("/display")
     public ResponseEntity<byte[]> display(@RequestParam("path") String path) {
         File file = new File(uploadRoot + "/" + path);
@@ -66,7 +57,6 @@ public class UploadController {
         try {
             HttpHeaders header = new HttpHeaders();
             header.add("Content-Type", Files.probeContentType(file.toPath()));
-
             return new ResponseEntity<>(Files.readAllBytes(file.toPath()), header, HttpStatus.OK);
 
         } catch (Exception e) {
@@ -74,29 +64,39 @@ public class UploadController {
         }
     }
 
-    /** 파일 다운로드 */
+    /** 다운로드 */
     @GetMapping("/download")
-    public ResponseEntity<Resource> download(@RequestParam("path") String path) {
+    public void download(@RequestParam("path") String filename, HttpServletResponse response) throws IOException {
 
-        Resource resource = new FileSystemResource(uploadRoot + "/" + path);
+        // ★ 파일 저장 경로 (네가 알려준 실제 경로)
+        String savePath = "C:/dev/upload/notices/";
 
-        if (!resource.exists()) return ResponseEntity.notFound().build();
+        File file = new File(savePath + filename);
 
-        String filename = resource.getFilename();
-        String originalName = filename.substring(filename.indexOf("_") + 1);
+        if (!file.exists()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
 
-        HttpHeaders header = new HttpHeaders();
-        try {
-            header.add("Content-Disposition",
-                "attachment; filename=" +
-                new String(originalName.getBytes("UTF-8"), "ISO-8859-1"));
-        } catch (Exception e) { }
+        // MIME 타입
+        response.setContentType("application/octet-stream");
 
-        return new ResponseEntity<>(resource, header, HttpStatus.OK);
+        // 다운로드 시 파일명 처리
+        response.setHeader("Content-Disposition",
+                "attachment; filename=\"" + URLEncoder.encode(filename, "UTF-8") + "\"");
+
+        // 파일 스트림 처리
+        FileInputStream fis = new FileInputStream(file);
+        ServletOutputStream os = response.getOutputStream();
+
+        byte[] buffer = new byte[1024];
+        int len;
+        while ((len = fis.read(buffer)) != -1) {
+            os.write(buffer, 0, len);
+        }
+        fis.close();
+        os.close();
     }
 
-    /** yyyy/MM/dd 폴더 생성 */
-    private String getFolder() {
-        return new SimpleDateFormat("yyyy/MM/dd").format(new Date());
-    }
+
 }
