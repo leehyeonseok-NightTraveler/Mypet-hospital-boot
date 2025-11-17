@@ -1,5 +1,6 @@
 package com.boot.controller;
 
+import com.boot.dto.GroomingResDTO;
 import com.boot.dto.MedicalResDTO;
 import com.boot.dto.Mypet_PetDTO;
 import com.boot.dto.Mypet_UserDTO;
@@ -9,11 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -72,8 +76,68 @@ public class ManageController {
     }
 
     @GetMapping("/groomingRes_manage")
-    public String GroomingResManagePage() {
+    public String GroomingResManagePage(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+        String Role = (String) session.getAttribute("role");
+
+        if (!"ADMIN".equals(Role)) {
+            redirectAttributes.addFlashAttribute("alertMsg", "관리자만 접근 가능합니다.");
+            return "redirect:/mainpage"; // 메인페이지로 이동
+        }
+
+        List<GroomingResDTO> GroomingResList = manageService.GroomingResList();
+        model.addAttribute("GroomingResList", GroomingResList);
 
         return "groomingRes_manage";
     }
+
+    @PostMapping("/confirmRes")
+    public String confirmRes(@RequestParam("res_no") int resNo, @RequestParam("type") String type) {
+        log.info(resNo + " @@ " + type);
+
+        String tableName;
+        String redirectPath;
+
+        if ("veterinary".equals(type)) {
+            tableName = "veterinary_res";
+            redirectPath = "redirect:/veterinaryRes_manage";
+        } else {
+            tableName = "grooming_res";
+            redirectPath = "redirect:/groomingRes_manage";
+        }
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("res_no", resNo);
+        params.put("tableName", tableName);
+
+        manageService.confirmRes(params);
+
+        return redirectPath;
+    }
+
+    @PostMapping("/cancelRes")
+    public String cancelRes(@RequestParam("res_no") int resNo, @RequestParam("type") String type, @RequestParam("cancel_reason") String cancelReason) {
+
+        log.info(resNo + " @@ " + type + " @@ " + cancelReason);
+
+        String tableName;
+        String redirectPath;
+
+        if ("veterinary".equals(type)) {
+            tableName = "veterinary_res";
+            redirectPath = "redirect:/veterinaryRes_manage";
+        } else {
+            tableName = "grooming_res";
+            redirectPath = "redirect:/groomingRes_manage";
+        }
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("res_no", resNo);
+        params.put("tableName", tableName);
+        params.put("cancel_reason", cancelReason);
+
+        manageService.cancelRes(params);
+
+        return redirectPath;
+    }
+
 }

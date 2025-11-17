@@ -1,0 +1,427 @@
+@charset "utf-8";
+/* 문서의 문자 인코딩을 UTF-8로 지정 */
+
+/* =======================================
+   기본 및 공통 스타일 (Reset & Base Styles)
+   ======================================= */
+
+* {
+    /* 모든 요소의 기본 여백 및 박스 모델 초기화 */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* 패딩과 보더를 너비/높이에 포함 */
+    /* 첫 번째 파일에 있던 font-family는 이 코드에서는 생략됨 */
+}
+
+a {
+    /* 하이퍼링크 스타일 초기화 */
+    text-decoration: none; /* 밑줄 제거 */
+    color: inherit; /* 부모 요소의 색상 상속 */
+}
+
+ul, li {
+    /* 리스트 스타일 초기화 */
+    list-style: none; /* 목록 기호 제거 */
+}
+
+/* =======================================
+   메인 레이아웃 (Main Layout)
+   ======================================= */
+
+main {
+    /* 메인 컨텐츠 영역 설정 */
+    width: 80%; /* 전체 너비의 80% 사용 */
+    min-height: 200px; /* 최소 높이 설정 */
+    margin-left: 200px; /* 좌측 플로팅 메뉴 공간 확보 */
+}
+
+/* Floating Menu Wrapper */
+.floating-wrapper {
+    /* 좌측 고정 메뉴 컨테이너 설정 */
+    position: fixed; /* 화면에 고정 */
+    top: 50%; /* 수직 중앙 정렬 기준점 */
+    left: 30px; /* 좌측에서 30px 위치 */
+    transform: translateY(-50%); /* Y축 기준 중앙 정렬 */
+    z-index: 1000; /* 다른 요소 위에 표시 */
+    background-color: #f8f9fa; /* 밝은 회색 배경 */
+    border: 1px solid #e9ecef; /* 연한 테두리 */
+    border-radius: 6px; /* 모서리 둥글게 */
+    padding: 16px; /* 내부 여백 */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); /* 은은한 그림자 */
+}
+
+/* 메뉴 항목 정렬 */
+.floating-menu {
+    /* 메뉴 항목을 수직으로 정렬 */
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    gap: 10px; /* 항목 간 간격 10px */
+}
+
+/* 메뉴 링크 스타일 */
+.floating-menu a {
+    /* 개별 메뉴 링크 버튼 스타일 */
+    display: block;
+    width: 120px;
+    padding: 10px 15px;
+    background-color: #ffffff;
+    color: #333;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s ease; /* 부드러운 전환 효과 */
+}
+
+/* hover 효과 */
+.floating-menu a:hover {
+    /* 마우스 오버 시 스타일 변경 */
+    background-color: #e9ecef;
+    color: #000;
+}
+
+/* 활성화된 메뉴 (선택된 페이지) */
+.floating-menu a.active {
+    /* 현재 활성화된 메뉴 강조 */
+    background-color: #4a90e2; /* 파란색 배경 */
+    color: white;
+    font-weight: bold;
+}
+
+/* =======================================
+   섹션 및 제목 (Section & Title)
+   ======================================= */
+
+/* 섹션 영역 */
+#res-list-section {
+    /* 예약 목록 섹션 내부 여백 및 배경 */
+    padding: 40px 20px;
+    background-color: #ffffff;
+}
+
+.section-title {
+    /* 섹션 제목 스타일 */
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #333;
+}
+
+.section-divider {
+    /* 섹션 제목 아래 구분선 스타일 */
+    border: none;
+    border-top: 2px solid #ccc;
+    margin-bottom: 20px;
+}
+
+/* =======================================
+   예약 테이블 (Reservation Table)
+   ======================================= */
+
+/* 예약 테이블 전체 */
+#reservation-list-table {
+    width: 100%;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    overflow: hidden; /* 경계를 넘어가는 내용 숨김 */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    table-layout: fixed; /* 테이블 레이아웃 고정 (너비 제어 용이) */
+}
+
+/* 테이블 헤더 셀 */
+#reservation-list-table thead th {
+    background-color: #f0f0f0;
+    padding: 2px 2px; /* 헤더 셀 내부 여백 */
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 14px;
+}
+
+/* 각 열의 너비 지정 (table-layout: fixed와 함께 사용) */
+th:nth-child(1) { width: 80px; } /* 예약번호 */
+th:nth-child(2) { width: 80px; } /* 회원번호 */
+th:nth-child(3) { width: 80px; } /* 회원이름 */
+th:nth-child(4) { width: 80px; } /* 동물번호 */
+th:nth-child(5) { width: 80px; } /* 동물이름 */
+th:nth-child(6) { width: 120px; } /* 전화번호 */
+th:nth-child(7) { width: 80px; } /* 진료내용 */
+th:nth-child(8) { width: 100px; } /* 예약날짜 */
+th:nth-child(9) { width: 80px; } /* 예약상태 */
+th:nth-child(10) { width: 80px; } /* 추가사항 */
+/* 11번째 열 (처리)는 너비 자동 할당 */
+
+/* 테이블 바디 데이터 셀 */
+#reservation-list-table tbody td {
+    padding: 10px 5px;
+    text-align: center;
+    border-bottom: 1px solid #e9ecef;
+    color: #555;
+    font-size: 13px;
+    vertical-align: middle; /* 세로 중앙 정렬 */
+    word-break: break-word; /* 긴 단어 줄 바꿈 처리 */
+}
+
+/* 테이블 마지막 행의 셀은 하단 보더 제거 */
+#reservation-list-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* 테이블 행 hover 효과 */
+#reservation-list-table tbody tr:hover {
+    background-color: #e9ecef;
+    transition: background-color 0.3s ease;
+}
+
+/* '처리' 버튼이 있는 마지막 셀 설정 */
+#reservation-list-table tbody td:last-child {
+    white-space: nowrap; /* 내용이 줄바꿈되지 않도록 설정 */
+    padding: 10px 2px;
+}
+
+/* 테이블 내부 버튼 공통 스타일 */
+#reservation-list-table button {
+    padding: 6px 8px;
+    margin: 1px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 12px;
+    transition: opacity 0.2s;
+    display: inline-block;
+}
+
+/* 버튼 hover 시 투명도 조절 */
+#reservation-list-table button:hover {
+    opacity: 0.85;
+}
+
+/* 예약확정 버튼 (submit) */
+#reservation-list-table button[type="submit"] {
+    background-color: #4caf50; /* 녹색 */
+    color: #fff;
+}
+
+/* 예약취소 버튼 (button) */
+#reservation-list-table button[type="button"] {
+    background-color: #f44336; /* 빨간색 */
+    color: #fff;
+}
+
+/* =======================================
+   모달 공통 스타일 (Modals)
+   ======================================= */
+
+/* 모달 배경 (오버레이) */
+#modalOverlay {
+    display: none; /* 초기 숨김 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6); /* 반투명 검은색 */
+    z-index: 1001; /* 모달보다 아래 */
+}
+
+/* 예약취소 모달 박스 */
+#cancelModal {
+    display: none; /* 초기 숨김 */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 화면 정중앙 배치 */
+    width: 400px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 30px;
+    z-index: 1002; /* 가장 위에 표시 */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+#cancelModal h3 {
+    /* 모달 제목 스타일 (현재 JSP에 h3 없음) */
+    margin-bottom: 20px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.modal-buttons {
+    /* 모달 내 버튼 그룹 (현재 JSP의 폼 구조와는 다름) */
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* 취소 모달 확인/닫기 버튼 공통 스타일 */
+.btn-cancel-submit, .btn-cancel-close {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-cancel-submit:hover, .btn-cancel-close:hover {
+    opacity: 0.85;
+}
+
+/* 취소 확인 버튼 (빨간색 계열) */
+.btn-cancel-submit {
+    background-color: #c62828;
+    color: #fff;
+}
+
+/* 닫기 버튼 (회색 계열) */
+.btn-cancel-close {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+/* =======================================
+   상세 내용 표시 (Detail/Memo Rows)
+   ======================================= */
+
+/* 보기 버튼 (진료내용/추가사항) */
+.btn-toggle-content {
+    background-color: #4a90e2; /* 파란색 */
+    color: #fff;
+    padding: 6px 10px;
+    margin: 1px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s ease, opacity 0.2s;
+    display: inline-block;
+}
+
+.btn-toggle-content:hover {
+    background-color: #357ab8;
+    opacity: 0.9;
+}
+
+/* 펼쳐진 상세 내용 행 (JSP에서 사용된 info-modal-row와 유사) */
+.res-content-row, .res-memo-row {
+    background-color: #f7faff;
+    transition: background-color 0.3s ease;
+    border-left: 4px solid #4a90e2; /* 진한 왼쪽 보더 */
+    animation: fadeInModal 0.3s ease-in-out; /* 등장 애니메이션 */
+}
+
+.res-memo-row {
+    border-left-color: #ffcc80; /* 메모는 다른 색상 보더 */
+}
+
+/* 상세 내용 셀 공통 스타일 */
+.res-content-row td, .res-memo-cell {
+    padding: 15px 25px;
+    text-align: left;
+    font-size: 14px;
+    color: #333;
+    border-bottom: 2px solid #e9ecef;
+    line-height: 1.6;
+}
+
+.res-content-row td {
+    background-color: #f7faff;
+}
+
+.res-memo-cell {
+    background-color: #fff9f0;
+    font-style: italic;
+    border-left: 5px solid #ffcc80;
+}
+
+/* 강조 텍스트 (상세 내용 레이블) */
+.res-content-row strong {
+    color: #4a90e2;
+    font-weight: 700;
+    display: inline-block;
+    min-width: 90px;
+    margin-right: 10px;
+    vertical-align: top;
+}
+
+/* 단락 스타일 초기화 */
+.res-content-row td p,
+.res-memo-cell p {
+    margin-bottom: 0;
+}
+
+/* 모달 행 스타일 (JSP 코드에서 사용됨) */
+.info-modal-row {
+    background-color: #f7faff;
+    animation: fadeInModal 0.3s ease-in-out;
+}
+
+/* 모달 콘텐츠 박스 (진료/추가사항 보기 내용) */
+.info-modal-content {
+    padding: 25px 30px;
+    background-color: #ffffff;
+    border: 1px solid #d0d7de;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-size: 15px;
+    color: #333;
+    line-height: 1.6;
+    position: relative;
+}
+
+/* 모달 제목 */
+.info-modal-content h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #4a90e2;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 5px;
+}
+
+/* 모달 내용 텍스트 */
+.info-modal-content p {
+    margin-bottom: 15px;
+    white-space: pre-line; /* 줄바꿈 문자 유지 */
+}
+
+/* 닫기 버튼 */
+.info-modal-content button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #e0e0e0;
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.info-modal-content button:hover {
+    background-color: #d5d5d5;
+}
+
+/* 모달 등장 애니메이션 키프레임 */
+@keyframes fadeInModal {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

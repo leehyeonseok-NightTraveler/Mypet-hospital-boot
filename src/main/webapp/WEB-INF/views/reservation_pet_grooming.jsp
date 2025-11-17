@@ -44,13 +44,13 @@
                 <p>원하시는 스타일이 있다면 요청 사항에 자세히 작성해주세요.</p>
             </div>
 
-            <form action="<c:url value='/reservation/grooming/create'/>" 
-                  method="post" 
+            <form action="<c:url value='/reservation/grooming/create'/>"
+                  method="post"
                   class="info-form">
 
                 <div class="form-group">
                     <label for="userName">보호자 성함</label>
-                    <input type="text" id="userName" name="user_name" 
+                    <input type="text" id="userName" name="user_name"
                            value="${loginUser.user_name}" readonly>
                 </div>
 
