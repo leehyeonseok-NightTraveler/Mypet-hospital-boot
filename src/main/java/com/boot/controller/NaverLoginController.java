@@ -89,8 +89,9 @@ public class NaverLoginController {
         }
         
         model.addAttribute("userDTO", tempUser);
+        model.addAttribute("socialType", "naver");
         
-        return "register_social_naver"; 
+        return "register_social"; 
     }
 
     /**

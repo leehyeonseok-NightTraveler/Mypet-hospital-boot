@@ -88,7 +88,9 @@ public class Kakao_Controller {
         }
         
         model.addAttribute("userDTO", tempUser);
-        return "register_social_kakao";
+        model.addAttribute("socialType", "kakao");
+        
+        return "register_social";
     }
 
     /**
