@@ -78,22 +78,65 @@
         user_img_temp = #{user_img_temp}
         WHERE user_no = #{user_no}
     </update>
+    
+<!--    아이디 찾기 기능-->
+	<select id="findAccount" resultType="com.boot.dto.FindAccountDTO">
+	    SELECT 
+	        USER_ID AS account_id,
+	        USER_EMAIL as account_email,
+	        USER_PHONE AS account_phone
+	    FROM USER_INFO
+	    WHERE USER_EMAIL = #{account_email}
+	      AND REPLACE(USER_PHONE, '-', '') = #{account_phone}
+	
+	    UNION ALL
+	
+	    SELECT 
+	        ADMIN_ID AS account_id,
+	        ADMIN_EMAIL as account_email,
+	        ADMIN_PHONE AS account_phone
+	    FROM ADMIN_INFO
+	    WHERE ADMIN_EMAIL = #{account_email}
+	      AND REPLACE(ADMIN_PHONE, '-', '') = #{account_phone}
+	</select>
+	
+	
+<!--	비밀번호 찾기 기능-->
+	<select id="findPW" resultType="com.boot.dto.FindAccountDTO">
+		SELECT 
+            USER_ID AS account_id,
+	        USER_EMAIL as account_email,
+	        USER_PHONE AS account_phone
+        FROM USER_INFO
+        WHERE USER_EMAIL = #{account_email}
+          AND USER_PHONE = #{account_phone}
+          AND USER_ID = #{account_id}
 
-    <!-- 비밀번호 찾기: 유저 존재 확인 -->
-    <select id="checkUserExists" parameterType="hashmap" resultType="int">
-        SELECT COUNT(*)
-        FROM user_info
-        WHERE user_id = #{user_id}
-        AND user_name = #{user_name}
-        AND user_email = #{user_email}
-        AND user_status = 'ACTIVE'
-    </select>
+        UNION ALL
 
-    <!-- 비밀번호 변경 -->
-    <update id="updatePassword" parameterType="hashmap">
-        UPDATE user_info
-        SET user_pwd = #{user_pwd}
-        WHERE user_id = #{user_id}
-    </update>
+        SELECT 
+            ADMIN_ID AS account_id,
+	        ADMIN_EMAIL as account_email,
+	        ADMIN_PHONE AS account_phone
+        FROM ADMIN_INFO
+        WHERE ADMIN_EMAIL = #{account_email}
+          AND ADMIN_PHONE = #{account_phone}
+          AND ADMIN_ID = #{account_id}
+	</select>
+	
+	
+	<update id="updateUserPwd">
+	    UPDATE USER_INFO
+	    SET USER_PWD = #{account_pwd}
+	    WHERE USER_ID = #{account_id}
+	</update>
+	
+	<update id="updateAdminPwd">
+	    UPDATE ADMIN_INFO
+	    SET ADMIN_PWD = #{account_pwd}
+	    WHERE ADMIN_ID = #{account_id}
+	</update>
+		
 
 </mapper>
+

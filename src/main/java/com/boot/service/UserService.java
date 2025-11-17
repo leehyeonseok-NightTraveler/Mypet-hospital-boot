@@ -1,8 +1,13 @@
 package com.boot.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.boot.dto.Mypet_UserDTO;
+import com.boot.dto.FindAccountDTO;
 import com.boot.dto.Mypet_PetDTO;
 
 public interface UserService {
@@ -16,9 +21,18 @@ public interface UserService {
     Mypet_UserDTO getUserByNo(int user_no);
 
     List<Mypet_PetDTO> getPetsByUserNo(int user_no);
-
-    boolean checkUserExists(HashMap<String, String> map);
-    boolean updatePassword(HashMap<String, String> map);
     
     boolean uploadUserImage(int user_no, String fileName, byte[] fileBytes);
+    
+//	아이디 찾기
+	public ArrayList<FindAccountDTO> findAccount(HashMap<String, String>param);
+
+//	비밀번호 찾기
+	public ArrayList<FindAccountDTO> findPW(HashMap<String, String>param);
+	
+//	비밀번호 재설정
+	 void updateUserPwd(String id, String pw);
+
+	 void updateAdminPwd(String id, String pw);
+            
 }

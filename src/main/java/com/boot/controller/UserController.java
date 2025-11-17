@@ -1,12 +1,20 @@
 package com.boot.controller;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.boot.dto.FindAccountDTO;
 import com.boot.dto.Mypet_AdminDTO;
 import com.boot.dto.Mypet_UserDTO;
 import com.boot.service.UserService;
@@ -23,7 +32,13 @@ import com.boot.service.UserService;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+	@Autowired
+	private UserService userService;
+	
+	//이메일 전송 객체[디펜던시에 추가됨]
+	@Autowired
+	private JavaMailSender mailSender;
+	
 
     /* ============================
      *          회원가입
@@ -201,59 +216,165 @@ public class UserController {
         return "redirect:/mypage_userinfo";
     }
     
+	
+    /* ============================
+     *     아이디 찾기 처리
+     * ============================ */
+    
+    @RequestMapping("/findAccountOK")
+	public String findAccountOK(@RequestParam("account_email") String email,
+	                          @RequestParam("account_phone") String phone,
+	                          @RequestParam HashMap<String, String> param,
+	                          RedirectAttributes redirectAttributes) {
+
+    	String phoneClean = phone.replace("-", "").trim();
+
+        param.put("account_phone", phoneClean);
+    	log.info(phoneClean);
+    	
+	    ArrayList<FindAccountDTO> dtos = userService.findAccount(param);
+
+	    FindAccountDTO dbDto = dtos.get(0);
+	    String dbPhoneClean = dbDto.getAccount_phone().replace("-", "");
+        log.info(dbPhoneClean);
+	    
+	    if (dtos != null && !dtos.isEmpty()) {
+//	        FindAccountDTO dbDto = dtos.get(0);
+	        
+	        
+
+	        // 이메일, 전화번호 일치 여부 확인
+	        if (phoneClean.equals(dbPhoneClean) && email.equals(dbDto.getAccount_email())) {
+	            try {
+	                // HTML 메일 생성
+	                MimeMessage message = mailSender.createMimeMessage();
+	                MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+	                helper.setFrom("carrepair3team@gmail.com");
+	                helper.setTo(email);
+	                helper.setSubject("[MY PET 동물병원] 회원님의 아이디 정보입니다.");
+
+	                // HTML 본문
+	                String htmlContent =
+	                        """
+	                        <html>
+	                        <body style="font-family: '맑은 고딕', sans-serif; background-color:#f5f5f5; padding:20px;">
+	                          <div style="max-width:600px; margin:auto; background-color:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:30px;">
+	                            <h2 style="color:#0078d4;">MY PET 동물병원🐾</h2>
+	                            <p>안녕하세요, <strong>MY PET 동물병원 입니다</strong></p>
+	                            <p>회원님의 아이디 정보는 아래와 같습니다.</p>
+	                            <hr style="border:none; border-top:1px solid #ddd; margin:20px 0;">
+	                            <p style="font-size:18px;">🔑 <strong>아이디:</strong> <span style="color:#0078d4;">%s</span></p>
+	                            <hr style="border:none; border-top:1px solid #ddd; margin:20px 0;">
+	                            <p style="font-size:14px; color:#555;">본 메일은 MY PET 동물병원 아이디 찾기 요청으로 자동 발송되었습니다.</p>
+	                            <p style="font-size:14px; color:#999;">© 2025 MY PET 동물병원. All rights reserved.</p>
+	                          </div>
+	                        </body>
+	                        </html>
+	                        """.formatted(dbDto.getAccount_id());
+
+	                // true → HTML 허용
+	                helper.setText(htmlContent, true);
+
+	                // 메일 전송
+	                mailSender.send(message);
+
+	                
+	                return "findOK";
+	            } catch (MessagingException e) {
+	                e.printStackTrace();
+	                
+	                redirectAttributes.addFlashAttribute("findFail", true);
+	        	    return "redirect:/findAccount";
+	            }
+	        }
+	    }
+	    
+	    redirectAttributes.addFlashAttribute("findFail", true);
+	    return "redirect:/findAccount";
+	}
     
     /* ============================
-     *     비밀번호 찾기 처리
+     *     비밀번호 찾기&변경 처리
      * ============================ */
-    @PostMapping("/findPasswordProcess")
-    public String findPasswordProcess(
-            HttpServletRequest request,
-            Model model,
-            RedirectAttributes rttr
-    ) {
-        String user_id = request.getParameter("user_id");
-        String user_name = request.getParameter("user_name");
-        String user_email = request.getParameter("user_email");
 
-        HashMap<String, String> map = new HashMap<>();
-        map.put("user_id", user_id);
-        map.put("user_name", user_name);
-        map.put("user_email", user_email);
+    
+    @RequestMapping("/findPwYn")
+    public String findPwYn(
+            @RequestParam HashMap<String, String> param,
+            RedirectAttributes redirectAttributes) {
 
-        if (userService.checkUserExists(map)) {
-            model.addAttribute("user_id", user_id);
-            return "reset_password";
-        } else {
-            rttr.addFlashAttribute("error", "일치하는 회원 정보가 없습니다.");
-            return "redirect:/findPassword";
+        ArrayList<FindAccountDTO> dtos = userService.findPW(param);
+
+        String email = param.get("account_email");
+        String phone = param.get("account_phone");
+        String id = param.get("account_id");
+
+        if (dtos != null && !dtos.isEmpty()) {
+            FindAccountDTO dbDto = dtos.get(0);
+
+            if (phone.equals(dbDto.getAccount_phone()) &&
+                email.equals(dbDto.getAccount_email()) &&
+                id.equals(dbDto.getAccount_id())) {
+
+                try {
+                    // 임시 비밀번호 생성
+                    String tempPw = UUID.randomUUID().toString().substring(0, 10);
+
+                    // 사용자/관리자 둘 중 해당하는 테이블 업데이트 시도
+                    userService.updateUserPwd(id, tempPw);
+                    userService.updateAdminPwd(id, tempPw);
+
+                    // 메일 발송
+                    MimeMessage message = mailSender.createMimeMessage();
+                    MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+                    helper.setFrom("carrepair3team@gmail.com");
+                    helper.setTo(email);
+                    helper.setSubject("[MY PET 동물병원] 임시 비밀번호 안내");
+
+                    String htmlContent = """
+                        <html>
+					    <body style="font-family: Arial, sans-serif; background-color:#f9f9f9; padding:20px;">
+					        <div style="max-width:600px; margin:auto; background:#ffffff; border-radius:10px; padding:30px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+					            <h2 style="color:#2C3E50; text-align:center;">🔐 임시 비밀번호 발급 안내</h2>
+					            <p style="font-size:16px; color:#333;">
+					                안녕하세요, <b>%s</b> 님.
+					            </p>
+					            <p style="font-size:16px; color:#333;">
+					                요청하신 임시 비밀번호를 아래와 같이 발급해드렸습니다.<br>
+					                로그인 후 반드시 비밀번호를 변경해주세요.
+					            </p>
+					            <div style="margin:20px 0; text-align:center;">
+					                <div style="display:inline-block; background-color:#3498db; color:#fff; font-size:18px; padding:12px 24px; border-radius:8px;">
+					                    임시 비밀번호: <b>%s</b>
+					                </div>
+					            </div>
+					            <p style="color:#888; font-size:14px; text-align:center;">
+					                ※ 본 메일은 발신 전용입니다. 문의사항은 홈페이지를 통해 접수해주세요.
+					            </p>
+					        </div>
+					    </body>
+					    </html>
+                            """.formatted(id, tempPw);
+
+                    helper.setText(htmlContent, true);
+                    mailSender.send(message);
+
+                    return "findOK";
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    redirectAttributes.addFlashAttribute("findFail", true);
+                    return "redirect:/find_password";
+                }
+            }
         }
+
+        redirectAttributes.addFlashAttribute("findFail", true);
+        return "redirect:/find_password";
     }
 
-
-    /* ============================
-     *     비밀번호 변경 처리
-     * ============================ */
-    @PostMapping("/updatePassword")
-    public String updatePassword(
-            HttpServletRequest request,
-            RedirectAttributes rttr
-    ) {
-        String user_id = request.getParameter("user_id");
-        String user_pwd = request.getParameter("user_pwd");
-
-        HashMap<String, String> map = new HashMap<>();
-        map.put("user_id", user_id);
-        map.put("user_pwd", user_pwd);
-
-        if (userService.updatePassword(map)) {
-            rttr.addFlashAttribute("success", "비밀번호가 성공적으로 변경되었습니다.");
-            log.info("비밀번호 변경 완료: {}", user_id);
-            return "redirect:/login";
-        } else {
-            rttr.addFlashAttribute("error", "비밀번호 변경 중 오류가 발생했습니다.");
-            return "redirect:/findPassword";
-        }
-    }
 
     
     
