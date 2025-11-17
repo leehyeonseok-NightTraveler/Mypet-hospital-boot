@@ -33,7 +33,7 @@
 
             <div class="profile-name">
                 <h2>${loginUser.user_name} <span class="badge">일반회원</span></h2>
-                <p>${loginUser.user_id}</p>
+                <p>${loginUser.user_email}</p>
             </div>
         </div>
 
