@@ -5,7 +5,7 @@
 
 <html>
 <head>
-    <title>진료예약 관리</title>
+    <title>미용예약 관리</title>
     <link rel="stylesheet" href="<c:url value='/css/reservation_manage.css'/>">
     <link rel="stylesheet" href="<c:url value='/css/mainpage.css'/>">
     <script src="<c:url value='/js/jquery.js'/>"></script>
@@ -13,27 +13,27 @@
 </head>
 <body>
 <jsp:include page="/WEB-INF/views/common/header.jsp"/>
-<%-- 공통 헤더 (상단 메뉴, 로고 등)를 포함합니다. --%>
+<%-- 공통 헤더 부분 포함 --%>
 
 <main id="res-manage-main">
     <%-- 메인 컨텐츠 영역 시작 --%>
     <div class="floating-wrapper">
         <nav class="floating-menu" id="manage-menu">
-            <%-- 좌측 플로팅 네비게이션 메뉴 (관리 메뉴) --%>
+            <%-- 관리 메뉴 네비게이션 (플로팅 메뉴) --%>
             <a href="<c:url value='/user_manage'/>" class="menu-link" id="menu-user">회원정보 관리</a>
-            <a href="<c:url value='/veterinaryRes_manage'/>" class="menu-link active" id="menu-veterinary">진료예약 관리</a>
-            <%-- 현재 페이지를 나타내기 위해 'active' 클래스가 적용되어 있습니다. --%>
-            <a href="<c:url value='/groomingRes_manage'/>" class="menu-link" id="menu-grooming">미용예약 관리</a>
+            <a href="<c:url value='/veterinaryRes_manage'/>" class="menu-link" id="menu-veterinary">진료예약 관리</a>
+            <a href="<c:url value='/groomingRes_manage'/>" class="menu-link active" id="menu-grooming">미용예약 관리</a>
+            <%-- 현재 페이지를 나타내기 위해 'active' 클래스 적용 --%>
         </nav>
     </div>
 
     <section id="res-list-section">
-        <%-- 진료 예약 목록을 표시하는 섹션 --%>
-        <h2 class="section-title">진료예약관리</h2>
+        <%-- 예약 리스트 섹션 시작 --%>
+        <h2 class="section-title">미용예약관리</h2>
         <hr class="section-divider">
 
         <table id="reservation-list-table">
-            <%-- 예약 목록 테이블 시작 --%>
+            <%-- 미용 예약 목록 테이블 시작 --%>
             <thead>
             <tr>
                 <th>예약번호</th>
@@ -42,7 +42,7 @@
                 <th>동물번호</th>
                 <th>동물이름</th>
                 <th>전화번호</th>
-                <th>진료내용</th>
+                <th>미용내용</th>
                 <th>예약날짜</th>
                 <th>예약상태</th>
                 <th>추가사항</th>
@@ -50,8 +50,8 @@
             </tr>
             </thead>
             <tbody>
-            <c:forEach var="ResList" items="${VeterinaryResList}">
-                <%-- 모델 객체 'VeterinaryResList'의 각 항목을 반복하여 테이블 행을 생성합니다. --%>
+            <c:forEach var="ResList" items="${GroomingResList}">
+                <%-- 모델 객체 'GroomingResList'를 반복하여 각 예약 항목 출력 --%>
                 <tr>
                     <td>${ResList.res_no}</td>
                     <td>${ResList.user_no}</td>
@@ -61,14 +61,14 @@
                     <td>${ResList.user_phone}</td>
                     <td>
                         <button type="button" onclick="openDetailModal('${ResList.res_no}')">보기</button>
-                            <%-- 진료 내용(service_item)을 상세 모달로 보기 위한 버튼. --%>
+                            <%-- 미용내용(service_item)을 모달로 보기 위한 버튼 --%>
                     </td>
                     <td><fmt:formatDate value="${ResList.res_date}" pattern="yyyy-MM-dd HH:mm"/></td>
-                        <%-- 예약 날짜 및 시간을 포맷하여 출력합니다. --%>
+                        <%-- 예약 날짜 및 시간 포맷 출력 --%>
                     <td>${ResList.res_status}</td>
                     <td>
                         <button type="button" onclick="openMemoModal('${ResList.res_no}')">보기</button>
-                            <%-- 추가 사항(memo)을 상세 모달로 보기 위한 버튼. --%>
+                            <%-- 추가사항(memo)을 모달로 보기 위한 버튼 --%>
                     </td>
                     <td>
                         <c:choose>
@@ -76,33 +76,34 @@
                             <c:when test="${ResList.res_status eq '예약완료'}">
                                 <form method="post" action="confirmRes" style="display:inline;">
                                     <input type="hidden" name="res_no" value="${ResList.res_no}"/>
-                                    <input type="hidden" name="type" value="veterinary"/>
-                                        <%-- 예약 확정 처리 후 목록 복귀를 위해 현재 페이징 정보를 hidden 필드로 전달 --%>
+                                    <input type="hidden" name="type" value="grooming"/>
+                                        <%-- 현재 페이지 상태 유지를 위한 hidden 필드 추가 --%>
                                     <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}"/>
                                     <input type="hidden" name="amount" value="${pageMaker.cri.amount}"/>
                                     <button type="submit">예약확정</button>
                                 </form>
-                                <button type="button" onclick="openCancelModal('${ResList.res_no}', 'veterinary')">예약취소</button>
+                                <button type="button" onclick="openCancelModal('${ResList.res_no}', 'grooming')">예약취소</button>
                             </c:when>
 
                             <%-- 예약확정 상태: 취소 버튼만 표시 --%>
                             <c:when test="${ResList.res_status eq '예약확정'}">
-                                <button type="button" onclick="openCancelModal('${ResList.res_no}', 'veterinary')">예약취소</button>
+                                <button type="button" onclick="openCancelModal('${ResList.res_no}', 'grooming')">예약취소</button>
                             </c:when>
 
-                            <%-- 예약취소 상태: 처리 불가 표시 --%>
+                            <%-- 그 외 상태 (예약취소 등): 처리 불가 표시 --%>
                             <c:otherwise>
                                 <span>-</span>
                             </c:otherwise>
                         </c:choose>
                     </td>
+
                 </tr>
 
                 <tr id="detailModal-${ResList.res_no}" class="info-modal-row" style="display:none;">
-                        <%-- 진료내용 상세를 보여주는 숨겨진 행. JavaScript로 토글됩니다. --%>
+                        <%-- 미용내용 상세 정보를 보여줄 숨겨진 행 --%>
                     <td colspan="11">
                         <div class="info-modal-content">
-                            <h3>진료내용</h3>
+                            <h3>진료내용</h3> <%-- (화면 표시 텍스트: '진료내용') --%>
                             <p>${ResList.service_item}</p>
                             <button type="button" onclick="closeDetailModal('${ResList.res_no}')">닫기</button>
                         </div>
@@ -110,7 +111,7 @@
                 </tr>
 
                 <tr id="memoModal-${ResList.res_no}" class="info-modal-row" style="display:none;">
-                        <%-- 추가사항 상세를 보여주는 숨겨진 행. JavaScript로 토글됩니다. --%>
+                        <%-- 추가사항 상세 정보를 보여줄 숨겨진 행 --%>
                     <td colspan="11">
                         <div class="info-modal-content">
                             <h3>추가사항</h3>
@@ -128,7 +129,7 @@
                 <c:if test="${pageMaker.prev}">
                     <li class="pagination-item prev paginate_button">
                         <a class="pagination-link"
-                           href="veterinaryRes_manage?pageNum=${pageMaker.startPage - 1}&amount=<c:out value='${pageMaker.cri.amount}'/>">이전</a>
+                           href="groomingRes_manage?pageNum=${pageMaker.startPage - 1}&amount=<c:out value='${pageMaker.cri.amount}'/>">이전</a>
                     </li>
                 </c:if>
 
@@ -137,7 +138,7 @@
                     <li class="pagination-item page-num paginate_button
                 <c:out value='${pageMaker.cri.pageNum == num ? "active" : ""}'/>">
                         <a class="pagination-link"
-                           href="veterinaryRes_manage?pageNum=<c:out value='${num}'/>&amount=<c:out value='${pageMaker.cri.amount}'/>">${num}</a>
+                           href="groomingRes_manage?pageNum=<c:out value='${num}'/>&amount=<c:out value='${pageMaker.cri.amount}'/>">${num}</a>
                     </li>
                 </c:forEach>
 
@@ -145,7 +146,7 @@
                 <c:if test="${pageMaker.next}">
                     <li class="pagination-item next paginate_button">
                         <a class="pagination-link"
-                           href="veterinaryRes_manage?pageNum=${pageMaker.endPage + 1}&amount=<c:out value='${pageMaker.cri.amount}'/>">다음</a>
+                           href="groomingRes_manage?pageNum=${pageMaker.endPage + 1}&amount=<c:out value='${pageMaker.cri.amount}'/>">다음</a>
                     </li>
                 </c:if>
             </ul>
@@ -153,15 +154,16 @@
     </section>
 
     <div id="modalOverlay"></div>
-    <%-- 모든 모달이 활성화될 때 배경을 어둡게 처리하는 오버레이 요소 --%>
+    <%-- 모든 모달이 열릴 때 배경을 어둡게 처리하는 오버레이 요소 --%>
 
     <div id="cancelModal">
         <%-- 예약 취소 사유를 입력받는 모달 폼 --%>
         <form method="post" action="cancelRes">
-            <input type="hidden" name="res_no" id="cancelResNo"/>
-            <input type="hidden" name="type" id="cancelResType" value="veterinary"/>
 
-            <%-- 예약 취소 처리 후 목록 복귀 시 상태 유지를 위한 hidden 필드 --%>
+            <input type="hidden" name="res_no" id="cancelResNo"/>
+            <input type="hidden" name="type" id="cancelResType" value="grooming"/>
+
+            <%-- 예약 취소 후 목록 복귀 시 상태 유지를 위한 hidden 필드 --%>
             <input type="hidden" name="pageNum" id="cancelPageNum" value="${pageMaker.cri.pageNum}"/>
             <input type="hidden" name="amount" id="cancelAmount" value="${pageMaker.cri.amount}"/>
 
@@ -175,6 +177,6 @@
 </main>
 
 <jsp:include page="/WEB-INF/views/common/footer.jsp"/>
-<%-- 공통 푸터 (하단 정보 등)를 포함합니다. --%>
+<%-- 공통 푸터 부분 포함 --%>
 </body>
 </html>

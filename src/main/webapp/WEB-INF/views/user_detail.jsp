@@ -58,11 +58,23 @@
                         <span class="user-status-text ${UserInfo.user_status}">${UserInfo.user_status}</span>
                         <c:choose>
                             <c:when test="${UserInfo.user_status eq 'INACTIVE'}">
-                                <a href="<c:url value='/user_toggle?user_no=${UserInfo.user_no}'/>"
+                                <a href="<c:url value='/user_toggle'>
+                                        <c:param name='user_no' value='${UserInfo.user_no}'/>
+                                        <c:param name='pageNum' value='${cri.pageNum}'/>
+                                        <c:param name='amount' value='${cri.amount}'/>
+                                        <c:param name='type' value='${cri.type}'/>
+                                        <c:param name='keyword' value='${cri.keyword}'/>
+                                    </c:url>"
                                    class="btn-toggle-inline inactive">활동정지 해제</a>
                             </c:when>
                             <c:otherwise>
-                                <a href="<c:url value='/user_toggle?user_no=${UserInfo.user_no}'/>"
+                                <a href="<c:url value='/user_toggle'>
+                                        <c:param name='user_no' value='${UserInfo.user_no}'/>
+                                        <c:param name='pageNum' value='${cri.pageNum}'/>
+                                        <c:param name='amount' value='${cri.amount}'/>
+                                        <c:param name='type' value='${cri.type}'/>
+                                        <c:param name='keyword' value='${cri.keyword}'/>
+                                    </c:url>"
                                    class="btn-toggle-inline active">활동정지</a>
                             </c:otherwise>
                         </c:choose>
@@ -85,7 +97,6 @@
                 </tr>
                 </thead>
                 <tbody>
-                <!-- 반복 출력 예시 -->
                 <c:forEach var="list" items="${PetList}">
                     <tr>
                         <td>${list.pet_name}</td>
@@ -100,7 +111,10 @@
         </div>
 
         <div class="user-detail-actions" id="user-detail-actions">
-            <a href="<c:url value='/user_manage'/>" class="btn-back" id="btn-back">목록으로</a>
+            <a href="<c:url value='/user_manage'>
+            <c:param name="pageNum" value="${cri.pageNum}"/>
+            <c:param name="amount" value="${cri.amount}"/>
+            </c:url>" class="btn-back" id="btn-back">목록으로</a>
         </div>
     </section>
 </main>
