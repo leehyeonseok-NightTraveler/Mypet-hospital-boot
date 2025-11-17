@@ -25,4 +25,23 @@
         JOIN pet_info p ON vr.pet_no = p.pet_no
     </select>
 
+    <select id="GroomingResList" resultType="com.boot.dto.GroomingResDTO">
+        SELECT gr.*, p.pet_breed
+        FROM grooming_res gr
+        JOIN pet_info p ON gr.pet_no = p.pet_no
+    </select>
+
+    <update id="confirmRes" parameterType="map">
+        UPDATE ${params.tableName}
+        SET res_status = '예약확정'
+        WHERE res_no = #{params.res_no}
+    </update>
+
+    <update id="cancelRes" parameterType="map">
+        UPDATE ${params.tableName}
+        SET res_status = '예약취소',
+        cancel_reason = #{params.cancel_reason}
+        WHERE res_no = #{params.res_no}
+    </update>
+
 </mapper>

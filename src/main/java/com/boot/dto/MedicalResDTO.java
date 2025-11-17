@@ -20,4 +20,5 @@ public class MedicalResDTO {
     private Date reg_date;
     private String memo;
     private String pet_breed;
+    private String  cancel_reason;
 }
