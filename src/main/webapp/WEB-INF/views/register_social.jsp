@@ -25,16 +25,22 @@
 <main>
     <div class="login-container">
         <h2>추가 정보 입력 🐾</h2>
-        <p>카카오 로그인에 성공했습니다! 원활한 서비스 이용을 위해 추가 정보를 입력해주세요.</p>
+		<c:choose>
+	        <c:when test="${socialType == 'naver'}">
+	            <p>네이버 로그인에 성공했습니다! 원활한 서비스 이용을 위해 추가 정보를 입력해주세요.</p>
+	        </c:when>
+	        <c:otherwise>
+	            <p>카카오 로그인에 성공했습니다! 원활한 서비스 이용을 위해 추가 정보를 입력해주세요.</p>
+	        </c:otherwise>
+	    </c:choose>
 
-        <form action="<c:url value='/register_social_process'/>" method="post" id="socialForm">
+        <form action="<c:url value='${formAction}'/>" method="post" id="socialForm">
             
             <input type="hidden" name="user_name" value="${userDTO.user_name}">
             <input type="hidden" name="user_email" value="${userDTO.user_email}">
 
             <div class="input-group">
                 <input type="tel" name="user_phone" placeholder="휴대폰 번호 ('-' 없이 입력)" required>
-            </div>
             
             <div class="input-group">
                 <label for="birthday">생년월일</label>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.ManageDAO">
+    <select id="UserList" resultType="com.boot.dto.Mypet_UserDTO">
+        <![CDATA[
+        SELECT *
+        FROM (
+            SELECT rownum AS rn, inner_query.*
+            FROM (
+                SELECT
+                    user_no,
+                    user_id,
+                    user_name,
+                    user_phone,
+                    user_status
+                FROM user_info
+        ]]>
+        <![CDATA[
+                ORDER BY user_no DESC
+            ) inner_query
+            WHERE rownum <= #{cri.pageNum} * #{cri.amount}
+        )
+        WHERE rn > (#{cri.pageNum} - 1) * #{cri.amount}
+        ]]>
+    </select>
+
+    <select id="UserInfo" resultType="com.boot.dto.Mypet_UserDTO">
+        SELECT *
+        FROM user_info
+        WHERE user_no = #{user_no}
+    </select>
+
+    <select id="PetList" resultType="com.boot.dto.Mypet_PetDTO">
+        SELECT *
+        FROM pet_info
+        WHERE user_no = #{user_no}
+    </select>
+
+    <select id="VeterinaryResList" resultType="com.boot.dto.MedicalResDTO">
+        <![CDATA[
+        SELECT *
+        FROM (
+            SELECT rownum AS rn, inner_query.*
+            FROM (
+                SELECT
+                    vr.*,
+                    p.pet_breed
+                FROM veterinary_res vr
+                JOIN pet_info p ON vr.pet_no = p.pet_no
+        ]]>
+        <![CDATA[
+                ORDER BY vr.res_no DESC  /* 최신 예약순 정렬 */
+            ) inner_query
+            WHERE rownum <= #{cri.pageNum} * #{cri.amount}
+        )
+        WHERE rn > (#{cri.pageNum} - 1) * #{cri.amount}
+        ]]>
+    </select>
+
+    <select id="GroomingResList" resultType="com.boot.dto.GroomingResDTO">
+        <![CDATA[
+        SELECT *
+        FROM (
+            SELECT rownum AS rn, inner_query.*
+            FROM (
+                SELECT
+                    gr.*,
+                    p.pet_breed
+                FROM grooming_res gr
+                JOIN pet_info p ON gr.pet_no = p.pet_no
+        ]]>
+        <![CDATA[
+                ORDER BY gr.res_no DESC  /* 최신 예약순 정렬 */
+            ) inner_query
+            WHERE rownum <= #{cri.pageNum} * #{cri.amount}
+        )
+        WHERE rn > (#{cri.pageNum} - 1) * #{cri.amount}
+        ]]>
+    </select>
+
+    <update id="confirmRes" parameterType="map">
+        UPDATE ${tableName}
+        SET res_status = '예약확정'
+        WHERE res_no = #{res_no}
+    </update>
+
+    <update id="cancelRes" parameterType="map">
+        UPDATE ${tableName}
+        SET res_status = '예약취소',
+        cancel_reason = #{cancel_reason}
+        WHERE res_no = #{res_no}
+    </update>
+
+    <select id="getUserTotal" resultType="int">
+        SELECT NVL(COUNT(*), 0)
+        FROM user_info
+    </select>
+
+    <select id="getVetResTotal" resultType="int">
+        SELECT NVL(COUNT(*), 0)
+        FROM veterinary_res
+    </select>
+
+    <select id="getGroResTotal" resultType="int">
+        SELECT NVL(COUNT(*), 0)
+        FROM grooming_res
+    </select>
+
+
+</mapper>

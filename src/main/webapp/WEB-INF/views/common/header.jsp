@@ -42,10 +42,19 @@
         <!-- 오른쪽 계정 메뉴 -->
         <ul class="util">
             <c:choose>
-                <c:when test="${sessionScope.role == 'ADMIN' || sessionScope.role == 'USER'}">
+                <%-- 🌟 1. 관리자 (ADMIN)일 경우: 관리자 페이지 + 로그아웃 --%>
+                <c:when test="${sessionScope.role == 'ADMIN'}">
+                    <li><a href="/user_manage">관리자 페이지</a></li>
+                    <li><a href="/logout">로그아웃</a></li>
+                </c:when>
+
+                <%-- 2. 일반 회원 (USER)일 경우: 마이페이지 + 로그아웃 --%>
+                <c:when test="${sessionScope.role == 'USER'}">
                     <li><a href="/mypage_userinfo">마이페이지</a></li>
                     <li><a href="/logout">로그아웃</a></li>
                 </c:when>
+
+                <%-- 3. 그 외 (로그아웃 상태)일 경우: 로그인 + 회원가입 --%>
                 <c:otherwise>
                     <li><a href="/login">로그인</a></li>
                     <li><a href="/register">회원가입</a></li>

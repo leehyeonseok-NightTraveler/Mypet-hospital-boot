@@ -1,8 +1,11 @@
 package com.boot.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import com.boot.dao.UserDAO;
 import com.boot.dao.PetDAO;
 import com.boot.dto.Mypet_UserDTO;
+import com.boot.dto.FindAccountDTO;
 import com.boot.dto.Mypet_PetDTO;
 
 @Slf4j
@@ -27,6 +31,12 @@ public class UserServiceImpl implements UserService {
     public void join(Mypet_UserDTO dto) {
         userDAO.join(dto);
     }
+    
+    @Autowired
+	private SqlSession sqlSession;
+	
+	@Autowired
+	private UserDAO dao;
 
     @Override
     public Object login(HashMap<String, Object> map) {
@@ -120,14 +130,38 @@ public class UserServiceImpl implements UserService {
         map.put("user_no", user_no);
         return petDAO.selectPetsByUserNo(map);
     }
+    
+	//    아이디 찾기
+	@Override
+	public ArrayList<FindAccountDTO> findAccount(HashMap<String, String> param) {
+	
+	UserDAO dao = sqlSession.getMapper(UserDAO.class);
+	ArrayList<FindAccountDTO>list = dao.findAccount(param);
+	
+	return list;
+	}
+	
+	//비밀번호 찾기
+	@Override
+	public ArrayList<FindAccountDTO> findPW(HashMap<String, String> param) {
+	
+	UserDAO dao = sqlSession.getMapper(UserDAO.class);
+	ArrayList<FindAccountDTO>list = dao.findPW(param);
+	
+	return list;
+	}
+	
+	//비밀번호 재설정
+	@Override
+	public void updateUserPwd(String id, String pw) {
+		dao.updateUserPwd(id, pw);
+		
+	}
 
-    @Override
-    public boolean checkUserExists(HashMap<String, String> map) {
-        return userDAO.checkUserExists(map) == 1;
-    }
-
-    @Override
-    public boolean updatePassword(HashMap<String, String> map) {
-        return userDAO.updatePassword(map) == 1;
-    }
+	@Override
+	public void updateAdminPwd(String id, String pw) {
+		dao.updateAdminPwd(id, pw);
+		
+	}
+	
 }
