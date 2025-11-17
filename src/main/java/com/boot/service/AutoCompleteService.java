@@ -29,7 +29,7 @@ public class AutoCompleteService {
         if (prefix.size() >= 10) {
             return convert(prefix);
         }
-
+        
         // contain 검색 (선택)
         List<Keyword> contain = repo
                 .findTop10ByKeywordContainingIgnoreCaseOrderBySearchCountDesc(q);

@@ -1,0 +1,54 @@
+@charset "UTF-8";
+/* 전체 페이지 스타일 */
+body {
+    font-family: 'Malgun Gothic', sans-serif;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* 화면 전체 높이를 차지하도록 설정 */
+    margin: 0;
+}
+
+.find-container {
+    width: 100%;
+    max-width: 550px;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.find-container p {
+    text-align: center;
+    color: #333;
+    margin-bottom: 50px;
+	margin-top: 20px;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: #26a69a; /* 포인트 컬러 변경 */
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 40px;
+}
+.submit-btn:hover {
+    background-color: #00897b;
+}
+
+.link{
+	font-size: small;
+	color: #333;
+}
+
+.link_wrap{
+	padding-top:10px ;
+	text-align: center;
+}
