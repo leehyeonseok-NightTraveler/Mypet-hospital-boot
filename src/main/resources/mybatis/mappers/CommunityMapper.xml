@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.CommunityDAO">
+
+	<select id="getCommunityList" resultType="com.boot.dto.Mypet_CommunityDTO">
+	    <![CDATA[
+	        SELECT POST_NO, USER_NAME, POST_TITLE, POST_CONTENT, CREATED_DATE, VIEW_COUNT
+	        FROM (
+	            SELECT r,
+	                   POST_NO, USER_NAME, POST_TITLE, POST_CONTENT, CREATED_DATE, VIEW_COUNT
+	            FROM (
+	                SELECT ROW_NUMBER() OVER (ORDER BY POST_NO DESC) AS r,
+	                       POST_NO, USER_NAME, POST_TITLE, POST_CONTENT, CREATED_DATE, VIEW_COUNT
+	                FROM COMMUNITY
+	            ) a
+	            WHERE r <= (#{pageNum} * #{amount})
+	        ) aa
+	        WHERE r > (#{pageNum}-1) * #{amount}
+	    ]]>
+	</select>
+
+
+    <select id="getTotalCount" resultType="int">
+        select count(*) from COMMUNITY
+    </select>
+
+</mapper>
