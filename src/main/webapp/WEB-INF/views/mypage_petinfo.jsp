@@ -36,7 +36,7 @@
             <div class="pet-detail-box">
 
                 <!-- DB 경로 그대로 출력 -->
-                <img src="${petInfo.pet_img}"
+                <img src="/upload/${petInfo.pet_img}"	
                      alt="${petInfo.pet_name}"
                      class="pet-profile-img"/>
 

@@ -44,19 +44,20 @@
         <td>${dto.view_count}</td>
       </tr>
 
-      <tr>
-        <td class="file">첨부파일</td>
-        <td colspan="6" class="file2">
-          <c:choose>
-            <c:when test="${not empty dto.notice_file}">
-              <a href="/download?file=${dto.notice_file}">
-                ${dto.notice_file}
-              </a>
-            </c:when>
-            <c:otherwise>첨부파일 없음</c:otherwise>
-          </c:choose>
-        </td>
-      </tr>
+	  <td class="file">첨부파일</td>
+	  <td colspan="6" class="file2">
+	    <c:choose>
+	      <c:when test="${not empty dto.notice_file}">
+			<a href="#" onclick="downloadFile('${dto.notice_file}')">
+			    ${dto.notice_file}
+			</a>
+	      </c:when>
+	      <c:otherwise>
+	        첨부파일 없음
+	      </c:otherwise>
+	    </c:choose>
+	  </td>
+
 
       <tr>
         <td colspan="7">
@@ -93,3 +94,11 @@
 
 </body>
 </html>
+
+<script>
+function downloadFile(path) {
+    const encoded = encodeURIComponent(path);
+    window.location.href = '/download?path=' + encoded;
+}
+</script>
+

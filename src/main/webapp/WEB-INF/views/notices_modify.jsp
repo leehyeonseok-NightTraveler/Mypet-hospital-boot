@@ -49,7 +49,7 @@
   <div class="container">
     <h3 class="page-title">공지사항 수정</h3>
 
-    <form method="post" action="/notices_modify">
+    <form method="post" action="/notices_modify" enctype="multipart/form-data">
       <input type="hidden" name="notice_no" value="${dto.notice_no}">
 
       <table class="table">
@@ -64,8 +64,11 @@
         <tr>
           <td class="label-cell">첨부파일</td>
           <td>
-            <input type="text" class="form-control" name="notice_file"
-                   value="${dto.notice_file}">
+			<input type="file" name="notice_file_upload" class="form-control">
+
+			<c:if test="${not empty dto.notice_file}">
+			    <p>현재 첨부파일: ${dto.notice_file}</p>
+			</c:if>
           </td>
         </tr>
 

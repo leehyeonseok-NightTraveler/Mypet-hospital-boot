@@ -11,12 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.boot.dto.Mypet_Qna_BoardDTO;
 import com.boot.dto.Mypet_Qna_ReplyDTO;
 import com.boot.dto.Mypet_UserDTO;
 import com.boot.service.QnaService;
+import com.boot.service.UploadService;
 
 @Slf4j
 @Controller
@@ -24,6 +26,8 @@ import com.boot.service.QnaService;
 public class QnaController {
 
     private final QnaService service;
+    
+    private final UploadService uploadService;
 
 
     /* ============================
@@ -79,6 +83,7 @@ public class QnaController {
     @PostMapping("/qna_write_ok")
     public String qnaWriteOk(
             Mypet_Qna_BoardDTO dto,
+            @RequestParam(value = "qna_file_upload", required = false) MultipartFile file,
             HttpSession session,
             RedirectAttributes ra
     ) {
@@ -89,6 +94,12 @@ public class QnaController {
 
         dto.setUser_no(loginUser.getUser_no());
         log.info("[Controller] Q&A 등록 요청 수신: {}", dto);
+        
+        // 파일 저장 로직 추가
+        if (file != null && !file.isEmpty()) {
+        	String saved = uploadService.saveRawFile(file, "qna");
+            dto.setQna_file(saved);   // DB 컬럼과 연결!
+        }
 
         service.writeQna(dto);
 

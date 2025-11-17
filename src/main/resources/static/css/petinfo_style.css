@@ -155,3 +155,12 @@
 .edit-pet-btn:hover {
 	background: #357abd;
 }
+
+.pet-profile-img {
+    width: 350px;      /* 원하는 고정 크기 */
+    height: 350px;
+    object-fit: cover; /* 가운데 맞추고 잘림 */
+    border-radius: 15px;
+    display: block;
+    margin: 0 auto;
+}

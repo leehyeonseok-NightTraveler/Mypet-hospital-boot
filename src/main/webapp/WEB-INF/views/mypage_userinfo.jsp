@@ -29,7 +29,16 @@
         <h2>내 정보</h2>
 
         <div class="profile-box">
-            <img src="/img/default_profile.png" class="profile-img">
+			<c:choose>
+			    <c:when test="${not empty loginUser.user_img}">
+			        <!-- 업로드된 이미지 보여주기 -->
+			        <img src="/upload/${loginUser.user_img}" class="profile-img">
+			    </c:when>
+			    <c:otherwise>
+			        <!-- 업로드 이미지가 없으면 기본 이미지 -->
+			        <img src="/img/default_profile.png" class="profile-img">
+			    </c:otherwise>
+			</c:choose>
 
             <div class="profile-name">
                 <h2>${loginUser.user_name} <span class="badge">일반회원</span></h2>

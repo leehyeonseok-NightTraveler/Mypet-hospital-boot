@@ -11,11 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.boot.dto.Mypet_AdminDTO;
 import com.boot.dto.Mypet_NoticesDTO;
 import com.boot.service.NoticeService;
+import com.boot.service.UploadService;
 
 @Slf4j
 @Controller
@@ -23,6 +25,7 @@ import com.boot.service.NoticeService;
 public class NoticeController {
 
 	private final NoticeService service;
+	private final UploadService uploadService;
 
 
     /* ============================
@@ -44,6 +47,7 @@ public class NoticeController {
     @PostMapping("/notices_write")
     public String noticesWrite(
             Mypet_NoticesDTO dto,
+            @RequestParam(value = "notice_file_upload", required = false) MultipartFile file,
             HttpSession session,
             RedirectAttributes ra
     ) {
@@ -55,8 +59,14 @@ public class NoticeController {
         }
 
         dto.setAdmin_no(admin.getAdmin_no());
-        service.writeNotice(dto);
 
+        // 파일 업로드 처리
+        if (file != null && !file.isEmpty()) {
+        	String saved = uploadService.saveRawFile(file, "notices");
+            dto.setNotice_file(saved);
+        }
+
+        service.writeNotice(dto);
         log.info("공지사항 등록 완료: {}", dto.getNotice_title());
 
         return "redirect:/notices_list";
@@ -89,6 +99,7 @@ public class NoticeController {
     @PostMapping("/notices_modify")
     public String noticesModify(
             Mypet_NoticesDTO dto,
+            @RequestParam(value = "notice_file_upload", required = false) MultipartFile file,
             HttpSession session,
             RedirectAttributes ra
     ) {
@@ -97,11 +108,30 @@ public class NoticeController {
             return "redirect:/notices_list";
         }
 
+        // 기존 파일 조회
+        Mypet_NoticesDTO old = service.getNoticeDetail(dto.getNotice_no());
+        String oldFile = old.getNotice_file();
+
+        // 새 파일 업로드
+        if (file != null && !file.isEmpty()) {
+        	  String saved = uploadService.saveRawFile(file, "notices");
+            dto.setNotice_file(saved);
+
+            // 기존 파일 삭제
+            if (oldFile != null && !oldFile.isEmpty()) {
+                uploadService.deleteFile(oldFile);
+            }
+        } else {
+            // 파일 변경 없음 → 기존 파일 유지
+            dto.setNotice_file(oldFile);
+        }
+
         service.modifyNotice(dto);
         log.info("공지사항 수정 완료: {}", dto.getNotice_title());
 
         return "redirect:/notices_list";
     }
+
 
 
     /* ============================
