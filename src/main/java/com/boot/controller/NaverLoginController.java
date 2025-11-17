@@ -1,71 +1,147 @@
 package com.boot.controller;
 
-import com.boot.dto.NaverProfile;
-import com.boot.service.NaverLoginService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import javax.servlet.http.HttpSession;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.boot.dto.Mypet_UserDTO;
+import com.boot.service.NaverLoginService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 @Controller
-@RequiredArgsConstructor // final 필드 생성자 자동 주입
-@RequestMapping("/auth") // URL을 /auth 로 묶습니다.
+@Slf4j
+@RequiredArgsConstructor
+@RequestMapping("/auth") 
 public class NaverLoginController {
 
-    private final NaverLoginService naverLoginService;
-    private final HttpSession httpSession; // 세션 주입
+    private final NaverLoginService naverLoginService; 
 
     /**
-     * 1. 네이버 로그인 페이지로 리다이렉트
-     * JSP에서 <a href="/auth/naver">네이버로 로그인</a> 링크를 클릭하면 이 메소드가 호출됩니다.
+     * 1. 네이버 로그인 버튼 클릭 시
+     * (JSP에서 <a href="/auth/naver/login">...</a> 으로 호출)
      */
-    @GetMapping("/naver")
-    public String redirectToNaverLogin() {
-        // Service에서 네이버 로그인 URL을 받아옵니다. (state 값은 서비스 내부에서 세션에 저장)
-        String naverLoginUrl = naverLoginService.getNaverLoginUrl(httpSession);
-        
-        // 네이버 로그인 페이지로 리다이렉트
-        return "redirect:" + naverLoginUrl; 
+    @GetMapping("/naver/login")
+    public String naverLogin(HttpSession httpSession) {
+        String naverAuthUrl = naverLoginService.getNaverLoginURL(httpSession);
+        log.info("네이버 인증 페이지로 리다이렉트: {}", naverAuthUrl);
+        return "redirect:" + naverAuthUrl;
     }
 
     /**
-     * 2. 네이버 로그인 성공 후 콜백 처리
-     * (네이버 개발자 센터에 등록한 "http://localhost:8686/auth/naver/callback" 주소)
+     * 2. 네이버 콜백 처리 (Kakao_Controller 로직과 동일하게 구현)
      */
     @GetMapping("/naver/callback")
-    public String naverCallback(@RequestParam String code, @RequestParam String state) {
+    public String naverCallback(@RequestParam String code, @RequestParam String state, HttpSession session, RedirectAttributes rttr) {
         
         try {
-            // 1. 코드를 이용해 Access Token 받기 (state 검증 포함)
-            String accessToken = naverLoginService.getAccessToken(code, state, httpSession);
+            String accessToken = naverLoginService.getNaverAccessToken(code, state, session);
+            Mypet_UserDTO userInfo = naverLoginService.getNaverUserInfo(accessToken);
 
-            // 2. Access Token을 이용해 사용자 정보 받기
-            NaverProfile userInfo = naverLoginService.getUserInfo(accessToken);
+            if (userInfo == null || userInfo.getSocial_id() == null) {
+                 throw new Exception("네이버 사용자 정보 조회 실패");
+            }
 
-            // 3. 세션에 사용자 정보 저장 (로그인 처리)
-            // (실제로는 DB에서 회원인지 확인 후, 회원가입 또는 로그인 처리를 합니다)
+            Mypet_UserDTO loginUser = naverLoginService.findUserBySocialId(userInfo.getSocial_id());
+
+            if (loginUser == null) {
+            	session.setAttribute("temp_naver_user", userInfo);                
+            	session.setAttribute("social_type", "naver");
+                log.info("신규 네이버 회원. 추가 정보 입력 페이지로 이동.");
+                return "redirect:/auth/naver/register_social_naver";
+            } else {
+                if (loginUser.getUser_phone() == null || loginUser.getUser_phone().isEmpty()) {
+                	session.setAttribute("temp_naver_user", loginUser);
+                    log.info("기존 회원(휴대폰 정보 없음). 추가 정보 입력 페이지로 이동.");
+                    return "redirect:/auth/naver/register_social_naver";                    
+                } else {
+                    session.setAttribute("loginUser", loginUser);
+                    session.setAttribute("role", "USER"); 
+                    session.setAttribute("loginType", "naver");
+
+                    log.info("기존 네이버 회원 로그인 성공. 세션 생성 완료: {}", loginUser.getUser_id());
+                    return "redirect:/mainpage"; 
+                }
+            }
+        } catch (Exception e) {
+            log.error("네이버 콜백 처리 중 오류", e);
+            rttr.addFlashAttribute("message", "네이버 로그인에 실패했습니다.");
+            return "redirect:/login";
+        }
+    }
+    @GetMapping("/naver/register_social_naver")
+    public String showNaverRegisterForm(HttpSession session, Model model, RedirectAttributes rttr) {
+        
+        // ⭐️ 세션에서 "temp_naver_user"를 찾습니다.
+        Mypet_UserDTO tempUser = (Mypet_UserDTO) session.getAttribute("temp_naver_user"); 
+        
+        if (tempUser == null) {
+            rttr.addFlashAttribute("message", "네이버 로그인 세션이 만료되었습니다.");
+            return "redirect:/login";
+        }
+        
+        model.addAttribute("userDTO", tempUser);
+        
+        return "register_social_naver"; 
+    }
+
+    /**
+     * 4. 네이버 전용 추가 정보 폼 제출 처리 (POST)
+     */
+    @PostMapping("/naver/register_process")
+    public String processNaverRegister(@ModelAttribute Mypet_UserDTO formData, HttpSession session, RedirectAttributes rttr) {
+        
+        // ⭐️ 세션에서 "temp_naver_user"를 찾습니다.
+        Mypet_UserDTO tempUser = (Mypet_UserDTO) session.getAttribute("temp_naver_user");
+        
+        if (tempUser == null) {
+            rttr.addFlashAttribute("message", "네이버 로그인 세션이 만료되었습니다.");
+            return "redirect:/login";
+        }
+        
+        // 폼데이터(formData)를 세션정보(tempUser)에 덮어쓰기
+        tempUser.setUser_phone(formData.getUser_phone());
+        tempUser.setUser_gender(formData.getUser_gender());
+        tempUser.setUser_birthday(formData.getUser_birthday());
+        tempUser.setUser_addr(formData.getUser_addr());
+        tempUser.setUser_addr_detail(formData.getUser_addr_detail());
+        
+        try {
+            // ⭐️ naverLoginService를 호출합니다.
+            if (tempUser.getUser_no() == 0) {
+                // [신규 회원 INSERT]
+                naverLoginService.socialJoin_withDetails(tempUser); 
+                log.info("네이버 신규 회원 가입 완료: {}", tempUser.getUser_id());
+            } else {
+                // [기존 회원 UPDATE]
+                naverLoginService.socialUpdate_withDetails(tempUser);
+                log.info("네이버 기존 회원 추가 정보 업데이트 완료: {}", tempUser.getUser_id());
+            }
+
+            session.removeAttribute("temp_naver_user");
             
-            // "loginUser"라는 이름으로 사용자 프로필(NaverProfile)을 세션에 저장
-            httpSession.setAttribute("loginUser", userInfo); 
-            // 로그인 타입을 "naver"로 저장 (선택 사항)
-            httpSession.setAttribute("loginType", "naver");
-            
-            httpSession.setAttribute("role", "USER");
+            // DB에서 최신 정보(role 포함)를 다시 가져옵니다.
+            Mypet_UserDTO finalUser = naverLoginService.findUserBySocialId(tempUser.getSocial_id());
 
-            System.out.println("네이버 로그인 성공: " + userInfo.getName());
+            // 최종 로그인 세션 생성
+            session.setAttribute("loginUser", finalUser);
+            session.setAttribute("role", "USER"); 
+            session.setAttribute("loginType", "naver");
+            
+            return "redirect:/mainpage";
 
         } catch (Exception e) {
-            System.err.println("네이버 로그인 실패: " + e.getMessage());
-            e.printStackTrace();
-            
-            // 에러 발생 시 로그인 페이지로 리다이렉트 (경로는 실제 로그인 폼 URL로 수정하세요)
-            return "redirect:/loginForm"; 
+            log.error("네이버 회원가입/업데이트 처리 중 오류 발생", e);
+            rttr.addFlashAttribute("message", "정보 저장 중 오류가 발생했습니다.");
+            return "redirect:/auth/naver/register_social_naver"; // ⭐️ 네이버 폼으로 다시 이동
         }
-
-        // 로그인 성공 시 메인 페이지("/")로 리다이렉트
-        return "redirect:/";
-    }
+}
 }
