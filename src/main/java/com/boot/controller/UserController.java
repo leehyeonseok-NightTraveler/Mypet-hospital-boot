@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.boot.dto.FindAccountDTO;
 import com.boot.dto.Mypet_AdminDTO;
 import com.boot.dto.Mypet_UserDTO;
+import com.boot.service.UploadService;
 import com.boot.service.UserService;
 
 @Slf4j
@@ -32,9 +34,10 @@ import com.boot.service.UserService;
 @RequiredArgsConstructor
 public class UserController {
 
-	@Autowired
-	private UserService userService;
-	
+  private final UserService userService;
+    
+  private final UploadService uploadService;
+  
 	//이메일 전송 객체[디펜던시에 추가됨]
 	@Autowired
 	private JavaMailSender mailSender;
@@ -187,10 +190,15 @@ public class UserController {
             }
             map.put("user_pwd", user_pwd);
         }
-
+        
         try {
             userService.updateUserInfo(map);
-
+            
+            // 이미지 업로드 처리 추가
+            if (user_img != null && !user_img.isEmpty()) {
+                userService.replaceUserImage(loginUser.getUser_no(), user_img);
+            }
+            
             // DB 기준 세션 갱신
             Mypet_UserDTO updatedUser = userService.getUserByNo(loginUser.getUser_no());
             if (updatedUser != null) {
@@ -379,4 +387,23 @@ public class UserController {
     }
 
     
+    @PostMapping("/user/uploadImg")
+    @ResponseBody
+    public ResponseEntity<String> uploadUserImg(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("userNo") int userNo) {
+
+        try {
+            boolean ok = userService.replaceUserImage(userNo, file);
+
+            if (!ok) return ResponseEntity.status(400).body("duplicate");
+
+            return ResponseEntity.ok("success");
+
+        } catch (Exception e) {
+            log.error("유저 이미지 업로드 실패", e);
+            return ResponseEntity.status(500).body("fail");
+        }
+    }
+
 }

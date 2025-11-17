@@ -69,7 +69,7 @@
                 <input type="file" id="user_img" name="user_img">
             </div>
 
-            <div class="button-group">
+            <div class="button-group">	
                 <button type="button" class="btn btn-secondary" onclick="history.back()">취소</button>
                 <button type="submit" class="btn btn-primary">수정 완료</button>
             </div>

@@ -51,7 +51,7 @@ public class Kakao_Controller {
             // [CASE 1: 신규 회원]
             session.setAttribute("temp_kakao_user", userInfo);
             log.info("신규 카카오 회원. 추가 정보 입력 페이지로 이동.");
-            return "redirect:/register_social"; 
+            return "redirect:/register_social_kakao"; 
             
         } else {
             // [CASE 2: 기존 회원]
@@ -59,7 +59,7 @@ public class Kakao_Controller {
             if (loginUser.getUser_phone() == null || loginUser.getUser_phone().isEmpty()) {
                 session.setAttribute("temp_kakao_user", loginUser);
                 log.info("기존 회원(휴대폰 정보 없음). 추가 정보 입력 페이지로 이동.");
-                return "redirect:/register_social";
+                return "redirect:/register_social_kakao";
                 
             } else {
                 // [CASE 2-2: 완전한 기존 회원]
@@ -77,7 +77,7 @@ public class Kakao_Controller {
     /**
      * 3. 추가 정보 입력 폼 페이지 (GET) (수정 없음)
      */
-    @GetMapping("/register_social")
+    @GetMapping("/register_social_kakao")
     public String showSocialRegisterForm(HttpSession session, Model model, RedirectAttributes rttr) {
         
         Mypet_UserDTO tempUser = (Mypet_UserDTO) session.getAttribute("temp_kakao_user");
@@ -88,6 +88,8 @@ public class Kakao_Controller {
         }
         
         model.addAttribute("userDTO", tempUser);
+        model.addAttribute("socialType", "kakao");
+        
         return "register_social";
     }
 
@@ -135,7 +137,7 @@ public class Kakao_Controller {
         } catch (Exception e) {
             log.error("카카오 회원가입/업데이트 처리 중 오류 발생", e);
             rttr.addFlashAttribute("message", "정보 저장 중 오류가 발생했습니다.");
-            return "redirect:/register_social";
+            return "redirect:/register_social_kakao";
         }
     }
 }
