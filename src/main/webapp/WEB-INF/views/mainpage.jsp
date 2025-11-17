@@ -7,20 +7,17 @@
     <meta charset="UTF-8">
     <title>MY PET 동물병원</title>
 
-    <!-- 공통 CSS -->
     <link rel="stylesheet" href="/css/mainpage.css">
     <link rel="stylesheet" href="/css/jquery.bxslider.css">
 
-    <!-- jQuery / bxSlider -->
-    <script src="/js/jquery.js"></script>
-    <script src="/js/jquery.bxslider.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	
 </head>
 <body>
 
-<!-- HEADER -->
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
 
-<!-- 메인 슬라이드 -->
 <figure>
     <div class="pic">
         <ul class="slide_gallery">
@@ -47,7 +44,8 @@
             <article>
                 <img src="/img/1.png">
                 <h2>최고의 의료진과 최신 장비</h2>
-                <p>대학병원급 최신 장비를 통해 정확한 진단을 내리고 반려동물의 건강을 약속합니다.</p>
+                <p>대학병원급 최신 장비를 통해 정확한 진단을 
+                내리고 반려동물의 건강을 약속합니다.</p>
             </article>
 
             <article>
@@ -71,10 +69,12 @@
     </div>
 </section>
 
-<!-- FOOTER -->
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 
-<!-- 슬라이더 실행 -->
+<script src="/js/jquery.js"></script>
+<script src="/js/jquery.bxslider.js"></script>
+
+
 <script>
 $(document).ready(function(){
     $('.slide_gallery').bxSlider({
