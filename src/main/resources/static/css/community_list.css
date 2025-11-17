@@ -1,21 +1,44 @@
 .div_page ul {
     list-style: none;
     padding: 0;
-    margin: 20px 0;
+    margin: 30px 0;
     text-align: center;
 }
 
 .div_page ul li {
     display: inline-block;
-    margin: 0 5px;
+    margin: 0 4px;
 }
 
 .div_page ul li a {
     text-decoration: none;
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 8px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333;
+    background: #f9f9f9;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
+
+.div_page ul li a:hover {
+    background: #eaeaea;
+    border-color: #bbb;
+    transform: translateY(-2px);
+}
+
+/* 현재 페이지 스타일 */
+.div_page ul li.active a {
+    background: #2196F3;
+    color: white;
+    border-color: #4c8bf5;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(76,139,245,0.4);
+    cursor: default;
+    transform: none;
+}
+
 
 /* 전체 레이아웃 */
 main {
