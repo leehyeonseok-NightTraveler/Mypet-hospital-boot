@@ -216,7 +216,7 @@ public class ManageController {
         rttr.addAttribute("pageNum", pageNum);
         rttr.addAttribute("amount", amount);
         rttr.addFlashAttribute("msg", "예약이 취소 처리되었습니다.");
-
+        //
         return redirectPath;
     }
 }
