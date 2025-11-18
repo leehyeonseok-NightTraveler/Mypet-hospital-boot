@@ -7,7 +7,9 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.boot.dto.Mypet_UserDTO;
+import com.boot.dto.ServiceHistoryDTO;
 import com.boot.dto.FindAccountDTO;
+import com.boot.dto.GradeHistoryDTO;
 import com.boot.dto.Mypet_PetDTO;
 
 public interface UserService {
@@ -32,8 +34,14 @@ public interface UserService {
 	public ArrayList<FindAccountDTO> findPW(HashMap<String, String>param);
 	
 //	비밀번호 재설정
-	 void updateUserPwd(String id, String pw);
+	void updateUserPwd(String id, String pw);
 
-	 void updateAdminPwd(String id, String pw);
+	void updateAdminPwd(String id, String pw);
             
+	// 멤버십 등급 히스토리 조회
+	List<GradeHistoryDTO> getGradeHistory(int user_no);
+
+	 // 이용 서비스 이력 조회
+	List<ServiceHistoryDTO> getServiceHistory(int user_no);
+
 }

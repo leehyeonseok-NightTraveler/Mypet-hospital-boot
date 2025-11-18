@@ -13,9 +13,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import com.boot.dao.UserDAO;
+import com.boot.dao.GradeHistoryDAO;
 import com.boot.dao.PetDAO;
+import com.boot.dao.ServiceHistoryDAO;
 import com.boot.dto.Mypet_UserDTO;
+import com.boot.dto.ServiceHistoryDTO;
 import com.boot.dto.FindAccountDTO;
+import com.boot.dto.GradeHistoryDTO;
 import com.boot.dto.Mypet_PetDTO;
 
 @Slf4j
@@ -163,5 +167,22 @@ public class UserServiceImpl implements UserService {
 		dao.updateAdminPwd(id, pw);
 		
 	}
+	
+	@Autowired
+	private GradeHistoryDAO gradeHistoryDAO;
+
+	@Autowired
+	private ServiceHistoryDAO serviceHistoryDAO;
+
+	@Override
+	public List<GradeHistoryDTO> getGradeHistory(int user_no) {
+	    return gradeHistoryDAO.getGradeHistory(user_no);
+	}
+
+	@Override
+	public List<ServiceHistoryDTO> getServiceHistory(int user_no) {
+	    return serviceHistoryDAO.getServiceHistory(user_no);
+	}
+
 	
 }

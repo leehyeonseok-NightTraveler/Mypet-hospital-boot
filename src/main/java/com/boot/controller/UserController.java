@@ -405,5 +405,22 @@ public class UserController {
             return ResponseEntity.status(500).body("fail");
         }
     }
+    
+    @GetMapping("/mypage_membership")
+    public String mypageMembership(HttpSession session, Model model) {
+
+        Mypet_UserDTO loginUser = (Mypet_UserDTO) session.getAttribute("loginUser");
+        if (loginUser == null) return "redirect:/login";
+
+        int userNo = loginUser.getUser_no();
+
+        model.addAttribute("currentGrade", loginUser.getCurrent_grade());
+        model.addAttribute("expiryDate", loginUser.getGrade_expiry_date());
+
+        model.addAttribute("gradeHistory", userService.getGradeHistory(userNo));
+        model.addAttribute("serviceHistory", userService.getServiceHistory(userNo));
+
+        return "mypage_membership";
+    }
 
 }

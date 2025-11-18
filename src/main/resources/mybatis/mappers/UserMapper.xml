@@ -40,11 +40,33 @@
         AND admin_pwd = #{user_pwd}
     </select>
 
-    <!-- 유저 조회 -->
     <select id="selectUserByNo" parameterType="int"
-            resultType="com.boot.dto.Mypet_UserDTO">
-        SELECT * FROM user_info WHERE user_no = #{no}
-    </select>
+        resultType="com.boot.dto.Mypet_UserDTO">
+
+    SELECT 
+        user_no,
+        user_id,
+        user_pwd,
+        user_name,
+        user_gender,
+        user_birthday,
+        user_phone,
+        user_email,
+        user_regidate,
+        user_addr,
+        user_addr_detail,
+        user_status,
+        user_img,
+        user_img_temp,
+        social_type,
+        social_id,
+        current_grade AS current_grade,
+        grade_expiry_date AS grade_expiry_date
+    FROM user_info
+    WHERE user_no = #{no}
+
+	</select>
+
 
     <!-- 관리자 조회 -->
     <select id="selectAdminByNo" parameterType="int"
