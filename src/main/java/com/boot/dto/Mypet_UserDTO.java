@@ -25,7 +25,7 @@ public class Mypet_UserDTO {
     private String user_status;    // 상태
     private String user_img;       // 프로필 이미지 URL
     private String user_img_temp;  // 이미지 해시값 (중복 방지용)
-    private String social_type; // "kakao"
+    private String social_type; // "kakao""google"
     private String social_id;   // 카카오가 제공하는 고유 ID
     
     private List<Mypet_PetDTO> pets;  // 유저가 보유한 펫 목록 (연동용)
