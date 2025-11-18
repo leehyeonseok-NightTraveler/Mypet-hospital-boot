@@ -75,4 +75,50 @@
         SELECT COUNT(*) FROM qna_board
     </select>
 
+    <select id="getQnaReply" parameterType="int"
+            resultType="com.boot.dto.Mypet_Qna_ReplyDTO">
+        SELECT *
+        FROM qna_reply
+        WHERE qna_no = #{qna_no}
+    </select>
+
+    <insert id="writeReply" parameterType="com.boot.dto.Mypet_Qna_ReplyDTO">
+        INSERT INTO qna_reply (
+        reply_no,
+        qna_no,
+        admin_no,
+        admin_name,
+        reply_content,
+        created_date
+        ) VALUES (
+        SEQ_QNA_REPLY_NO.NEXTVAL,
+        #{params.qna_no}, #{params.admin_no}, 'ADMIN', #{params.reply_content},
+        SYSDATE
+        )
+    </insert>
+
+    <update id="qnaStatusUpdate" parameterType="com.boot.dto.Mypet_Qna_BoardDTO">
+        UPDATE qna_board
+        SET
+        is_answered = 'Y'
+        WHERE qna_no = #{params.qna_no}
+    </update>
+
+    <update id="modifyReply" parameterType="com.boot.dto.Mypet_Qna_ReplyDTO">
+        UPDATE qna_reply
+        SET
+        reply_content = #{params.reply_content}
+        WHERE qna_no = #{params.qna_no}
+    </update>
+
+    <delete id="deleteReplyByQnaNo" parameterType="int">
+        DELETE FROM qna_reply
+        WHERE qna_no = #{qna_no}
+    </delete>
+
+    <delete id="deleteQna" parameterType="int">
+        DELETE FROM qna_board
+        WHERE qna_no = #{qna_no}
+    </delete>
+
 </mapper>

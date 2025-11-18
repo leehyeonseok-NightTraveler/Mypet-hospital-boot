@@ -2,9 +2,11 @@ package com.boot.controller;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import com.boot.dto.Mypet_AdminDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +28,7 @@ import com.boot.service.UploadService;
 public class QnaController {
 
     private final QnaService service;
-    
+
     private final UploadService uploadService;
 
 
@@ -94,10 +96,10 @@ public class QnaController {
 
         dto.setUser_no(loginUser.getUser_no());
         log.info("[Controller] Q&A 등록 요청 수신: {}", dto);
-        
+
         // 파일 저장 로직 추가
         if (file != null && !file.isEmpty()) {
-        	String saved = uploadService.saveRawFile(file, "qna");
+            String saved = uploadService.saveRawFile(file, "qna");
             dto.setQna_file(saved);   // DB 컬럼과 연결!
         }
 
@@ -106,18 +108,84 @@ public class QnaController {
         ra.addFlashAttribute("message", "문의가 등록되었습니다!");
         return "redirect:/qna_page";
     }
-    
-//    @GetMapping("/qna_view")
-//    public String qnaView(
-//            @RequestParam("qna_no") int qna_no,
-//            Model model) {
-//
-//        Mypet_Qna_BoardDTO dto = service.getQna(qna_no); // 질문
-//        Mypet_Qna_ReplyDTO reply = service.getReply(qna_no); // 답변
-//
-//        model.addAttribute("dto", dto);
-//        model.addAttribute("reply", reply);
-//
-//        return "qna_content_view";
-//    }
+
+    @GetMapping("/qna_view")
+    public String qnaView(
+            @RequestParam("qna_no") int qna_no,
+            Model model, HttpSession session) {
+
+        // 널 안전을 위한 변수 초기화
+        String role = null;
+        Integer userNo = null;
+
+        // 1. 일반 사용자 객체 확인
+        Object userObj = session.getAttribute("loginUser");
+        if (userObj != null && userObj instanceof Mypet_UserDTO) {
+            Mypet_UserDTO loginUser = (Mypet_UserDTO) userObj;
+            userNo = loginUser.getUser_no(); // 사용자 번호 설정
+            // role = "USER"; // 사용자 role 설정 (필요시)
+        }
+
+        // 2. 관리자 객체 확인
+        Object adminObj = session.getAttribute("loginAdmin");
+        if (adminObj != null && adminObj instanceof Mypet_AdminDTO) {
+            // Mypet_AdminDTO loginAdmin = (Mypet_AdminDTO) adminObj; // 필요시 사용
+            role = "ADMIN"; // 관리자 role 설정
+        }
+
+        // 3. 모델에 값 추가 (비로그인 시 role=null, user_no=null이 됨)
+        model.addAttribute("role", role);
+        model.addAttribute("user_no", userNo);
+
+
+        // 4. 질문 및 답변 조회
+        Mypet_Qna_BoardDTO detail = service.getQnaDetail(qna_no);
+        Mypet_Qna_ReplyDTO reply = service.getQnaReply(qna_no);
+
+        model.addAttribute("detail", detail);
+        model.addAttribute("reply", reply);
+
+        return "qna_content_view";
+    }
+
+    @PostMapping("/ReplyProcess")
+    public String ReplyProcess(@RequestParam String mode,
+                               @RequestParam String reply_content,
+                               @RequestParam int qna_no,
+                               HttpSession session) {
+        Object loginObj = session.getAttribute("loginAdmin");
+
+        Mypet_AdminDTO loginAdmin = (Mypet_AdminDTO) loginObj;
+        int adminNo = loginAdmin.getAdmin_no(); // 이제 안전하게 admin_no를 가져옴
+
+        String redirectPath;
+        Map<String, Object> params = new HashMap<>();
+
+        if ("create".equals(mode)) {
+            redirectPath = "redirect:/qna_view?qna_no=" + qna_no;
+
+            params.put("admin_no", adminNo);
+            params.put("qna_no", qna_no);
+            params.put("reply_content", reply_content);
+
+            service.qnaStatusUpdate(qna_no);
+            service.writeReply(params);
+        } else {
+            redirectPath = "redirect:/qna_view?qna_no=" + qna_no;
+
+            params.put("qna_no", qna_no);
+            params.put("reply_content", reply_content);
+
+            service.modifyReply(params);
+        }
+        return redirectPath;
+    }
+
+    @PostMapping("/qna_delete")
+    public String deleteQna(@RequestParam int qna_no) {
+        service.deleteReplyByQnaNo(qna_no);
+        service.deleteQna(qna_no);
+        return "redirect:/qna_page";
+    }
+
 }
