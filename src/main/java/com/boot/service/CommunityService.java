@@ -13,4 +13,7 @@ public interface CommunityService {
 	
 //	글 상세조회
 	public Mypet_CommunityDTO communityContentView(HashMap<String, String> param);
+	
+//	글 쓰기
+	public void communityWrite(HashMap<String, String> param);
 }

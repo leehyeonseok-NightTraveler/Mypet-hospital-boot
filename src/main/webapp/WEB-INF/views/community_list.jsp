@@ -54,7 +54,7 @@
                             </tr>
                             <tr class="button_tr">
                                 <td colspan="5">
-                                    <form action="/notices_write_view" method="get">
+                                    <form action="/community_write_view" method="get">
                                         <button type="submit" class="button">글쓰기</button>
                                     </form>
                                 </td>
@@ -67,7 +67,7 @@
                             <c:if test="${pageMaker.prev}">
                                 <li class="paginate_button">
                                     <a href="${pageMaker.startPage -1}">
-                                        Previous
+                                        이전
                                     </a>
                                 </li>
                             </c:if>
@@ -81,7 +81,7 @@
                             <c:if test="${pageMaker.next}">
                                 <li class="paginate_button">
                                     <a href="${pageMaker.endPage +1}">
-                                        Next
+                                        다음
                                     </a>
                                 </li>
                             </c:if>

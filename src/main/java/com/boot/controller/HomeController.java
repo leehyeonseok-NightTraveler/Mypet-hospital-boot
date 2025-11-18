@@ -47,4 +47,7 @@ public class HomeController {
 
     @GetMapping("/pet_add")
     public String petAdd() { return "pet_add"; }
+    
+	@RequestMapping("/community_write_view")
+	public String community_write_view() {return "community_write_view"; }
 }

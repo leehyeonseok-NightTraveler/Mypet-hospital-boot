@@ -61,5 +61,32 @@ public class CommunityController {
 		return "community_content_view";
 	}
 	
+	   /* ============================
+     *       글 쓰기
+     * ============================ */
 	
+	@RequestMapping("/community_write")
+	public String community_write(@RequestParam HashMap<String, String> param, Model model) {
+		
+		service.communityWrite(param);
+		
+		return "redirect:list";
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

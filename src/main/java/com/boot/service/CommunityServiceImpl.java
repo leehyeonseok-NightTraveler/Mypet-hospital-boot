@@ -48,6 +48,15 @@ public class CommunityServiceImpl implements CommunityService{
 		
 		return dto;
 	}
+
+//	글 쓰기
+	@Override
+	public void communityWrite(HashMap<String, String> param) {
+		
+		CommunityDAO dao = session.getMapper(CommunityDAO.class);
+		dao.communityWrite(param);
+		
+	}
 	
 
 	
