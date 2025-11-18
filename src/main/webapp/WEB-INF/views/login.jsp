@@ -42,6 +42,8 @@
                 <a href="/auth/kakao/login" class="kakao-login-button">
                     <img src="/img/kakao_login.png">
                 </a>
+				<a href="<c:url value='/auth/google/login' />" class="google-login-button">
+				        <img src="/img/google_login.png"> </a>
             </form>
         </div>
     </main>

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.boot.dto.Mypet_UserDTO;
-import com.boot.service.Mypet_KakaoService;
-import com.boot.dao.Mypet_Kakao_DAO; // 🔻 카카오 DAO Import
+import com.boot.service.Mypet_GoogleService;
+import com.boot.dao.Mypet_Google_DAO; 
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,59 +19,61 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-public class Kakao_Controller {
+public class Google_Controller {
 
-    private final Mypet_KakaoService kakaoService;
-    private final Mypet_Kakao_DAO kakaoDAO; // 🔻 카카오 DAO 주입
+    private final Mypet_GoogleService googleService;
+    private final Mypet_Google_DAO googleDAO; 
 
-    // 1. "카카오 로그인" 버튼 클릭 시
-    @GetMapping("/auth/kakao/login")
-    public String kakaoLogin() {
-        String kakaoAuthUrl = kakaoService.getKakaoLoginURL();
-        return "redirect:" + kakaoAuthUrl;
+    // 1. "구글 로그인" 버튼 클릭 시
+    @GetMapping("/auth/google/login")
+    public String googleLogin() {
+        String googleAuthUrl = googleService.getGoogleLoginURL();
+        return "redirect:" + googleAuthUrl;
     }
 
-    // 2. 카카오 콜백 처리
-    @GetMapping("/auth/kakao/callback")
-    public String kakaoCallback(@RequestParam String code, HttpSession session, RedirectAttributes rttr) {
+    /**
+     * 2. 구글 콜백 처리 (DB 검사 로직 포함)
+     */
+    @GetMapping("/auth/google/callback")
+    public String googleCallback(@RequestParam String code, HttpSession session, RedirectAttributes rttr) {
         
-        Mypet_UserDTO userInfo = kakaoService.getKakaoUserInfo(kakaoService.getKakaoAccessToken(code));
+        Mypet_UserDTO userInfo = googleService.getGoogleUserInfo(googleService.getGoogleAccessToken(code));
         
         if (userInfo == null || userInfo.getSocial_id() == null) {
-             rttr.addFlashAttribute("message", "카카오 로그인에 실패했습니다.");
+             rttr.addFlashAttribute("message", "구글 로그인에 실패했습니다.");
              return "redirect:/login";
         }
 
-        Mypet_UserDTO loginUser = kakaoDAO.findUserBySocialId(userInfo.getSocial_id());
+        Mypet_UserDTO loginUser = googleDAO.findUserBySocialId(userInfo.getSocial_id());
 
         if (loginUser == null) {
             // [CASE 1: 신규 회원]
-            session.setAttribute("temp_kakao_user", userInfo); // 🔻 카카오 전용 세션
-            log.info("신규 카카오 회원. 추가 정보 입력 페이지로 이동.");
-            return "redirect:/register_social_kakao"; // 👈 카카오 전용 GET
+            session.setAttribute("temp_google_user", userInfo); // 🔻 구글 전용 세션
+            log.info("신규 구글 회원. 추가 정보 입력 페이지로 이동.");
+            return "redirect:/register_social_google"; // 👈 구글 전용 GET
             
         } else {
             // [CASE 2: 기존 회원]
             if (loginUser.getUser_phone() == null || loginUser.getUser_phone().isEmpty()) {
-                session.setAttribute("temp_kakao_user", loginUser); // 🔻 카카오 전용 세션
+                session.setAttribute("temp_google_user", loginUser); // 🔻 구글 전용 세션
                 log.info("기존 회원(휴대폰 정보 없음). 추가 정보 입력 페이지로 이동.");
-                return "redirect:/register_social_kakao"; // 👈 카카오 전용 GET
+                return "redirect:/register_social_google"; // 👈 구글 전용 GET
             } else {
                 session.setAttribute("loginUser", loginUser);
-                session.setAttribute("role", "USER"); 
-                log.info("기존 카카오 회원 로그인 성공. 세션 생성 완료: {}", loginUser.getUser_id());
+                session.setAttribute("role", "USER");
+                log.info("기존 구글 회원 로그인 성공. 세션 생성 완료: {}", loginUser.getUser_id());
                 return "redirect:/mainpage";
             }
         }
     }
 
     /**
-     * 3. 🔻 카카오 전용 추가 정보 입력 폼 (GET) 🔻
+     * 3. 🔻 구글 전용 추가 정보 입력 폼 (GET) 🔻
      */
-    @GetMapping("/register_social_kakao")
+    @GetMapping("/register_social_google")
     public String showSocialRegisterForm(HttpSession session, Model model, RedirectAttributes rttr) {
         
-        Mypet_UserDTO tempUser = (Mypet_UserDTO) session.getAttribute("temp_kakao_user");
+        Mypet_UserDTO tempUser = (Mypet_UserDTO) session.getAttribute("temp_google_user");
         
         if (tempUser == null) {
             rttr.addFlashAttribute("message", "로그인 세션이 만료되었습니다.");
@@ -79,18 +81,18 @@ public class Kakao_Controller {
         }
         
         model.addAttribute("userDTO", tempUser);
-        model.addAttribute("socialType", "kakao"); // 🔻 JSP 구분을 위해 "kakao" 전달
+        model.addAttribute("socialType", "google"); // 🔻 JSP 구분을 위해 "google" 전달
         
         return "register_social"; // 👈 공통 JSP 호출
     }
 
     /**
-     * 4. 🔻 카카오 전용 폼 처리 (POST) 🔻
+     * 4. 🔻 구글 전용 폼 처리 (POST) 🔻
      */
-    @PostMapping("/register_social_kakao_process")
-    public String processSocialRegister(@ModelAttribute Mypet_UserDTO formData, HttpSession session, RedirectAttributes rttr) {
+    @PostMapping("/register_social_google_process")
+    public String processGoogleRegister(@ModelAttribute Mypet_UserDTO formData, HttpSession session, RedirectAttributes rttr) {
         
-        Mypet_UserDTO tempUser = (Mypet_UserDTO) session.getAttribute("temp_kakao_user");
+        Mypet_UserDTO tempUser = (Mypet_UserDTO) session.getAttribute("temp_google_user");
         
         if (tempUser == null) {
              rttr.addFlashAttribute("message", "로그인 세션이 만료되었습니다.");
@@ -110,22 +112,22 @@ public class Kakao_Controller {
             tempUser.setUser_addr(fullAddress);
             tempUser.setUser_status("ACTIVE");
 
-            // 🔻 카카오 DAO로 DB 저장/업데이트 🔻
+            // 🔻 구글 DAO로 DB 저장/업데이트 🔻
             if (tempUser.getUser_no() == 0) {
-                kakaoDAO.socialJoin_withDetails(tempUser); 
+                googleDAO.socialJoin_withDetails(tempUser); 
             } else {
-                kakaoDAO.socialUpdate_withDetails(tempUser);
+                googleDAO.socialUpdate_withDetails(tempUser);
             }
 
-            session.removeAttribute("temp_kakao_user");
+            session.removeAttribute("temp_google_user");
             session.setAttribute("loginUser", tempUser);
             session.setAttribute("role", "USER");
             return "redirect:/mainpage";
 
         } catch (Exception e) {
-            log.error("카카오 회원가입/업데이트 처리 중 오류 발생", e);
+            log.error("구글 회원가입/업데이트 처리 중 오류 발생", e);
             rttr.addFlashAttribute("message", "정보 저장 중 오류가 발생했습니다.");
-            return "redirect:/register_social_kakao"; // 👈 카카오 전용 GET
+            return "redirect:/register_social_google"; // 👈 구글 전용 GET
         }
     }
 }
