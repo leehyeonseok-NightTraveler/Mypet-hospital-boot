@@ -16,5 +16,6 @@
         <mapper resource="mybatis/mappers/Mypet_Kakao_Mapper.xml"/>
         <mapper resource="mybatis/mappers/ManageMapper.xml"/>
         <mapper resource="mybatis/mappers/NaverLoginMapper.xml"/>
+        <mapper resource="mybatis/mappers/PetWeightMapper.xml"/>
     </mappers>
 </configuration>

@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.boot.dao.PetDAO;
 import com.boot.dto.Mypet_PetDTO;
 import com.boot.dto.Mypet_UserDTO;
+import com.boot.dto.PetWeightDTO;
 import com.boot.service.PetService;
 import com.boot.service.UploadService;
 
@@ -30,19 +31,21 @@ public class PetController {
 
     private final PetService petService;
     private final UploadService uploadService;
-
+    
     @GetMapping("/mypage_petinfo")
     public String mypagePetInfo(
             HttpServletRequest request,
             Model model,
             HttpSession session
-    ) {
+    ) 
+    {
         int pet_no = Integer.parseInt(request.getParameter("pet_no"));
 
+        
         Mypet_UserDTO loginUser = (Mypet_UserDTO) session.getAttribute("loginUser");
         if (loginUser == null) return "redirect:/login";
 
-        Mypet_PetDTO petInfo = petService.getPetInfo(loginUser.getUser_no(), pet_no);
+        Mypet_PetDTO petInfo = petService.getPetDetails(pet_no);
         model.addAttribute("petInfo", petInfo);
 
         return "mypage_petinfo";
@@ -213,6 +216,36 @@ public class PetController {
         }
     }
 
+    @GetMapping("/mypage/pet/{petNo}")
+    public String petDetailPage(@PathVariable int petNo, Model model) {
+        // ServiceImpl의 getPetDetails가 DB에서 펫 정보와 현재/권장 체중을 가져옵니다.
+        Mypet_PetDTO petInfo = petService.getPetDetails(petNo);
+        
+        model.addAttribute("petInfo", petInfo);
+        return "mypage_petinfo"; // ⭐️ /WEB-INF/views/mypage_pet_detail.jsp 파일을 엽니다.
+    }
 
+    /**
+     * 2. 체중 기록 추가 (폼 전송 처리)
+     */
+    @PostMapping("/mypage/pet/{petNo}/add_weight")
+    public String addWeight(@PathVariable int petNo, @RequestParam double weight_kg) {
+        // ServiceImpl의 addPetWeight가 DB에 INSERT합니다.
+        petService.addPetWeight(petNo, weight_kg);
+        
+        // 저장이 완료되면, 다시 상세 정보 페이지로 돌아갑니다.
+        return "redirect:/mypage_petinfo?pet_no=" + petNo;
+    }
+
+    /**
+     * 3. ⭐️ 그래프 데이터 전용 (JSON 반환)
+     * (JSP의 JavaScript(AJAX)가 이 URL을 호출합니다)
+     */
+    @GetMapping("/api/pet/{petNo}/weight_history")
+    @ResponseBody // ⭐️ JSP 파일이 아닌, JSON 데이터 자체를 반환합니다.
+    public List<PetWeightDTO> getWeightChartData(@PathVariable int petNo) {
+        // ServiceImpl의 getWeightHistory가 DB에서 체중 기록 목록을 가져옵니다.
+        return petService.getWeightHistory(petNo);
+    }
 
 }

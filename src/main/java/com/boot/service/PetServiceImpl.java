@@ -2,13 +2,17 @@ package com.boot.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.boot.dao.PetDAO;
 import com.boot.dto.Mypet_PetDTO;
+import com.boot.dto.PetWeightDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +25,9 @@ public class PetServiceImpl implements PetService {
     private final PetDAO petDAO;
     
     private final UploadService uploadService;
+    
+    @Autowired
+    private SqlSessionTemplate sqlSession;
 
     @Override
     public Mypet_PetDTO getPetInfo(int user_no, int pet_no) {
@@ -97,5 +104,32 @@ public class PetServiceImpl implements PetService {
         }
     }
 
+	@Override
+	public void addPetWeight(int petNo, double weight) {
+		Map<String, Object> params = new HashMap<>();
+        params.put("pet_no", petNo);
+        params.put("weight_kg", weight);
+        
+        // ⭐️ Map을 파라미터로 넘깁니다.
+        sqlSession.insert("com.boot.dao.PetMapper.insertWeight", params);
+	}
+
+	@Override
+	public List<PetWeightDTO> getWeightHistory(int petNo) {
+		return sqlSession.selectList("com.boot.dao.PetMapper.getWeightHistory", petNo);
+	}
+
+	@Override
+	public Mypet_PetDTO getPetDetails(int petNo) {
+		Mypet_PetDTO pet = sqlSession.selectOne("com.boot.dao.PetMapper.getPetByNo", petNo);
+        
+        if (pet != null) {
+            Double latestWeight = sqlSession.selectOne("com.boot.dao.PetMapper.getLatestWeight", petNo);
+            pet.setCurrent_weight(latestWeight != null ? latestWeight : 0); 
+        }
+        
+        return pet;
+       
+    }
 
 }
