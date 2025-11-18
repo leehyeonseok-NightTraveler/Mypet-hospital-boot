@@ -6,7 +6,7 @@
 }
 
 /* ---------------------------------------------------- */
-/* 1. 위젯 아이콘 (화면 고정 버튼) */
+/* 1. 위젯 아이콘 (화면 고정 버튼) - image_28cb25.png 디자인 반영 */
 /* ---------------------------------------------------- */
 .chat-toggle-btn {
     position: fixed;
@@ -40,7 +40,7 @@
 }
 
 /* ---------------------------------------------------- */
-/* 2. 메뉴 팝업 스타일 */
+/* 2. 메뉴 팝업 스타일 (image_2b3382.png 디자인 반영) */
 /* ---------------------------------------------------- */
 .chat-menu-popup {
     position: fixed;
@@ -76,8 +76,14 @@
 /* 이미지에서 보이는 메뉴 항목별 배경색 및 테두리 */
 .menu-item:first-child,
 .menu-item:nth-child(2) {
-    background-color: #ffffff; /* 흰색 배경 */
+    background-color: #ffffff; /* 취업특톡, 고객센터 항목처럼 흰색 배경 */
 }
+.menu-item.last-menu-item {
+    background-color: #f7f7f7; /* 신고하기 항목처럼 옅은 회색 배경 */
+    border: 1px solid #eee;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
 
 /* 메뉴 아이콘 스타일 */
 .menu-icon {
@@ -88,6 +94,7 @@
 }
 .menu-item:nth-child(1) .menu-icon { color: #55c57a; } /* FAQ 챗봇 (초록) */
 .menu-item:nth-child(2) .menu-icon { color: #007bff; } /* 상담원 연결 (파랑) */
+.menu-item:nth-child(3) .menu-icon { color: #ffc107; } /* 병원 정보 안내 (노랑) */
 
 
 .menu-text {
@@ -105,7 +112,7 @@
 }
 
 /* ---------------------------------------------------- */
-/* 3. 채팅 팝업 컨테이너 */
+/* 3. 채팅 팝업 컨테이너 (image_28cb41.png 디자인 반영) */
 /* ---------------------------------------------------- */
 .chat-popup-container {
     position: fixed;
@@ -152,25 +159,6 @@
     box-shadow: 0 0 5px rgba(0,0,0,0.05); 
     word-wrap: break-word;
 }
-
-/* 챗봇 초기 FAQ 버튼 그룹 스타일 */
-.bot-message .faq-options button {
-    /* 이 스타일은 이전에 HTML 오류를 유발했으나, CSS로서는 정상입니다. */
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background: white;
-    padding: 10px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    text-align: left;
-    width: 100%;
-    margin-top: 5px;
-    transition: background-color 0.2s;
-}
-.bot-message .faq-options button:hover {
-    background-color: #f0f0f0;
-}
-
 
 .user-message {
     background-color: #ebebeb; /* 연한 회색 */

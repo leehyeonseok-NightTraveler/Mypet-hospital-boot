@@ -1,0 +1,157 @@
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    padding: 0; 
+    margin: 0;
+}
+
+/* 컨테이너 */
+.calculator-container {
+    width: 100%;
+    max-width: 650px; /* ✅ 최대 너비 약간 확대 */
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin: 100px auto; 
+}
+
+/* 제목 */
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+}
+.description {
+    font-size: 0.9rem;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+/* 구분선 */
+.separator {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 30px 0;
+}
+
+/* 선택 그리드 */
+.selection-grid {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap; 
+}
+
+/* 1. 반려동물 종류 선택 항목 스타일 */
+.selection-item {
+    flex: 1; 
+    min-width: 120px;
+    padding: 20px;
+    text-align: center;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #fafafa;
+}
+.selection-item:hover {
+    border-color: #ffd130;
+}
+.selection-item.selected {
+    border-color: #ffd130; 
+    background-color: #fff9e6;
+    box-shadow: 0 0 0 2px #ffd130;
+}
+.selection-item img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+}
+.selection-item p {
+    font-weight: 700;
+    color: #555;
+    margin: 0;
+}
+
+/* 2. BCS 이미지 선택 항목 스타일 */
+.bcs-selection {
+    justify-content: center; 
+    gap: 15px; /* ✅ 항목 간격 조정 */
+}
+.bcs-item {
+    /* 5개 항목이 들어갈 수 있도록 너비 조정 */
+    width: calc(100% - 12px); 
+    max-width: 120px; /* ✅ 최대 너비 확대 */
+    height: auto; 
+    border: 1px solid #eee;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #fafafa;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    padding: 10px; /* ✅ 내부 패딩 증가 */
+    text-align: center; 
+    /* ✅ 레이아웃 안정화를 위한 최소 높이 */
+    min-height: 140px; 
+}
+
+.bcs-item img {
+    /* 이미지 자체의 크기 확대 */
+    max-height: 590px; /* ✅ 최대 높이 설정 */
+    width: 100%;
+    height: auto; 
+    object-fit: contain;
+    padding: 0; 
+    display: block; 
+}
+
+.bcs-item.selected {
+    border-color: #ffd130; 
+    box-shadow: 0 0 0 2px #ffd130;
+}
+
+/* 오버레이 텍스트 위치 수정 (이미지 아래 중앙 정렬) */
+.bcs-item .overlay {
+    position: static; 
+    width: 100%; 
+    margin-top: 5px; 
+    background-color: rgba(255, 209, 48, 0.9);
+    opacity: 0;
+    font-size: 0.75rem;
+    padding: 3px 0;
+}
+.bcs-item.selected .overlay,
+.bcs-item:hover .overlay {
+    opacity: 1;
+}
+
+/* 결과 버튼 */
+.result-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #ffd130;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #333;
+    cursor: pointer;
+    margin-top: 30px;
+    transition: background-color 0.2s;
+}
+.result-button:hover {
+    background-color: #ffc200;
+}
+
+/* 결과 영역 스타일 (calculate.jsp에서 <style> 대신 여기에 포함) */
+.result-display-area {
+    padding: 20px;
+    border: 1px solid #ffe799; 
+    border-radius: 8px;
+    background-color: #fff9e6; 
+    margin-top: 20px;
+    text-align: center;
+}
