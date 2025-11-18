@@ -42,9 +42,6 @@
             <input type="hidden" name="user_name" value="${userDTO.user_name}">
             <input type="hidden" name="user_email" value="${userDTO.user_email}">
 
-            <div class="input-group">
-                <input type="tel" name="user_phone" placeholder="휴대폰 번호 ('-' 없이 입력)" required>
-            
                 <input type="hidden" name="user_name" value="${userDTO.user_name}">
                 <input type="hidden" name="user_email" value="${userDTO.user_email}">
 
