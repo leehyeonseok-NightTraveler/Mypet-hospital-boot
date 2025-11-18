@@ -74,14 +74,16 @@ public class Kakao_Controller {
         Mypet_UserDTO tempUser = (Mypet_UserDTO) session.getAttribute("temp_kakao_user");
         
         if (tempUser == null) {
-            rttr.addFlashAttribute("message", "로그인 세션이 만료되었습니다.");
+            rttr.addFlashAttribute("message", "카카오 로그인 세션이 만료되었습니다.");
             return "redirect:/login";
         }
         
         model.addAttribute("userDTO", tempUser);
-        model.addAttribute("socialType", "kakao"); // 🔻 JSP 구분을 위해 "kakao" 전달
+        model.addAttribute("socialType", "kakao");
         
-        return "register_social"; // 👈 공통 JSP 호출
+        model.addAttribute("formAction", "/register_social_process");
+        
+        return "register_social";
     }
 
     /**

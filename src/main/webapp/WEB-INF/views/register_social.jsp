@@ -25,14 +25,25 @@
                 로그인에 성공했습니다! 원활한 서비스 이용을 위해 추가 정보를 입력해주세요.
             </p>
 
-            <c:choose>
-                <c:when test="${socialType == 'google'}">
-                    <form action="<c:url value='/register_social_google_process'/>" method="post" id="socialForm">
-                </c:when>
-                <c:otherwise> <%-- 기본값은 카카오 --%>
-                    <form action="<c:url value='/register_social_kakao_process'/>" method="post" id="socialForm">
-                </c:otherwise>
-            </c:choose>
+	<jsp:include page="/WEB-INF/views/common/header.jsp" />
+
+<main>
+    <div class="login-container">
+        <h2>추가 정보 입력 🐾</h2>
+			<p>
+	            <%-- 🔻 socialType에 따라 환영 메시지 변경 🔻 --%>
+	            <c:if test="${socialType == 'google'}">Google</c:if>
+	            <c:if test="${socialType == 'kakao'}">카카오</c:if>
+	            <c:if test="${socialType == 'naver'}">네이버</c:if>
+	            로그인에 성공했습니다! 원활한 서비스 이용을 위해 추가 정보를 입력해주세요.
+	        </p>
+        <form action="<c:url value='${formAction}'/>" method="post" id="socialForm">
+            
+            <input type="hidden" name="user_name" value="${userDTO.user_name}">
+            <input type="hidden" name="user_email" value="${userDTO.user_email}">
+
+            <div class="input-group">
+                <input type="tel" name="user_phone" placeholder="휴대폰 번호 ('-' 없이 입력)" required>
             
                 <input type="hidden" name="user_name" value="${userDTO.user_name}">
                 <input type="hidden" name="user_email" value="${userDTO.user_email}">

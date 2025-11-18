@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.boot.dto.Mypet_UserDTO;
 import com.boot.dto.FindAccountDTO;
@@ -22,7 +22,8 @@ public interface UserService {
 
     List<Mypet_PetDTO> getPetsByUserNo(int user_no);
     
-    boolean uploadUserImage(int user_no, String fileName, byte[] fileBytes);
+    void updateUserImg(int user_no, String imgPath, String imgHash);
+    boolean replaceUserImage(int userNo, MultipartFile file);
     
 //	아이디 찾기
 	public ArrayList<FindAccountDTO> findAccount(HashMap<String, String>param);

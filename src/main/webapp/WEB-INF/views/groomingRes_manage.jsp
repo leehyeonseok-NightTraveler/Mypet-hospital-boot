@@ -13,7 +13,7 @@
 </head>
 <body>
 <jsp:include page="/WEB-INF/views/common/header.jsp"/>
-<%-- 공통 헤더 부분 포함 (다른 JSP 파일) --%>
+<%-- 공통 헤더 부분 포함 --%>
 
 <main id="res-manage-main">
     <%-- 메인 컨텐츠 영역 시작 --%>
@@ -21,11 +21,9 @@
         <nav class="floating-menu" id="manage-menu">
             <%-- 관리 메뉴 네비게이션 (플로팅 메뉴) --%>
             <a href="<c:url value='/user_manage'/>" class="menu-link" id="menu-user">회원정보 관리</a>
-            <%-- 회원정보 관리 링크 --%>
             <a href="<c:url value='/veterinaryRes_manage'/>" class="menu-link" id="menu-veterinary">진료예약 관리</a>
-            <%-- 진료예약 관리 링크 --%>
             <a href="<c:url value='/groomingRes_manage'/>" class="menu-link active" id="menu-grooming">미용예약 관리</a>
-            <%-- 현재 페이지 (미용예약 관리) 링크 및 'active' 클래스 적용 --%>
+            <%-- 현재 페이지를 나타내기 위해 'active' 클래스 적용 --%>
         </nav>
     </div>
 
@@ -53,7 +51,7 @@
             </thead>
             <tbody>
             <c:forEach var="ResList" items="${GroomingResList}">
-                <%-- 'GroomingResList' 모델 객체를 반복하여 각 예약 항목 출력 --%>
+                <%-- 모델 객체 'GroomingResList'를 반복하여 각 예약 항목 출력 --%>
                 <tr>
                     <td>${ResList.res_no}</td>
                     <td>${ResList.user_no}</td>
@@ -63,33 +61,36 @@
                     <td>${ResList.user_phone}</td>
                     <td>
                         <button type="button" onclick="openDetailModal('${ResList.res_no}')">보기</button>
-                            <%-- 미용내용(service_item)을 모달로 보기 위한 버튼. 예약번호를 인자로 JavaScript 함수 호출 --%>
+                            <%-- 미용내용(service_item)을 모달로 보기 위한 버튼 --%>
                     </td>
                     <td><fmt:formatDate value="${ResList.res_date}" pattern="yyyy-MM-dd HH:mm"/></td>
-                        <%-- 예약 날짜 및 시간을 지정된 형식으로 포맷하여 출력 --%>
+                        <%-- 예약 날짜 및 시간 포맷 출력 --%>
                     <td>${ResList.res_status}</td>
                     <td>
                         <button type="button" onclick="openMemoModal('${ResList.res_no}')">보기</button>
-                            <%-- 추가사항(memo)을 모달로 보기 위한 버튼. 예약번호를 인자로 JavaScript 함수 호출 --%>
+                            <%-- 추가사항(memo)을 모달로 보기 위한 버튼 --%>
                     </td>
                     <td>
                         <c:choose>
-                            <%-- 예약완료 상태: 확정 + 취소 버튼 --%>
+                            <%-- 예약완료 상태: 확정 및 취소 버튼 표시 --%>
                             <c:when test="${ResList.res_status eq '예약완료'}">
                                 <form method="post" action="confirmRes" style="display:inline;">
                                     <input type="hidden" name="res_no" value="${ResList.res_no}"/>
                                     <input type="hidden" name="type" value="grooming"/>
+                                        <%-- 현재 페이지 상태 유지를 위한 hidden 필드 추가 --%>
+                                    <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}"/>
+                                    <input type="hidden" name="amount" value="${pageMaker.cri.amount}"/>
                                     <button type="submit">예약확정</button>
                                 </form>
                                 <button type="button" onclick="openCancelModal('${ResList.res_no}', 'grooming')">예약취소</button>
                             </c:when>
 
-                            <%-- 예약확정 상태: 취소 버튼만 --%>
+                            <%-- 예약확정 상태: 취소 버튼만 표시 --%>
                             <c:when test="${ResList.res_status eq '예약확정'}">
                                 <button type="button" onclick="openCancelModal('${ResList.res_no}', 'grooming')">예약취소</button>
                             </c:when>
 
-                            <%-- 예약취소 상태: 처리 불가 --%>
+                            <%-- 그 외 상태 (예약취소 등): 처리 불가 표시 --%>
                             <c:otherwise>
                                 <span>-</span>
                             </c:otherwise>
@@ -99,24 +100,22 @@
                 </tr>
 
                 <tr id="detailModal-${ResList.res_no}" class="info-modal-row" style="display:none;">
-                        <%-- 미용내용 상세 정보를 보여줄 행. 초기에는 숨김 처리 --%>
+                        <%-- 미용내용 상세 정보를 보여줄 숨겨진 행 --%>
                     <td colspan="11">
                         <div class="info-modal-content">
-                            <h3>진료내용</h3> <%-- (표시 텍스트는 '진료내용'으로 되어있음) --%>
+                            <h3>진료내용</h3> <%-- (화면 표시 텍스트: '진료내용') --%>
                             <p>${ResList.service_item}</p>
-                                <%-- 실제 미용 서비스 항목 내용 --%>
                             <button type="button" onclick="closeDetailModal('${ResList.res_no}')">닫기</button>
                         </div>
                     </td>
                 </tr>
 
                 <tr id="memoModal-${ResList.res_no}" class="info-modal-row" style="display:none;">
-                        <%-- 추가사항 상세 정보를 보여줄 행. 초기에는 숨김 처리 --%>
+                        <%-- 추가사항 상세 정보를 보여줄 숨겨진 행 --%>
                     <td colspan="11">
                         <div class="info-modal-content">
                             <h3>추가사항</h3>
                             <p>${ResList.memo}</p>
-                                <%-- 예약 시 작성된 추가 메모 내용 --%>
                             <button type="button" onclick="closeMemoModal('${ResList.res_no}')">닫기</button>
                         </div>
                     </td>
@@ -124,21 +123,49 @@
             </c:forEach>
             </tbody>
         </table>
+        <nav class="pagination-container">
+            <ul class="pagination-list">
+                <%-- 이전 페이지 링크 --%>
+                <c:if test="${pageMaker.prev}">
+                    <li class="pagination-item prev paginate_button">
+                        <a class="pagination-link"
+                           href="groomingRes_manage?pageNum=${pageMaker.startPage - 1}&amount=<c:out value='${pageMaker.cri.amount}'/>">이전</a>
+                    </li>
+                </c:if>
+
+                <%-- 페이지 번호 링크 반복 출력 --%>
+                <c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
+                    <li class="pagination-item page-num paginate_button
+                <c:out value='${pageMaker.cri.pageNum == num ? "active" : ""}'/>">
+                        <a class="pagination-link"
+                           href="groomingRes_manage?pageNum=<c:out value='${num}'/>&amount=<c:out value='${pageMaker.cri.amount}'/>">${num}</a>
+                    </li>
+                </c:forEach>
+
+                <%-- 다음 페이지 링크 --%>
+                <c:if test="${pageMaker.next}">
+                    <li class="pagination-item next paginate_button">
+                        <a class="pagination-link"
+                           href="groomingRes_manage?pageNum=${pageMaker.endPage + 1}&amount=<c:out value='${pageMaker.cri.amount}'/>">다음</a>
+                    </li>
+                </c:if>
+            </ul>
+        </nav>
     </section>
 
     <div id="modalOverlay"></div>
-    <%-- 모달이 열릴 때 뒷 배경을 어둡게 처리하는 오버레이 요소 --%>
+    <%-- 모든 모달이 열릴 때 배경을 어둡게 처리하는 오버레이 요소 --%>
 
     <div id="cancelModal">
-        <%-- 예약 취소 사유를 입력받는 모달 창 --%>
+        <%-- 예약 취소 사유를 입력받는 모달 폼 --%>
         <form method="post" action="cancelRes">
-            <%-- 예약 취소 처리를 위한 폼 (POST 요청) --%>
 
             <input type="hidden" name="res_no" id="cancelResNo"/>
-            <%-- 🌟 수정: value="${ResList.res_no}" 제거하고, id="cancelResNo" 추가 🌟 --%>
-
             <input type="hidden" name="type" id="cancelResType" value="grooming"/>
-            <%-- 🌟 수정: value를 grooming 고정하고, id="cancelResType" 추가 🌟 --%>
+
+            <%-- 예약 취소 후 목록 복귀 시 상태 유지를 위한 hidden 필드 --%>
+            <input type="hidden" name="pageNum" id="cancelPageNum" value="${pageMaker.cri.pageNum}"/>
+            <input type="hidden" name="amount" id="cancelAmount" value="${pageMaker.cri.amount}"/>
 
             <label for="cancel_reason">취소 사유:</label><br>
             <textarea name="cancel_reason" id="cancel_reason" rows="4" cols="40" required></textarea><br><br>

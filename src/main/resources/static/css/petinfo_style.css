@@ -155,3 +155,128 @@
 .edit-pet-btn:hover {
 	background: #357abd;
 }
+
+.pet-profile-img {
+    width: 350px;      /* 원하는 고정 크기 */
+    height: 350px;
+    object-fit: cover; /* 가운데 맞추고 잘림 */
+    border-radius: 15px;
+    display: block;
+    margin: 0 auto;
+}
+
+/* =========================================
+ 펫 상세정보 - 체중 관리 (테마 적용)
+========================================= 
+*/
+
+/* 체중 관리 섹션 전체 (구분선) */
+.pet-weight-section {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid #f0f0f0; /* 펫 정보와 구역 나누기 */
+}
+
+.pet-weight-section h3 {
+    font-size: 1.5em; /* 기존 content h2와 유사하게 */
+    color: #333;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee; /* 제목 구분선 */
+}
+
+/* 현재/권장 체중 비교 (가로 정렬) */
+.weight-comparison {
+    display: flex;
+    flex-wrap: wrap; /* 화면 좁아지면 줄바꿈 */
+    gap: 20px; /* 항목 간 간격 */
+    font-size: 1.1em;
+    margin-bottom: 25px;
+}
+
+.weight-comparison p {
+    margin: 0; /* p 태그 기본 마진 제거 */
+    padding: 12px 15px;
+    background-color: #f8f9fa; /* 사이드 메뉴와 유사한 배경 */
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.weight-comparison p strong {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #4a90e2; /* ⭐️ 기존 테마의 파란색 적용 */
+}
+
+/* 권장 체중 초과 시 경고 메시지 */
+.weight-comparison p.warning-text {
+    background-color: transparent;
+    border: none;
+    color: #e63946; /* (경고용 빨간색은 유지) */
+    font-weight: 600;
+    align-self: center; /* 다른 항목들과 세로 중앙 정렬 */
+}
+
+/* 체중 입력 폼 */
+.weight-form {
+    margin-top: 15px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    background-color: #fdfdfd;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+}
+
+.weight-form label {
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #333;
+}
+
+/* 체중 입력 칸 */
+.weight-form input[type="number"] {
+    width: 120px;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1.05em;
+    box-sizing: border-box; /* 패딩 포함 크기 계산 */
+}
+.weight-form input[type="number"]:focus {
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+
+/* 기록 저장 버튼 */
+.weight-form button {
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: 600;
+    background-color: #4a90e2; /* ⭐️ 기존 수정 버튼 테마 적용 */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.weight-form button:hover {
+    background-color: #357abd; /* ⭐️ 기존 수정 버튼 hover 테마 적용 */
+}
+
+/* 그래프가 그려질 영역 */
+.chart-container {
+    width: 100%;
+    max-width: 700px; /* 그래프가 너무 커지지 않도록 */
+    margin: 20px 0; /* 위아래 여백 */
+    padding: 20px;
+    background-color: #fefefe;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}

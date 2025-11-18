@@ -42,7 +42,14 @@
             <!-- 첨부파일 -->
             <tr>
                 <td class="file">첨부파일</td>
-                <td colspan="6" class="file2">${dto.qna_file}</td>
+				<c:choose>
+				    <c:when test="${not empty dto.qna_file}">
+				        <a href="/download?path=${dto.qna_file}">
+				            ${fn:substringAfter(dto.qna_file, '/')}
+				        </a>
+				    </c:when>
+				    <c:otherwise>첨부파일 없음</c:otherwise>
+				</c:choose>
             </tr>
 
             <!-- 질문 내용 -->
@@ -81,7 +88,7 @@
 
             <!-- 답변하기 -->
             <div class="btn-box">
-                <button type="button" 
+                <button type="button"
                         onclick="location.href='/qna_reply_write?qna_no=${dto.qna_no}'"
                         class="btn-list">
                     답변하기

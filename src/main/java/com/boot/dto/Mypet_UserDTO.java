@@ -28,5 +28,5 @@ public class Mypet_UserDTO {
     private String social_type; // "kakao""google"
     private String social_id;   // 카카오가 제공하는 고유 ID
     
-    private List<Mypet_PetDTO> pets;  // ✅ 유저가 보유한 펫 목록 (연동용)
+    private List<Mypet_PetDTO> pets;  // 유저가 보유한 펫 목록 (연동용)
 }
