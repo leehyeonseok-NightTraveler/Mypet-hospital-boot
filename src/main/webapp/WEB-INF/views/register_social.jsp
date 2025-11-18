@@ -17,33 +17,25 @@
     <jsp:include page="/WEB-INF/views/common/header.jsp" />
     <main>
         <div class="login-container">
-            <h2>추가 정보 입력 🐾</h2>
+            <h2>추가 정보 입력 </h2>
             <p>
                 <%-- 🔻 socialType에 따라 환영 메시지 변경 🔻 --%>
                 <c:if test="${socialType == 'google'}">Google</c:if>
                 <c:if test="${socialType == 'kakao'}">카카오</c:if>
+                <c:if test="${socialType == 'naver'}">네이버</c:if>
                 로그인에 성공했습니다! 원활한 서비스 이용을 위해 추가 정보를 입력해주세요.
             </p>
 
-	<jsp:include page="/WEB-INF/views/common/header.jsp" />
-
-<main>
-    <div class="login-container">
-        <h2>추가 정보 입력 🐾</h2>
-			<p>
-	            <%-- 🔻 socialType에 따라 환영 메시지 변경 🔻 --%>
-	            <c:if test="${socialType == 'google'}">Google</c:if>
-	            <c:if test="${socialType == 'kakao'}">카카오</c:if>
-	            <c:if test="${socialType == 'naver'}">네이버</c:if>
-	            로그인에 성공했습니다! 원활한 서비스 이용을 위해 추가 정보를 입력해주세요.
-	        </p>
-        <form action="<c:url value='${formAction}'/>" method="post" id="socialForm">
+            <%-- 
+              컨트롤러에서 받은 "formAction" 변수값이 
+              <c:url value='...'> 태그에 의해 올바른 경로로 매핑됩니다.
+            --%>
+            <form action="<c:url value='${formAction}'/>" method="post" id="socialForm">
             
-            <input type="hidden" name="user_name" value="${userDTO.user_name}">
-            <input type="hidden" name="user_email" value="${userDTO.user_email}">
-
                 <input type="hidden" name="user_name" value="${userDTO.user_name}">
                 <input type="hidden" name="user_email" value="${userDTO.user_email}">
+
+                <input type="hidden" name="returnUrl" value="${returnUrl}">
 
                 <div class="input-group">
                     <input type="tel" name="user_phone" placeholder="휴대폰 번호 ('-' 없이 입력)" required>
