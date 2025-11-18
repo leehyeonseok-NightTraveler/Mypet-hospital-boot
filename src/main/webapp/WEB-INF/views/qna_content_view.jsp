@@ -59,9 +59,7 @@
             </tr>
 
             <tr class="content-row question-content-row">
-                <td colspan="6">
-                    <div class="content-box">${detail.qna_content}</div>
-                </td>
+                <td colspan="6"><div class="content-box">${detail.qna_content}</div></td>
             </tr>
 
             <c:if test="${not empty reply}">
@@ -77,9 +75,7 @@
                 </tr>
 
                 <tr class="content-row answer-content-row">
-                    <td colspan="6">
-                        <div class="content-box answer-content-box"> ${reply.reply_content}</div>
-                    </td>
+                    <td colspan="6"><div class="content-box answer-content-box">${reply.reply_content}</div></td>
                 </tr>
             </c:if>
 
@@ -124,12 +120,6 @@
                         </c:otherwise>
                     </c:choose>
 
-                    <button type="button"
-                            onclick="location.href='/qna_modify_view?qna_no=${detail.qna_no}'"
-                            class="btn btn-modify">
-                        질문 수정
-                    </button>
-
                     <form action="/qna_delete" method="post" class="inline-form">
                         <input type="hidden" name="qna_no" value="${detail.qna_no}" />
                         <button type="submit" class="btn btn-delete">삭제</button>
@@ -140,7 +130,7 @@
             <c:if test="${role ne 'ADMIN' and user_no eq detail.user_no}">
                 <div class="user-buttons">
                     <button type="button"
-                            onclick="location.href='/qna_modify_view?qna_no=${detail.qna_no}'"
+                            onclick="location.href='/qna_modify?qna_no=${detail.qna_no}&pageNum=${cri.pageNum}&amount=${cri.amount}'"
                             class="btn btn-modify">
                         질문 수정
                     </button>
@@ -151,12 +141,12 @@
                     </form>
                 </div>
             </c:if>
+
             <div class="common-buttons">
-                <button type="button"
-                        onclick="location.href='/qna_page'"
-                        class="btn btn-list">
-                    목록보기
-                </button>
+                <a href="<c:url value='/qna_page'>
+                <c:param name="pageNum" value="${cri.pageNum}"/>
+                <c:param name="amount" value="${cri.amount}"/>
+                </c:url>" class="btn btn-list" id="btn-back">목록으로</a>
             </div>
         </div>
 
