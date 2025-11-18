@@ -84,13 +84,43 @@ document.addEventListener('DOMContentLoaded', function() {
     // ----------------------------------------------------
 
     // 메시지 출력 헬퍼 함수
-    function displayMessage(text, isBot) {
-        const msgDiv = document.createElement('div');
-        msgDiv.classList.add(isBot ? 'bot-message' : 'user-message');
-        msgDiv.innerHTML = text; 
-        msgArea.appendChild(msgDiv);
-        msgArea.scrollTop = msgArea.scrollHeight; 
-    }
+	function displayMessage(text, isBot) {
+	    const msgArea = document.getElementById('message-area');
+	    const msgDiv = document.createElement('div');
+	    msgDiv.classList.add(isBot ? 'bot-message' : 'user-message');
+
+	    if (isBot) {
+	        // 1. 마크다운 링크 처리 ([예약](url))
+	        text = text.replace(
+	            /\[([^\]]+)\]\(http:\/\/localhost:8686\/reservation\)/g,
+	            '<a href="http://localhost:8686/reservation" target="_blank" style="color:#007bff;font-weight:bold;text-decoration:underline;">$1</a>'
+	        );
+
+	        // 2. 괄호 안에 있는 링크 처리 <http://...>
+	        text = text.replace(
+	            /<http:\/\/localhost:8686\/reservation>/g,
+	            '<a href="http://localhost:8686/reservation" target="_blank" style="color:#007bff;font-weight:bold;text-decoration:underline;">예약하기 페이지</a>'
+	        );
+
+	        // 3. 그냥 텍스트로 나온 링크 처리
+	        text = text.replace(
+	            /http:\/\/localhost:8686\/reservation/g,
+	            '<a href="http://localhost:8686/reservation" target="_blank" style="color:#007bff;font-weight:bold;text-decoration:underline;">예약하기 페이지</a>'
+	        );
+
+	        // 4. 링크는 없는데 "예약"이라는 단어가 들어간 문장은 자동으로 링크 추가
+//	        if (text.includes('예약') && !text.includes('reservation')) {
+//	            text = text.replace(
+//	                /예약/g,
+//	                '<a href="http://localhost:8686/reservation" target="_blank" style="color:#007bff;font-weight:bold;text-decoration:underline;">예약</a>'
+//	            );
+//	        }
+	    }
+
+	    msgDiv.innerHTML = text;
+	    msgArea.appendChild(msgDiv);
+	    msgArea.scrollTop = msgArea.scrollHeight;
+	}
 
     // 챗봇 시작 및 초기 FAQ 버튼 출력
     function startWorkflow() {
@@ -126,24 +156,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ⭐ 핵심 워크플로우 로직 (FAQ 답변 분기) ⭐
-    function handleUserQuery(query) {
-        let response = "";
-        query = query.toLowerCase(); // 쿼리를 소문자로 변환하여 비교
-
-        // 1. 하드코딩된 규칙에 따라 답변 결정
-        if (query.includes("예약") || query.includes("예약 문의")) {
-            response = "예약은 **<a href='http://localhost:8686/reservation' target='_blank'>예약 페이지</a>**를 통해 진행해 주세요. 예약 조회도 해당 페이지에서 가능합니다.";
-        } else if (query.includes("시간") || query.includes("운영 시간")) {
-            response = "🏥 **운영 시간:** 평일 10:00~19:00입니다. 주말 및 공휴일은 휴무입니다.";
-        } else if (query.includes("상담") || query.includes("상담 연결")) {
-            response = "잠시 후 상담원이 응답할 예정입니다. 메시지를 남겨주시면 확인 후 연락드리겠습니다.";
-        } else {
-            response = "죄송합니다. 요청하신 내용을 이해하지 못했어요. 다시 말씀해 주시거나 위 메뉴를 이용해 주세요.";
-        }
-        
-        // 2. 응답 출력
-        setTimeout(() => displayMessage(response, true), 500); 
-    }
+	function handleUserQuery(query) {
+	    fetch('/api/chat/ask', {
+	        method: 'POST',
+	        headers: { 'Content-Type': 'application/json' },
+	        body: JSON.stringify({ query: query })
+	    })
+	    .then(res => res.json())
+	    .then(data => {
+	        setTimeout(() => displayMessage(data.response, true), 700);
+	    })
+	    .catch(() => {
+	        setTimeout(() => displayMessage("일시적인 장애가 발생했어요. 잠시 후 다시 시도해주세요.", true), 700);
+	    });
+	}
     
     // 초기 상태 설정: 모든 팝업 숨김 (DOMContentLoaded 끝)
 });
