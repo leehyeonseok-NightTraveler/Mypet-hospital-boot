@@ -219,4 +219,38 @@ public class ManageController {
         //
         return redirectPath;
     }
+
+    @PostMapping("/UserStatusProcess")
+    public String UserStatusProcess(@RequestParam("user_no") int userNo,
+                                    @RequestParam("targetStatus") String newStatus,
+                                    @RequestParam(value = "suspension_reason", required = false) String suspensionReason,
+                                    @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                                    @RequestParam(value = "amount", defaultValue = "10") int amount,
+                                    RedirectAttributes rttr) {
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("user_no", userNo);
+        params.put("newStatus", newStatus);
+
+        String msg;
+
+        if ("ACTIVE".equals(newStatus)) {
+            // 활동 해제 요청: 사유를 NULL로 설정하여 DB에서 초기화
+            params.put("suspension_reason", null);
+            msg = "활동정지가 해제되었습니다.";
+        } else {
+            // 활동 정지 요청: 전송된 사유를 사용
+            params.put("suspension_reason", suspensionReason);
+            msg = "활동정지 처리되었습니다. 사유가 기록되었습니다.";
+        }
+
+        manageService.UserStatusProcess(params);
+
+        rttr.addAttribute("user_no", userNo);
+        rttr.addAttribute("pageNum", pageNum);
+        rttr.addAttribute("amount", amount);
+        rttr.addFlashAttribute("msg", msg);
+
+        return "redirect:/user_detail";
+    }
 }
