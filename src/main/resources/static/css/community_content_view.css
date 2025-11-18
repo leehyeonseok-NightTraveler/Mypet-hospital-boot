@@ -1,0 +1,142 @@
+/* 전체 레이아웃 */
+main {
+	margin: 20px auto;
+	padding: 0 16px;
+	max-width: 900px;
+	width: 90%; /* 반응형 너비 */
+	box-sizing: border-box;
+}
+
+/* 공지사항 섹션 */
+.notice-view {
+	background-color: #fefefe;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+	padding: 16px;
+}
+
+/* 테이블 */
+table {
+	width: 100%;
+	border-collapse: collapse;
+	background-color: #fff;
+	margin: 0 auto;
+}
+
+table td {
+	border: 1px solid #e0e0e0;
+	padding: 10px;
+	vertical-align: middle;
+}
+
+/* 제목 행 */
+.title {
+	background-color: #e3f2fd;
+	font-size: 17px;
+	font-weight: bold;
+	text-align: center;
+	color: #0d47a1;
+	padding: 12px;
+}
+
+/* 작성자 정보 행 */
+.writer_tr {
+	background-color: #f9f9f9;
+	font-size: 13px;
+	color: #333;
+	text-align: center;
+}
+
+.writer {
+	width: 140px;
+	font-weight: bold;
+	color: #555;
+}
+
+.date, .num, .viewnum {
+	width: 90px;
+	background-color: #f0f0f0;
+	font-weight: bold;
+	color: #444;
+	display: table-cell;
+}
+
+/* 첨부파일 */
+.file {
+	width: 90px;
+	background-color: #f0f0f0;
+	text-align: center;
+	font-size: 13px;
+	font-weight: bold;
+	color: #444;
+}
+
+.file2 {
+	background-color: #fafafa;
+	text-align: left;
+	font-size: 13px;
+	color: #333;
+}
+
+/* 본문 텍스트 영역 */
+.notice-content {
+	width: 100%;
+	max-width: 80vw; /* 브라우저 너비의 80% */
+	margin: 10px auto;
+	padding: 16px;
+	font-size: 15px;
+	background-color: #fff;
+	color: #222;
+	box-sizing: border-box;
+	white-space: pre-wrap;
+	word-break: break-word;
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+	min-height: 200px;
+}
+
+/* 버튼 영역 */
+.btn-box {
+	margin-top: 20px;
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+/* 버튼 스타일 */
+.btn-box button {
+	padding: 8px 16px;
+	font-size: 13px;
+	font-weight: bold;
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.btn-submit, .btn-list {
+	background-color: #2196F3;
+}
+
+.btn-submit:hover, .btn-list:hover {
+	background-color: #1976D2;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.btn-delete {
+	background-color: #e53935;
+}
+
+.btn-delete:hover {
+	background-color: #c62828;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.caption{
+	text-align: center;
+	margin-top: 60px;
+}
+

@@ -39,7 +39,10 @@
                                 <tr>
                                     <td>${dto.post_no}</td>
                                     <td class="title">
-                                        <a href="/community_view?post_no=${dto.post_no}">${dto.post_title}</a>
+                                        <a
+                                            href="/community_content_view?postNo=${dto.post_no}&pageNum=${pageMaker.cri.pageNum}&amount=${pageMaker.cri.amount}&user_no=${dto.user_no}">
+                                            ${dto.post_title}
+                                        </a>
                                     </td>
                                     <td>${dto.user_name}</td>
                                     <td>

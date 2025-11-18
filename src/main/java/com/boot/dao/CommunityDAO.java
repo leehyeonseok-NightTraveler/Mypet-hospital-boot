@@ -1,6 +1,6 @@
 package com.boot.dao;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.HashMap;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -21,4 +21,9 @@ public interface CommunityDAO {
 //	글 쓰기
 	public void communityWrite(HashMap<String, String> param);
 	
+//	조회수 증가
+	void increaseViewCount(int postNo);
+	
+	public void communityModify(HashMap<String, String> param);
+	public void communityDelete(HashMap<String, String> param);
 }

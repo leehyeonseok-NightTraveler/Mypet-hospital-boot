@@ -106,6 +106,7 @@ public class UserController {
             Mypet_UserDTO user = (Mypet_UserDTO) loginObj;
             session.setAttribute("role", "USER");
             session.setAttribute("loginUser", user);
+            session.setAttribute("user_no", user.getUser_no());
             log.info("일반 사용자 로그인 성공: {}", user_id);
             return "mainpage";
         }

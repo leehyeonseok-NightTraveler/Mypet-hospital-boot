@@ -57,7 +57,28 @@ public class CommunityServiceImpl implements CommunityService{
 		dao.communityWrite(param);
 		
 	}
-	
 
-	
+//	조회수 증가
+	@Override
+	public void increaseViewCount(int postNo) {
+		CommunityDAO dao = session.getMapper(CommunityDAO.class);
+	    dao.increaseViewCount(postNo);
+	}
+
+	@Override
+	public void communityModify(HashMap<String, String> param) {
+
+		CommunityDAO dao = session.getMapper(CommunityDAO.class);
+		dao.communityModify(param);
+		
+	}
+
+	@Override
+	public void communityDelete(HashMap<String, String> param) {
+		
+//		게시글 삭제
+		CommunityDAO dao = session.getMapper(CommunityDAO.class);
+		dao.communityDelete(param);
+	}
+
 }

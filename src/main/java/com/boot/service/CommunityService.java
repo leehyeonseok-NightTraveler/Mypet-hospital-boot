@@ -16,4 +16,10 @@ public interface CommunityService {
 	
 //	글 쓰기
 	public void communityWrite(HashMap<String, String> param);
+	
+//	조회수 증가
+	void increaseViewCount(int postNo);
+	
+	public void communityModify(HashMap<String, String> param);
+	public void communityDelete(HashMap<String, String> param);
 }

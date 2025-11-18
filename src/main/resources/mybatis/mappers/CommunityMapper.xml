@@ -6,13 +6,13 @@
 
 	<select id="getCommunityList" resultType="com.boot.dto.Mypet_CommunityDTO">
 	    <![CDATA[
-	        SELECT POST_NO, USER_NAME, POST_TITLE, POST_CONTENT, CREATED_DATE, VIEW_COUNT
+	        SELECT POST_NO, USER_NO, USER_NAME, POST_TITLE, POST_CONTENT, CREATED_DATE, VIEW_COUNT
 	        FROM (
 	            SELECT r,
-	                   POST_NO, USER_NAME, POST_TITLE, POST_CONTENT, CREATED_DATE, VIEW_COUNT
+	                   POST_NO, USER_NO, USER_NAME, POST_TITLE, POST_CONTENT, CREATED_DATE, VIEW_COUNT
 	            FROM (
 	                SELECT ROW_NUMBER() OVER (ORDER BY POST_NO DESC) AS r,
-	                       POST_NO, USER_NAME, POST_TITLE, POST_CONTENT, CREATED_DATE, VIEW_COUNT
+	                       POST_NO, USER_NO, USER_NAME, POST_TITLE, POST_CONTENT, CREATED_DATE, VIEW_COUNT
 	                FROM COMMUNITY
 	            ) a
 	            WHERE r <= (#{pageNum} * #{amount})
@@ -22,8 +22,40 @@
 	</select>
 
 
+
     <select id="getTotalCount" resultType="int">
         select count(*) from COMMUNITY
     </select>
 
+	<insert id="communityWrite">
+		INSERT INTO COMMUNITY(POST_NO, USER_NO, USER_NAME, POST_TITLE, POST_CONTENT, POST_FILE, CREATED_DATE)
+		VALUES(SEQ_POST_NO.NEXTVAL, #{user_no}, #{user_name}, #{post_title}, #{post_content}, #{post_file}, sysdate)
+	</insert>
+	
+	<update id="increaseViewCount">
+	    UPDATE COMMUNITY
+	    SET view_count = view_count + 1
+	    WHERE POST_NO = #{postNo}
+	</update>
+	
+	<select id="communityContentView" resultType="com.boot.dto.Mypet_CommunityDTO">
+    	select POST_NO, USER_NAME, POST_TITLE, POST_CONTENT, USER_NO, POST_FILE, VIEW_COUNT , CREATED_DATE from COMMUNITY where POST_NO=#{postNo}
+    </select>
+	
+	<update id="communityModify">
+		update COMMUNITY set post_title=#{post_title}, post_content=#{post_content}, post_file=#{post_file} 
+    	where post_no=#{post_no}
+	</update>
+	
+	<delete id="communityDelete">
+		delete from COMMUNITY where POST_NO=#{post_no}
+	</delete>
+	
 </mapper>
+
+
+
+
+
+
+
