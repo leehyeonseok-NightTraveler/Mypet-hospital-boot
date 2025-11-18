@@ -29,4 +29,6 @@ public class Mypet_PetDTO {
 	    private Date pet_chip_regdate; // 칩 등록일
 	    private String pet_img;        // 이미지 경로
 	    private String pet_img_temp;   // 이미지 해시
+	    private double recommended_weight;
+	    private double current_weight;
 }
