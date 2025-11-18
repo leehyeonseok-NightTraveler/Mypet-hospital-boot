@@ -27,6 +27,9 @@ public class Mypet_UserDTO {
     private String user_img_temp;  // 이미지 해시값 (중복 방지용)
     private String social_type; // "kakao""google"
     private String social_id;   // 카카오가 제공하는 고유 ID
-    
+    private String current_grade;   // 현재 등급
+    private Date grade_expiry_date; // 등급 만료일
+
+
     private List<Mypet_PetDTO> pets;  // 유저가 보유한 펫 목록 (연동용)
 }

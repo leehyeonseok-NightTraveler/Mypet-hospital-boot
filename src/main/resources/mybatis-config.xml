@@ -17,6 +17,8 @@
         <mapper resource="mybatis/mappers/Mypet_Google_Mapper.xml"/>
         <mapper resource="mybatis/mappers/ManageMapper.xml"/>
         <mapper resource="mybatis/mappers/NaverLoginMapper.xml"/>
+        <mapper resource="mybatis/mappers/ServiceHistoryMapper.xml"/>
+        <mapper resource="mybatis/mappers/GradeHistoryMapper.xml"/>
         <mapper resource="mybatis/mappers/PetWeightMapper.xml"/>
     </mappers>
 </configuration>

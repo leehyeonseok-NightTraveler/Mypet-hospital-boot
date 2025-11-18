@@ -23,6 +23,7 @@
         <h2>마이페이지 🐾</h2>
         <a href="/mypage_userinfo" class="active">내 정보</a>
         <a href="/mypage_petlist">펫 목록</a>
+		<a href="/mypage_membership">멤버십</a>
     </aside>
 
     <section class="content">
@@ -41,7 +42,12 @@
 			</c:choose>
 
             <div class="profile-name">
-                <h2>${loginUser.user_name} <span class="badge">일반회원</span></h2>
+				<h2>
+				    ${loginUser.user_name}
+				    <span class="badge badge-${loginUser.current_grade}">
+				        ${loginUser.current_grade}
+				    </span>
+				</h2>
                 <p>${loginUser.user_email}</p>
             </div>
         </div>
@@ -53,6 +59,8 @@
                 <li><strong>주소:</strong> ${loginUser.user_addr}</li>
                 <li><strong>가입일:</strong> ${loginUser.user_regidate}</li>
                 <li><strong>회원 상태:</strong> ${loginUser.user_status}</li>
+				<li><strong>현재 멤버십 등급:</strong> ${loginUser.current_grade}</li>
+				<li><strong>멤버십 만료일:</strong> ${loginUser.grade_expiry_date}</li>
             </ul>
         </div>
 

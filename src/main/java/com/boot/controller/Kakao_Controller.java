@@ -26,7 +26,11 @@ public class Kakao_Controller {
 
     // 1. "카카오 로그인" 버튼 클릭 시
     @GetMapping("/auth/kakao/login")
-    public String kakaoLogin() {
+    public String kakaoLogin(@RequestParam(required = false) String returnUrl, HttpSession session) { // 🔻 [수정] returnUrl 받기
+        // 🔻 [수정] returnUrl이 있으면 세션에 저장
+        if (returnUrl != null && !returnUrl.isEmpty()) {
+            session.setAttribute("login_return_url", returnUrl);
+        }
         String kakaoAuthUrl = kakaoService.getKakaoLoginURL();
         return "redirect:" + kakaoAuthUrl;
     }
@@ -44,23 +48,31 @@ public class Kakao_Controller {
 
         Mypet_UserDTO loginUser = kakaoDAO.findUserBySocialId(userInfo.getSocial_id());
 
+        // 🔻 [수정] returnUrl 로직 추가
+        String returnUrl = (String) session.getAttribute("login_return_url");
+        String redirectUrl = (returnUrl != null && !returnUrl.isEmpty()) ? returnUrl : "/mainpage";
+        session.removeAttribute("login_return_url"); // 세션에서 삭제
+
         if (loginUser == null) {
             // [CASE 1: 신규 회원]
             session.setAttribute("temp_kakao_user", userInfo); // 🔻 카카오 전용 세션
             log.info("신규 카카오 회원. 추가 정보 입력 페이지로 이동.");
-            return "redirect:/register_social_kakao"; // 👈 카카오 전용 GET
+            // 🔻 [수정] 리다이렉트 시 returnUrl 전달
+            return "redirect:/register_social_kakao?returnUrl=" + redirectUrl; 
             
         } else {
             // [CASE 2: 기존 회원]
             if (loginUser.getUser_phone() == null || loginUser.getUser_phone().isEmpty()) {
                 session.setAttribute("temp_kakao_user", loginUser); // 🔻 카카오 전용 세션
                 log.info("기존 회원(휴대폰 정보 없음). 추가 정보 입력 페이지로 이동.");
-                return "redirect:/register_social_kakao"; // 👈 카카오 전용 GET
+                // 🔻 [수정] 리다이렉트 시 returnUrl 전달
+                return "redirect:/register_social_kakao?returnUrl=" + redirectUrl; 
             } else {
                 session.setAttribute("loginUser", loginUser);
                 session.setAttribute("role", "USER"); 
                 log.info("기존 카카오 회원 로그인 성공. 세션 생성 완료: {}", loginUser.getUser_id());
-                return "redirect:/mainpage";
+                // 🔻 [수정] 최종 목적지로 리다이렉트
+                return "redirect:" + redirectUrl;
             }
         }
     }
@@ -69,7 +81,8 @@ public class Kakao_Controller {
      * 3. 🔻 카카오 전용 추가 정보 입력 폼 (GET) 🔻
      */
     @GetMapping("/register_social_kakao")
-    public String showSocialRegisterForm(HttpSession session, Model model, RedirectAttributes rttr) {
+    public String showSocialRegisterForm(HttpSession session, Model model, RedirectAttributes rttr,
+                                         @RequestParam(required = false) String returnUrl) { // 🔻 [수정] returnUrl 받기
         
         Mypet_UserDTO tempUser = (Mypet_UserDTO) session.getAttribute("temp_kakao_user");
         
@@ -80,8 +93,10 @@ public class Kakao_Controller {
         
         model.addAttribute("userDTO", tempUser);
         model.addAttribute("socialType", "kakao");
+        model.addAttribute("returnUrl", returnUrl); // 🔻 [수정] 모델에 returnUrl 추가 (JSP hidden input용)
         
-        model.addAttribute("formAction", "/register_social_process");
+        // 🔻🔻🔻 [핵심 수정] 404 오류 수정 🔻🔻🔻
+        model.addAttribute("formAction", "/register_social_kakao_process"); // 👈 PostMapping 주소와 일치
         
         return "register_social";
     }
@@ -90,7 +105,8 @@ public class Kakao_Controller {
      * 4. 🔻 카카오 전용 폼 처리 (POST) 🔻
      */
     @PostMapping("/register_social_kakao_process")
-    public String processSocialRegister(@ModelAttribute Mypet_UserDTO formData, HttpSession session, RedirectAttributes rttr) {
+    public String processSocialRegister(@ModelAttribute Mypet_UserDTO formData, HttpSession session, RedirectAttributes rttr,
+                                        @RequestParam(required = false) String returnUrl) { // 🔻 [수정] returnUrl 받기
         
         Mypet_UserDTO tempUser = (Mypet_UserDTO) session.getAttribute("temp_kakao_user");
         
@@ -122,12 +138,16 @@ public class Kakao_Controller {
             session.removeAttribute("temp_kakao_user");
             session.setAttribute("loginUser", tempUser);
             session.setAttribute("role", "USER");
-            return "redirect:/mainpage";
+            
+            // 🔻 [수정] 폼에서 받은 returnUrl이 있으면 거기로, 없으면 /mainpage로
+            String redirectUrl = (returnUrl != null && !returnUrl.isEmpty()) ? returnUrl : "/mainpage";
+            return "redirect:" + redirectUrl;
 
         } catch (Exception e) {
             log.error("카카오 회원가입/업데이트 처리 중 오류 발생", e);
             rttr.addFlashAttribute("message", "정보 저장 중 오류가 발생했습니다.");
-            return "redirect:/register_social_kakao"; // 👈 카카오 전용 GET
+            // 🔻 [수정] 폼으로 다시 돌려보낼 때 returnUrl을 유지
+            return "redirect:/register_social_kakao?returnUrl=" + returnUrl; 
         }
     }
 }

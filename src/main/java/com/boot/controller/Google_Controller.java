@@ -19,14 +19,17 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-public class Google_Controller {
+public class Google_Controller { 
 
     private final Mypet_GoogleService googleService;
     private final Mypet_Google_DAO googleDAO; 
 
     // 1. "구글 로그인" 버튼 클릭 시
     @GetMapping("/auth/google/login")
-    public String googleLogin() {
+    public String googleLogin(@RequestParam(required = false) String returnUrl, HttpSession session) {
+        if (returnUrl != null && !returnUrl.isEmpty()) {
+            session.setAttribute("login_return_url", returnUrl);
+        }
         String googleAuthUrl = googleService.getGoogleLoginURL();
         return "redirect:" + googleAuthUrl;
     }
@@ -40,38 +43,41 @@ public class Google_Controller {
         Mypet_UserDTO userInfo = googleService.getGoogleUserInfo(googleService.getGoogleAccessToken(code));
         
         if (userInfo == null || userInfo.getSocial_id() == null) {
-             rttr.addFlashAttribute("message", "구글 로그인에 실패했습니다.");
+             rttr.addFlashAttribute("message", "구글 로그인에 실패했습니다. (API 정보 조회 오류)");
              return "redirect:/login";
         }
 
         Mypet_UserDTO loginUser = googleDAO.findUserBySocialId(userInfo.getSocial_id());
+        
+        String returnUrl = (String) session.getAttribute("login_return_url");
+        String redirectUrl = (returnUrl != null && !returnUrl.isEmpty()) ? returnUrl : "/mainpage";
+        session.removeAttribute("login_return_url"); // 세션에서 삭제
 
         if (loginUser == null) {
             // [CASE 1: 신규 회원]
-            session.setAttribute("temp_google_user", userInfo); // 🔻 구글 전용 세션
+            session.setAttribute("temp_google_user", userInfo);
             log.info("신규 구글 회원. 추가 정보 입력 페이지로 이동.");
-            return "redirect:/register_social_google"; // 👈 구글 전용 GET
+            return "redirect:/register_google?returnUrl=" + redirectUrl; 
             
         } else {
             // [CASE 2: 기존 회원]
             if (loginUser.getUser_phone() == null || loginUser.getUser_phone().isEmpty()) {
-                session.setAttribute("temp_google_user", loginUser); // 🔻 구글 전용 세션
+                session.setAttribute("temp_google_user", loginUser);
                 log.info("기존 회원(휴대폰 정보 없음). 추가 정보 입력 페이지로 이동.");
-                return "redirect:/register_social_google"; // 👈 구글 전용 GET
+                return "redirect:/register_google?returnUrl=" + redirectUrl;
             } else {
+                // [CASE 2-2: 모든 정보가 있는 기존 회원]
                 session.setAttribute("loginUser", loginUser);
                 session.setAttribute("role", "USER");
                 log.info("기존 구글 회원 로그인 성공. 세션 생성 완료: {}", loginUser.getUser_id());
-                return "redirect:/mainpage";
+                return "redirect:" + redirectUrl;
             }
         }
     }
 
-    /**
-     * 3. 🔻 구글 전용 추가 정보 입력 폼 (GET) 🔻
-     */
-    @GetMapping("/register_social_google")
-    public String showSocialRegisterForm(HttpSession session, Model model, RedirectAttributes rttr) {
+    @GetMapping("/register_google")
+    public String showGoogleRegisterForm(HttpSession session, Model model, RedirectAttributes rttr,
+                                         @RequestParam(required = false) String returnUrl) {
         
         Mypet_UserDTO tempUser = (Mypet_UserDTO) session.getAttribute("temp_google_user");
         
@@ -82,15 +88,17 @@ public class Google_Controller {
         
         model.addAttribute("userDTO", tempUser);
         model.addAttribute("socialType", "google"); // 🔻 JSP 구분을 위해 "google" 전달
+        model.addAttribute("returnUrl", returnUrl); // 🔻 폼으로 returnUrl 전달
+        
+        // 🔻🔻🔻 [수정] 폼이 전송될 URL(/register_google_process)을 모델에 추가 🔻🔻🔻
+        model.addAttribute("formAction", "/register_google_process");
         
         return "register_social"; // 👈 공통 JSP 호출
     }
 
-    /**
-     * 4. 🔻 구글 전용 폼 처리 (POST) 🔻
-     */
-    @PostMapping("/register_social_google_process")
-    public String processGoogleRegister(@ModelAttribute Mypet_UserDTO formData, HttpSession session, RedirectAttributes rttr) {
+    @PostMapping("/register_google_process")
+    public String processGoogleRegister(@ModelAttribute Mypet_UserDTO formData, HttpSession session, RedirectAttributes rttr,
+                                        @RequestParam(required = false) String returnUrl) {
         
         Mypet_UserDTO tempUser = (Mypet_UserDTO) session.getAttribute("temp_google_user");
         
@@ -122,12 +130,16 @@ public class Google_Controller {
             session.removeAttribute("temp_google_user");
             session.setAttribute("loginUser", tempUser);
             session.setAttribute("role", "USER");
-            return "redirect:/mainpage";
+            
+            // 🔻 폼에서 받은 returnUrl이 있으면 거기로, 없으면 /mainpage로 🔻
+            String redirectUrl = (returnUrl != null && !returnUrl.isEmpty()) ? returnUrl : "/mainpage";
+            return "redirect:" + redirectUrl;
 
         } catch (Exception e) {
             log.error("구글 회원가입/업데이트 처리 중 오류 발생", e);
             rttr.addFlashAttribute("message", "정보 저장 중 오류가 발생했습니다.");
-            return "redirect:/register_social_google"; // 👈 구글 전용 GET
+            // 🔻 폼으로 다시 돌려보낼 때 returnUrl을 유지
+            return "redirect:/register_google?returnUrl=" + returnUrl; 
         }
     }
 }

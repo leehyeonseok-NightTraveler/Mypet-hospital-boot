@@ -18,4 +18,10 @@ public interface ManageService {
     int getVetResTotal(Criteria cri);
     int getGroResTotal(Criteria cri);
     void UserStatusProcess(Map<String, Object> params);
+    List<GradeHistoryDTO> getGradeHistory(int user_no);
+    List<ServiceHistoryDTO> getServiceHistory(int user_no);
+    void insertServiceHistory(ServiceHistoryDTO dto);
+    void completeService(int service_no);
+    List<Mypet_PetDTO> getPetList(int user_no);
+
 }
