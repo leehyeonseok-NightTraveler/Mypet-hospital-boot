@@ -25,15 +25,13 @@
 <main>
     <div class="login-container">
         <h2>추가 정보 입력 🐾</h2>
-		<c:choose>
-	        <c:when test="${socialType == 'naver'}">
-	            <p>네이버 로그인에 성공했습니다! 원활한 서비스 이용을 위해 추가 정보를 입력해주세요.</p>
-	        </c:when>
-	        <c:otherwise>
-	            <p>카카오 로그인에 성공했습니다! 원활한 서비스 이용을 위해 추가 정보를 입력해주세요.</p>
-	        </c:otherwise>
-	    </c:choose>
-
+			<p>
+	            <%-- 🔻 socialType에 따라 환영 메시지 변경 🔻 --%>
+	            <c:if test="${socialType == 'google'}">Google</c:if>
+	            <c:if test="${socialType == 'kakao'}">카카오</c:if>
+	            <c:if test="${socialType == 'naver'}">네이버</c:if>
+	            로그인에 성공했습니다! 원활한 서비스 이용을 위해 추가 정보를 입력해주세요.
+	        </p>
         <form action="<c:url value='${formAction}'/>" method="post" id="socialForm">
             
             <input type="hidden" name="user_name" value="${userDTO.user_name}">
