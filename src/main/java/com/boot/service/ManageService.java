@@ -1,6 +1,7 @@
 package com.boot.service;
 
 import com.boot.dto.*;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -16,4 +17,5 @@ public interface ManageService {
     int getUserTotal(Criteria cri);
     int getVetResTotal(Criteria cri);
     int getGroResTotal(Criteria cri);
+    void UserStatusProcess(Map<String, Object> params);
 }

@@ -1,108 +1,228 @@
 @charset "UTF-8";
 
-/* 전체 레이아웃 */
+/* ========================================================= */
+/* 폰트 및 기본 설정 */
+/* ========================================================= */
+body {
+    font-family: 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f8f9fa; /* 배경색 통일 */
+    line-height: 1.6;
+    color: #333;
+}
+
+/* ========================================================= */
+/* Main Content Layout & Styling */
+/* ========================================================= */
+
+/* 전체 레이아웃 - 중앙 정렬 및 최대 너비 설정 */
 .container {
-	margin: 30px auto;
-	max-width: 800px;
-	padding: 0 16px;
-	box-sizing: border-box;
+    margin: 40px auto; /* 상하 여백 증가 */
+    max-width: 900px; /* 너비 확장으로 내용 영역 확보 */
+    padding: 0 20px;
+    box-sizing: border-box;
 }
 
-/* 제목 */
+/* 제목 - 중앙 정렬 및 강조 */
 h3 {
-	text-align: center;
-	font-size: 1.8rem;
-	font-weight: 700;
-	color: #0d47a1;
-	margin-bottom: 30px;
+    text-align: center;
+    font-size: 2rem; /* 글꼴 크기 키우기 */
+    font-weight: 800;
+    color: #1565C0; /* 더 진한 파란색 계열 */
+    padding-bottom: 10px;
+    margin-bottom: 40px; /* 아래 여백 증가 */
+    border-bottom: 3px solid #E3F2FD; /* 구분선 추가 */
 }
 
-/* 테이블 스타일 */
-.table {
-	width: 100%;
-	border-collapse: collapse;
-	background-color: #fff;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-	border-radius: 8px;
-	overflow: hidden;
-	margin-bottom: 20px;
+/* 폼 필드 테이블 스타일 (수정) */
+.table.write-info-table { /* JSP에서 추가한 클래스 사용 */
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff; /* 배경색을 흰색으로 변경하여 더 깔끔하게 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* 그림자 강화 */
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 30px;
 }
 
-.table td {
-	padding: 12px 16px;
-	border-bottom: 1px solid #e0e0e0;
-	font-size: 14px;
-	color: #333;
-	vertical-align: middle;
+.table.write-info-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eef0f3; /* 구분선 다시 추가 */
+    font-size: 15px;
+    color: #444;
+    vertical-align: middle; /* 라벨과 입력 필드의 수직 정렬 */
 }
 
-#center1, #center2 {
-	background-color: #f0f0f0;
-	font-weight: bold;
-	text-align: center;
-	width: 80px;
+.table.write-info-table tr:last-child td {
+    border-bottom: none; /* 마지막 행의 아래 테두리 제거 */
 }
 
-/* Summernote 에디터 */
-#table2 {
-	width: 100%;
-	margin-bottom: 20px;
+/* 라벨 스타일 (제목, 첨부파일) (수정) */
+.table.write-info-table .label {
+    background-color: #E3F2FD; /* 밝은 파란색 배경 */
+    font-weight: bold;
+    text-align: center;
+    width: 120px; /* 너비 확보 */
+    color: #1565C0;
+    border-right: 1px solid #BBDEFB; /* 구분선 추가 */
+    /* 라벨 텍스트가 세로 중앙에 오도록 추가 */
+    display: table-cell; /* td에 직접 적용 */
+    vertical-align: middle;
 }
 
-#summernote {
-	width: 100%;
-	height: 300px;
-	border-radius: 6px;
-	border: 1px solid #ccc;
-	margin-top: 10px;
+/* 일반 텍스트 입력 필드 스타일 */
+.form-control {
+    width: 100%; /* 너비 확보 */
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #B0BEC5;
+    padding: 8px 12px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.2s ease;
 }
 
-.note-toolbar {
-	padding: 4px 8px !important;
+.form-control:focus {
+    border-color: #42A5F5;
+    box-shadow: 0 0 0 2px rgba(66, 165, 245, 0.2);
+    outline: none;
 }
 
-.note-toolbar .btn {
-	padding: 2px 5px !important;
-	font-size: 12px !important;
+/* 파일 업로드 필드 스타일 (새로 추가 및 수정) */
+/* Bootstrap 3은 기본 파일 인풋을 잘 건드리지 않아 수동으로 스타일링 필요 */
+.form-control-file {
+    display: block; /* 블록 요소로 변경 */
+    width: 100%;
+    /* 기존 Bootstrap의 form-control-file 스타일을 완전히 제거하고 새로 정의 */
+    padding: 0; /* Bootstrap 기본 패딩 제거 */
+    border: none; /* Bootstrap 기본 테두리 제거 */
+    background-color: transparent; /* 배경색 제거 */
+    box-shadow: none; /* 그림자 제거 */
 }
 
+/* 선택된 파일 없음 텍스트를 감추고 버튼만 보이게 하는 일반적인 방법 */
+/* 실제 <input type="file">은 숨기고 커스텀 버튼과 텍스트를 보여주는 방식 사용 */
+.form-control-file {
+    /* 실제 파일 입력 필드를 숨기고 커스텀 스타일을 적용하기 위한 일반적인 CSS 패턴 */
+    opacity: 0;
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    padding: 0;
+}
+
+/* 커스텀 파일 업로드 버튼 및 텍스트 표시를 위한 컨테이너 */
+.file-upload-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #B0BEC5;
+    border-radius: 5px;
+    background-color: #fff;
+    padding: 5px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.file-upload-button {
+    background-color: #42A5F5;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 10px;
+    flex-shrink: 0; /* 버튼이 줄어들지 않도록 */
+    transition: background-color 0.2s ease;
+}
+
+.file-upload-button:hover {
+    background-color: #2196F3;
+}
+
+.file-upload-name {
+    flex-grow: 1; /* 남은 공간을 채우도록 */
+    color: #616161;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* ========================================================= */
+/* Summernote Editor Styling */
+/* ========================================================= */
+
+/* Summernote 에디터 컨테이너 */
+.content-editor-area { /* #content-table 대신 div 사용 */
+    width: 100%;
+    margin-bottom: 30px; /* 버튼과의 간격 확보 */
+}
+
+/* Summernote 에디터 스타일 재정의 (Bootstrap 스타일 포함) */
 .note-editor.note-frame {
-	border-radius: 6px;
-	border: 1px solid #ccc;
+    border-radius: 8px;
+    border: 1px solid #B0BEC5;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .note-editable {
-	font-size: 14px;
-	line-height: 1.6;
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 15px;
 }
 
+/* Bootstrap 기반 Summernote Toolbar 조정 */
+.note-toolbar {
+    background-color: #f4f6f8;
+    border-bottom: 1px solid #ddd;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+.note-toolbar .btn {
+    padding: 4px 8px !important;
+    font-size: 13px !important;
+}
+
+/* ========================================================= */
+/* Button Styling */
+/* ========================================================= */
+
 /* 버튼 영역 */
+.btn-area {
+    padding: 20px 0;
+    text-align: center;
+}
+
 .btn-submit, .btn-cancel {
-	padding: 8px 20px;
-	font-size: 14px;
-	font-weight: bold;
-	color: #fff;
-	border: none;
-	border-radius: 6px;
-	cursor: pointer;
-	transition: background-color 0.2s ease, box-shadow 0.2s ease;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    padding: 10px 25px; /* 패딩 증가 */
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    border-radius: 25px; /* 둥근 버튼 스타일 */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none; /* a 태그 버튼인 경우를 대비 */
 }
 
 .btn-submit {
-	background-color: #2196F3;
+    background-color: #1976D2; /* 등록(Primary) */
 }
 
 .btn-submit:hover {
-	background-color: #1976D2;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+    background-color: #1565C0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btn-cancel {
-	background-color: #6c757d;
+    background-color: #757575; /* 취소(Secondary) */
 }
 
 .btn-cancel:hover {
-	background-color: #5a6268;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+    background-color: #616161;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }

@@ -1,137 +1,186 @@
-/* 전체 레이아웃 */
+@charset "UTF-8";
+
+/* ========================================================= */
+/* 기본 설정 */
+/* ========================================================= */
+body {
+    font-family: 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f8f9fa;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* ========================================================= */
+/* Layout & Container */
+/* ========================================================= */
+
 main {
-	margin: 20px auto;
-	padding: 0 16px;
-	max-width: 900px;
-	width: 90%; /* 반응형 너비 */
-	box-sizing: border-box;
+    margin: 40px auto;
+    padding: 0 20px;
+    max-width: 900px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-/* 공지사항 섹션 */
-.notice-view {
-	background-color: #fefefe;
-	border-radius: 8px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-	padding: 16px;
+/* 섹션 컨테이너 */
+.notice-view-section {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
 }
 
-/* 테이블 */
-table {
-	width: 100%;
-	border-collapse: collapse;
-	background-color: #fff;
-	margin: 0 auto;
+/* 페이지 제목 */
+.page-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1565C0;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    border-bottom: 3px solid #E3F2FD;
 }
 
-table td {
-	border: 1px solid #e0e0e0;
-	padding: 10px;
-	vertical-align: middle;
+/* ========================================================= */
+/* Table Styling (Notice) */
+/* ========================================================= */
+
+.notice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+    border: 1px solid #BBDEFB;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.notice-table td {
+    padding: 12px 15px;
+    border: none;
+    border-bottom: 1px solid #eef0f3;
+    vertical-align: middle;
+    font-size: 14px;
 }
 
 /* 제목 행 */
-.title {
-	background-color: #e3f2fd;
-	font-size: 17px;
-	font-weight: bold;
-	text-align: center;
-	color: #0d47a1;
-	padding: 12px;
+.notice-table .title-row td {
+    background-color: #E3F2FD;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0d47a1;
+    text-align: left;
+    padding: 15px;
+    border-bottom: 1px solid #BBDEFB;
 }
 
-/* 작성자 정보 행 */
-.writer_tr {
-	background-color: #f9f9f9;
-	font-size: 13px;
-	color: #333;
-	text-align: center;
+/* 정보 라벨 (작성자, 번호, 조회수 등) */
+.notice-table .label {
+    width: 100px;
+    background-color: #f4f6f8;
+    font-weight: bold;
+    color: #555;
+    text-align: center;
+    border-right: 1px solid #eef0f3;
 }
 
-.writer {
-	width: 140px;
-	font-weight: bold;
-	color: #555;
+/* 데이터 셀 */
+.notice-table .data {
+    width: 180px;
+    color: #333;
 }
 
-.date, .num, .viewnum {
-	width: 90px;
-	background-color: #f0f0f0;
-	font-weight: bold;
-	color: #444;
-	display: table-cell;
+/* 첨부파일 행 */
+.file-row td {
+    padding: 10px 15px;
 }
 
-/* 첨부파일 */
-.file {
-	width: 90px;
-	background-color: #f0f0f0;
-	text-align: center;
-	font-size: 13px;
-	font-weight: bold;
-	color: #444;
+.file-data {
+    background-color: #fafafa;
 }
 
-.file2 {
-	background-color: #fafafa;
-	text-align: left;
-	font-size: 13px;
-	color: #333;
+.file-link {
+    color: #1976D2;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
 }
 
-/* 본문 텍스트 영역 */
+.file-link:hover {
+    color: #1565C0;
+    text-decoration: underline;
+}
+
+.no-file {
+    color: #9E9E9E;
+    font-style: italic;
+}
+
+/* ========================================================= */
+/* Content Area */
+/* ========================================================= */
+
+.content-cell {
+    padding: 0 !important;
+}
+
+/* 본문 내용 스타일 */
 .notice-content {
-	width: 100%;
-	max-width: 80vw; /* 브라우저 너비의 80% */
-	margin: 10px auto;
-	padding: 16px;
-	font-size: 15px;
-	line-height: 1.6;
-	background-color: #fff;
-	color: #222;
-	box-sizing: border-box;
-	white-space: pre-wrap;
-	word-break: break-word;
-	border: 1px solid #e0e0e0;
-	border-radius: 4px;
-	min-height: 200px;
+    padding: 20px;
+    font-size: 15px;
+    line-height: 1.7;
+    background-color: #fff;
+    white-space: pre-wrap; /* HTML 엔티티 대신 일반 텍스트 줄바꿈 유지 */
+    word-break: break-word;
+    min-height: 250px;
 }
 
-/* 버튼 영역 */
+
+/* ========================================================= */
+/* Button Styling */
+/* ========================================================= */
+
 .btn-box {
-	margin-top: 20px;
-	display: flex;
-	justify-content: flex-end;
-	gap: 8px;
-	flex-wrap: wrap;
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between; /* 양쪽 끝 정렬 */
+    align-items: center;
 }
 
-/* 버튼 스타일 */
-.btn-box button {
-	padding: 8px 16px;
-	font-size: 13px;
-	font-weight: bold;
-	color: #fff;
-	border: none;
-	border-radius: 6px;
-	cursor: pointer;
-	transition: all 0.2s ease;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+.admin-btn-group, .list-btn-group {
+    display: flex;
+    gap: 10px;
 }
 
-.btn-submit, .btn-list {
-	background-color: #2196F3;
+.btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
-.btn-submit:hover, .btn-list:hover {
-	background-color: #1976D2;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+/* 수정 및 목록 버튼 */
+.btn-list, .btn-submit {
+    background-color: #42A5F5;
 }
 
+.btn-list:hover, .btn-submit:hover {
+    background-color: #1E88E5;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* 삭제 버튼 */
 .btn-delete {
-	background-color: #e53935;
+    background-color: #EF5350;
 }
 
 .btn-delete:hover {
-	background-color: #c62828;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+    background-color: #E53935;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
 }

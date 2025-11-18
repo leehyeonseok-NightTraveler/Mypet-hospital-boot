@@ -75,5 +75,9 @@ public class ManageServiceImpl implements ManageService {
         return dao.getGroResTotal(cri);
     }
 
-
+    @Override
+    public void UserStatusProcess(Map<String, Object> params) {
+        ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
+        dao.UserStatusProcess(params);
+    }
 }

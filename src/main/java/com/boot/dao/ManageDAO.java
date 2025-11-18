@@ -17,4 +17,5 @@ public interface ManageDAO {
     int getUserTotal(@Param("cri") Criteria cri);
     int getVetResTotal(@Param("cri") Criteria cri);
     int getGroResTotal(@Param("cri") Criteria cri);
+    void UserStatusProcess(@Param("params")  Map<String, Object> params);
 }
