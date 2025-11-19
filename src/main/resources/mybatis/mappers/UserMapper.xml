@@ -75,17 +75,24 @@
 
     <!-- 유저 정보 수정 -->
     <update id="updateUserInfo" parameterType="hashmap">
-        UPDATE user_info
-        <set>
-            <if test="user_pwd != null and user_pwd != ''">
-                user_pwd = #{user_pwd},
-            </if>
-            user_phone = #{user_phone},
-            user_email = #{user_email},
-            user_addr = #{user_addr}
-        </set>
-        WHERE user_no = #{user_no}
-    </update>
+    UPDATE user_info
+    <set>
+        
+        <!-- 비밀번호 선택적 수정 -->
+        <if test="user_pwd != null and user_pwd != ''">
+            user_pwd = #{user_pwd},
+        </if>
+
+        user_name = #{user_name},
+        user_phone = #{user_phone},
+        user_email = #{user_email},
+        user_addr = #{user_addr},
+        user_addr_detail = #{user_addr_detail},
+        user_img = #{user_img}
+    </set>
+    WHERE user_no = #{user_no}
+</update>
+
 
     <!-- 이미지 중복 검사 -->
     <select id="checkDuplicateUserImage" parameterType="string" resultType="int">
