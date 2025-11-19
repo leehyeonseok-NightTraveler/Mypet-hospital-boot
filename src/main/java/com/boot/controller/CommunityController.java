@@ -74,29 +74,29 @@ public class CommunityController {
 	                                     Model model,
 	                                     HttpSession session) {
 
-	    // 🔹 로그인 유저 가져오기 (통일!)
+	    // 로그인 유저 가져오기
 	    Mypet_UserDTO loginUser = (Mypet_UserDTO) session.getAttribute("loginUser");
 
 	    if (loginUser != null) {
 	        model.addAttribute("user_name", loginUser.getUser_name());
-	        model.addAttribute("loginUserNo", loginUser.getUser_no());  // 필요하면 번호도
+	        model.addAttribute("loginUserNo", loginUser.getUser_no());
+	        model.addAttribute("sessionRole", session.getAttribute("role"));  //  추가
 	    } else {
 	        model.addAttribute("user_name", "비회원");
+	        model.addAttribute("sessionRole", null);  // 추가
 	    }
 
 	    // 조회수 증가
 	    service.increaseViewCount(postNo);
 
-	    // 댓글/본문 조회용 파라미터
-	    // post_no 파라미터 셋팅
+	    // 댓글 파라미터
 	    param.put("post_no", String.valueOf(postNo));
 
 	    // 댓글 목록
 	    ArrayList<Mypet_Community_CommentDTO> commentList = commentService.findAll(param);
 	    model.addAttribute("commentList", commentList);
 
-	    // 게시글 본문
-	    // 게시글 상세 데이터
+	    // 본문
 	    Mypet_CommunityDTO dto = service.communityContentView(param);
 	    model.addAttribute("content_view", dto);
 
@@ -105,7 +105,6 @@ public class CommunityController {
 
 	    return "community_content_view";
 	}
-
 
 	
 	/* ============================
@@ -157,10 +156,13 @@ public class CommunityController {
 
 	    Mypet_CommunityDTO dto = service.communityContentView(map);
 	    String writerNo = String.valueOf(dto.getUser_no());
+	
+	    // 관리자 권한 확인
+	    String role = (String) session.getAttribute("role");
 
-	    // 본인 글 체크
-	    if (!sessionUserNo.equals(writerNo)) {
-	        model.addAttribute("msg", "본인 글만 삭제할 수 있습니다.");
+	    // 작성자 체크
+	    if (!sessionUserNo.equals(writerNo) && !"ADMIN".equals(role)) {
+	        model.addAttribute("msg", "삭제 권한이 없습니다.");
 	        model.addAttribute("url",
 	            "/community_content_view?postNo=" + postNo +
 	            "&pageNum=" + param.get("pageNum") +
@@ -182,7 +184,7 @@ public class CommunityController {
 	    uploadService.deleteSummernoteFiles("community", dto.getPost_content());
 
 	    // 3) 댓글 삭제 (댓글 테이블이 있다면)
-//	    commentService.deleteByPostNo(Integer.parseInt(postNo));   // 없다면 생략
+	    commentService.deleteByPostNo(Integer.parseInt(postNo));
 
 	    // 4) 게시글 삭제
 	    service.communityDelete(param);

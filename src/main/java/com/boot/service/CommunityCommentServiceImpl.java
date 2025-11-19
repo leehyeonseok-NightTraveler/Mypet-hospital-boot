@@ -13,6 +13,8 @@ import com.boot.dto.Mypet_Community_CommentDTO;
 @Service
 public class CommunityCommentServiceImpl implements CommunityCommentService{
 
+	
+	  
 	@Autowired
 	private SqlSession sqlSession;
 
@@ -35,6 +37,11 @@ public class CommunityCommentServiceImpl implements CommunityCommentService{
 	    return dao.deleteComment(comment_no);
 	}
 	
+	@Override
+	public int deleteByPostNo(int postNo) {
+	    CommunityCommentDAO dao = sqlSession.getMapper(CommunityCommentDAO.class);
+	    return dao.deleteByPostNo(postNo);
+	}
 }
 
 
