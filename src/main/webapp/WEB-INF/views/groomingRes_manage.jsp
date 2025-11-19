@@ -32,6 +32,20 @@
         <h2 class="section-title">미용예약관리</h2>
         <hr class="section-divider">
 
+        <form method="get" action="groomingRes_manage" class="search-form" id="searchForm">
+            <input type="text" name="keyword" id="keyword" placeholder="회원이름 검색"/>
+            <select name="status" id="status">
+                <option value="">전체</option>
+                <option value="COMPLETED" ${param.status == 'COMPLETED' ? 'selected' : ''}>예약완료</option>
+                <option value="CONFIRMED" ${param.status == 'CONFIRMED' ? 'selected' : ''}>예약확정</option>
+                <option value="CANCELLED" ${param.status == 'CANCELLED' ? 'selected' : ''}>예약취소</option>
+            </select>
+            <button type="submit">검색</button>
+
+            <!-- 🔄 초기화 버튼 (폼 안에 위치) -->
+            <button type="button" onclick="resetSearchForm()">초기화</button>
+        </form>
+
         <table id="reservation-list-table">
             <%-- 미용 예약 목록 테이블 시작 --%>
             <thead>
@@ -82,12 +96,14 @@
                                     <input type="hidden" name="amount" value="${pageMaker.cri.amount}"/>
                                     <button type="submit">예약확정</button>
                                 </form>
-                                <button type="button" onclick="openCancelModal('${ResList.res_no}', 'grooming')">예약취소</button>
+                                <button type="button" onclick="openCancelModal('${ResList.res_no}', 'grooming')">예약취소
+                                </button>
                             </c:when>
 
                             <%-- 예약확정 상태: 취소 버튼만 표시 --%>
                             <c:when test="${ResList.res_status eq '예약확정'}">
-                                <button type="button" onclick="openCancelModal('${ResList.res_no}', 'grooming')">예약취소</button>
+                                <button type="button" onclick="openCancelModal('${ResList.res_no}', 'grooming')">예약취소
+                                </button>
                             </c:when>
 
                             <%-- 그 외 상태 (예약취소 등): 처리 불가 표시 --%>
