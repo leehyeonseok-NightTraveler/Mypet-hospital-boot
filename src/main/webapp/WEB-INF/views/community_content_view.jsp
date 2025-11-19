@@ -22,6 +22,11 @@
                             }
                         });
                     </script>
+
+                    <script>
+                        const sessionUserNo = "${sessionScope.user_no}";
+                        const sessionRole = "${sessionScope.role}";
+                    </script>
                 </head>
 
                 <body>
@@ -156,7 +161,7 @@
                         const no = "${content_view.post_no}";
 
                         if (writer === "" || content === "") {
-                            alert("작성자와 내용을 입력하세요.");
+                            alert("내용을 입력하세요.");
                             return;
                         }
 
@@ -179,7 +184,16 @@
                                     output += "<tr>";
                                     output += "<td>" + (i + 1) + "</td>";
                                     output += "<td>" + c.user_name + "</td>";
-                                    output += "<td class='comment-text'>" + c.comment_content + "</td>";
+
+                                    output += "<td class='comment-text'>" + c.comment_content;
+
+                                    // ✔ JS에서 삭제 버튼 조건 직접 체크
+                                    if (c.user_no == sessionUserNo || sessionRole === "ADMIN") {
+                                        output += " <button class='comment-del-btn' onclick='deleteComment(" + c.comment_no + ")'>×</button>";
+                                    }
+
+                                    output += "</td>";
+
                                     output += "<td>" + c.created_at2 + "</td>";
                                     output += "</tr>";
                                 });
@@ -189,8 +203,9 @@
                                 $("#comment-list").html(output);
                             },
 
+
                             error: function () {
-                                alert("댓글 등록 실패!");
+                                alert("댓글을 작성하시려면 로그인을 해주세요.");
                             }
                         });
                     }
