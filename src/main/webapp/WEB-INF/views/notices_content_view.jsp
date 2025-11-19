@@ -65,9 +65,9 @@
                 <td colspan="3" class="file-data">
                     <c:choose>
                         <c:when test="${not empty dto.notice_file}">
-                            <a href="#" onclick="downloadFile('${dto.notice_file}')" class="file-link">
-                                    ${fn:substringAfter(dto.notice_file, '/')}
-                            </a>
+							<a href="/download?folder=notices&file=${dto.notice_file}">
+							    ${dto.notice_file}
+							</a>
                         </c:when>
                         <c:otherwise>
                             <span class="no-file">첨부파일 없음</span>

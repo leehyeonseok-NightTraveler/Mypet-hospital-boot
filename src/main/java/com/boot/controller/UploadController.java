@@ -66,37 +66,37 @@ public class UploadController {
 
     /** 다운로드 */
     @GetMapping("/download")
-    public void download(@RequestParam("path") String filename, HttpServletResponse response) throws IOException {
+    public void download(
+            @RequestParam("folder") String folder,
+            @RequestParam("file") String filename,
+            HttpServletResponse response
+    ) throws IOException {
 
-        // ★ 파일 저장 경로 (네가 알려준 실제 경로)
-        String savePath = "C:/dev/upload/notices/";
-
-        File file = new File(savePath + filename);
+        String basePath = "C:/dev/upload/";
+        File file = new File(basePath + folder + "/" + filename);
 
         if (!file.exists()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
-        // MIME 타입
         response.setContentType("application/octet-stream");
+        response.setHeader(
+                "Content-Disposition",
+                "attachment; filename=\"" + URLEncoder.encode(filename, "UTF-8") + "\""
+        );
 
-        // 다운로드 시 파일명 처리
-        response.setHeader("Content-Disposition",
-                "attachment; filename=\"" + URLEncoder.encode(filename, "UTF-8") + "\"");
-
-        // 파일 스트림 처리
         FileInputStream fis = new FileInputStream(file);
         ServletOutputStream os = response.getOutputStream();
 
         byte[] buffer = new byte[1024];
         int len;
+
         while ((len = fis.read(buffer)) != -1) {
             os.write(buffer, 0, len);
         }
+
         fis.close();
         os.close();
     }
-
-
 }

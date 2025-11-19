@@ -40,15 +40,9 @@ public class QnaController {
         return "qna_page";
     }
 
-
     @GetMapping("/qna_write")
-    public String qnaWrite(HttpSession session) {
-        Mypet_UserDTO loginUser = (Mypet_UserDTO) session.getAttribute("loginUser");
-
-        // 💡 로그인 여부 체크
-        if (loginUser == null) return "redirect:/login";
-
-        return "qna_write";
+    public String qnaWriteView() {
+        return "qna_write";  // JSP 이름
     }
 
 
@@ -159,32 +153,89 @@ public class QnaController {
     }
 
     @GetMapping("/qna_modify")
-    public String qna_modify(@RequestParam int qna_no,Model model, Criteria cri){
+    public String qnaModifyForm(
+            @RequestParam int qna_no,
+            @RequestParam(defaultValue="1") int pageNum,
+            @RequestParam(defaultValue="10") int amount,
+            Model model
+    ) {
         Mypet_Qna_BoardDTO detail = service.getQnaDetail(qna_no);
-        model.addAttribute("modify", detail);
-        model.addAttribute("cri", cri);
+
+        model.addAttribute("detail", detail);
+        model.addAttribute("cri", new Criteria(pageNum, amount));
 
         return "qna_modify";
     }
 
-    @PostMapping("/QnaModifyProcess")
-    public String QnaModifyProcess(@RequestParam String qna_title,
-                                   @RequestParam String qna_content,
-                                   @RequestParam int qna_no,
-                                   @RequestParam int pageNum,
-                                   @RequestParam int amount,
-                                   RedirectAttributes rttr,
-                                   Model model){
 
+    
+    @PostMapping("/qna_modify")
+    public String qnaModify(
+            Mypet_Qna_BoardDTO dto,
+            @RequestParam(value="qna_file_upload", required=false) MultipartFile file
+    ) {
+
+        // 기존 데이터 조회
+        Mypet_Qna_BoardDTO old = service.getQnaDetail(dto.getQna_no());
+        String oldFile = old.getQna_file();
+
+        // 새 파일 업로드된 경우
+        if (file != null && !file.isEmpty()) {
+            String saved = uploadService.saveRawFile(file, "qna");
+            dto.setQna_file(saved);
+
+            // 기존 파일 삭제
+            if (oldFile != null && !oldFile.isEmpty()) {
+                uploadService.deleteFile("qna/" + oldFile);
+            }
+        } else {
+            // 변경 없으면 기존 파일 유지
+            dto.setQna_file(oldFile);
+        }
+
+        service.modifyQna((Map<String, Object>) dto);
+
+        return "redirect:/qna_content_view?qna_no=" + dto.getQna_no();
+    }
+
+
+    @PostMapping("/QnaModifyProcess")
+    public String QnaModifyProcess(
+            @RequestParam String qna_title,
+            @RequestParam String qna_content,
+            @RequestParam int qna_no,
+            @RequestParam(required = false) MultipartFile qna_newFile,
+            @RequestParam(required = false) String original_file,
+            @RequestParam int pageNum,
+            @RequestParam int amount,
+            RedirectAttributes rttr
+    ) {
+
+        String finalFile = original_file; // 기본값 = 기존 파일
+
+        // 새 파일 업로드 시
+        if (qna_newFile != null && !qna_newFile.isEmpty()) {
+            finalFile = uploadService.saveRawFile(qna_newFile, "qna");
+
+            // 기존 파일 삭제
+            if (original_file != null && !original_file.isEmpty()) {
+                uploadService.deleteFile("qna/" + original_file);
+            }
+        }
+
+        // 파라미터 전달
         Map<String, Object> params = new HashMap<>();
         params.put("qna_title", qna_title);
         params.put("qna_content", qna_content);
         params.put("qna_no", qna_no);
+        params.put("qna_file", finalFile);   // ⭐⭐ 문제 해결 핵심
 
         service.modifyQna(params);
 
         rttr.addAttribute("pageNum", pageNum);
         rttr.addAttribute("amount", amount);
-        return  "redirect:/qna_page";
+
+        return "redirect:/qna_view?qna_no=" + qna_no;
     }
+
 }
