@@ -21,6 +21,8 @@
         <a href="/mypage_userinfo">내 정보</a>
         <a href="/mypage_petlist">펫 목록</a>
         <a href="/mypage_membership" class="active">멤버십</a>
+		<a href="/mypage_medical">진료 내역</a>
+	    <a href="/mypage_grooming">미용 내역</a>
     </aside>
 
 
