@@ -138,6 +138,32 @@ public class ManageController {
         return "redirect:/user_detail";
     }
 
+    @GetMapping("/Certificate")
+    public String Certificate(@RequestParam int user_no,
+                              @RequestParam int service_no,
+                              @RequestParam int pet_no,
+                              HttpSession session, Model model,
+                              RedirectAttributes rttr) {
+        String Role = (String) session.getAttribute("role");
+
+        if (!"ADMIN".equals(Role)) {
+            rttr.addFlashAttribute("alertMsg", "관리자만 접근 가능합니다.");
+            return "redirect:/mainpage";
+        }
+
+        Map<String, Object> params = new HashMap<>();
+
+        params.put("user_no", user_no);
+        params.put("service_no", service_no);
+        params.put("pet_no", pet_no);
+
+        List<CertificateDTO> certificate = manageService.getCertificate(params);
+        CertificateDTO cert = certificate.get(0);
+        model.addAttribute("certificate", cert);
+
+        return "Certificate";
+    }
+
     @PostMapping("/user_serviceComplete")
     public String serviceComplete(
             @RequestParam("service_no") int service_no,

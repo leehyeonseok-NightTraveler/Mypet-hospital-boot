@@ -112,5 +112,9 @@ public class ManageServiceImpl implements ManageService {
         return dao.PetList(user_no);
     }
 
-
+    @Override
+    public List<CertificateDTO> getCertificate(Map<String, Object> params) {
+        ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
+        return dao.getCertificate(params);
+    }
 }

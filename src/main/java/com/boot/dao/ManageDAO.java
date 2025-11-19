@@ -45,4 +45,5 @@ public interface ManageDAO {
 
     List<Mypet_PetDTO> getPetList(int user_no);
 
+    List<CertificateDTO> getCertificate(@Param("params") Map<String, Object> params);
 }

@@ -39,4 +39,5 @@ public interface ManageService {
 
     List<Mypet_PetDTO> getPetList(int user_no);
 
+    List<CertificateDTO> getCertificate(Map<String, Object> params);
 }

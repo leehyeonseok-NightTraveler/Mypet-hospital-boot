@@ -236,4 +236,43 @@
         WHERE service_no = #{service_no}
     </update>
 
+    <select id="getCertificate"
+            parameterType="map"
+            resultType="com.boot.dto.CertificateDTO">
+
+        SELECT
+        -- 1. T_SERVICE (ServiceHistory)
+        S.service_no,
+        S.service_date,
+        S.service_type,
+        S.service_item,
+        S.details_memo,
+
+        -- 2. T_USER (UserInfo)
+        U.user_no,
+        U.user_name,
+        U.user_addr,
+        U.user_addr_detail,
+        -- 나이 계산: 현재 연도 - 출생 연도 (DTO의 user_age 필드에 매핑)
+        -- *** CORRECTED FOR ORACLE (Year Only) ***
+        CAST(TO_CHAR(SYSDATE, 'YYYY') AS NUMBER) - CAST(TO_CHAR(U.user_birthday, 'YYYY') AS NUMBER) AS user_age,
+
+        -- 3. T_PET (PetInfo)
+        P.pet_no,
+        P.pet_name,
+        P.pet_gender,
+        P.pet_age,
+        P.pet_species,
+        P.pet_breed
+
+        FROM service_history S
+        INNER JOIN user_info U ON S.user_no = U.user_no
+        INNER JOIN pet_info P ON S.pet_no = P.pet_no
+
+        WHERE S.service_no = #{params.service_no}
+        AND U.user_no = #{params.user_no}
+        AND P.pet_no = #{params.pet_no}
+        -- (필요하다면 S.completion_status = 'Y' 조건 추가)
+
+    </select>
 </mapper>

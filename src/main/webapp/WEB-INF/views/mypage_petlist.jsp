@@ -19,15 +19,15 @@
     <jsp:include page="/WEB-INF/views/common/header.jsp" />
 
     <!-- 본문 영역 -->
-    <main class="mypage-container">	
+    <main class="mypage-container">
 
         <aside class="sidemenu">
             <h2>마이페이지 🐾</h2>
             <a href="/mypage_userinfo">내 정보</a>
             <a href="/mypage_petlist" class="active">펫 목록</a>
-			<a href="/mypage_membership">멤버십</a>
-			<a href="/mypage_medical">진료 내역</a>
-		    <a href="/mypage_grooming">미용 내역</a>
+            <a href="/mypage_membership">멤버십</a>
+            <a href="/mypage_medical">진료 내역</a>
+            <a href="/mypage_grooming">미용 내역</a>
         </aside>
 
         <section class="content">
