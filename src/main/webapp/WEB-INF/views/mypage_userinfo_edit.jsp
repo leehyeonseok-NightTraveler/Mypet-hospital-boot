@@ -37,6 +37,11 @@
 			        <input type="password" name="user_pwd_confirm" placeholder="새 비밀번호 확인">
 			    </div>
 			</c:if>
+			
+			<!-- 보호자 이름 -->
+			<div class="input-group">
+			    <input type="text" name="user_name" value="${loginUser.user_name}" required placeholder="보호자 이름">
+			</div>
 
 
             <!-- 연락처 -->

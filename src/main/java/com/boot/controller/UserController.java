@@ -160,6 +160,7 @@ public class UserController {
      * ============================ */
     @PostMapping("/mypage_userinfo_edit_ok")
     public String mypageUserInfoEditOk(
+    		@RequestParam String user_name,
             @RequestParam(value = "user_pwd", required = false) String user_pwd,
             @RequestParam(value = "user_pwd_confirm", required = false) String user_pwd_confirm,
             @RequestParam("user_phone") String user_phone,
@@ -170,6 +171,7 @@ public class UserController {
             HttpSession session,
             RedirectAttributes ra
     ) {
+    	log.info("수정 요청 이름: {}", user_name);
 
         Mypet_UserDTO loginUser = (Mypet_UserDTO) session.getAttribute("loginUser");
         if (loginUser == null) {
@@ -179,6 +181,7 @@ public class UserController {
 
         HashMap<String, Object> map = new HashMap<>();
         map.put("user_no", loginUser.getUser_no());
+        map.put("user_name", user_name);
         map.put("user_phone", user_phone);
         map.put("user_email", user_email);
         map.put("user_addr", (user_addr != null ? user_addr : "") + " " + (user_addr_detail != null ? user_addr_detail : ""));
