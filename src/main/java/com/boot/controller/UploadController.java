@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -128,6 +129,24 @@ public class UploadController {
         }
 
         return result;
+    }
+    
+    @PostMapping("/upload/cleanup-temp")
+    @ResponseBody
+    public void cleanupTempFiles(@RequestParam("files") List<String> files) {
+
+        for (String url : files) {
+            if (url.contains("qna_img/")) {
+                // 이미지
+                String fileName = url.replace("/display?path=qna_img/", "");
+                uploadService.deleteFile("qna_img/" + fileName);
+
+            } else if (url.contains("qna_video/")) {
+                // 비디오
+                String fileName = url.replace("/display?path=qna_video/", "");
+                uploadService.deleteFile("qna_video/" + fileName);
+            }
+        }
     }
 
 

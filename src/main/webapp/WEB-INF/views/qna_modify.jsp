@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
@@ -29,6 +30,7 @@
             <input type="hidden" name="amount" value="${cri.amount}">
             <input type="hidden" name="original_file" value="${detail.qna_file}">
 
+            <!-- 제목 + 첨부파일 -->
             <table class="table qna-form-table">
                 <tr>
                     <td class="field-label">제목</td>
@@ -57,10 +59,10 @@
                 </tr>
             </table>
 
+            <!-- 내용 수정 영역 -->
             <table class="qna-content-area">
                 <tr class="content-row">
                     <td colspan="2">
-                        <!-- 내용은 JS에서 Summernote로 삽입 -->
                         <textarea id="summernote" name="qna_content"></textarea>
                     </td>
                 </tr>
@@ -68,11 +70,7 @@
                 <tr class="button-row">
                     <td colspan="2">
                         <input type="submit" value="수정 완료" class="btn-submit">
-                        <button type="button"
-                                onclick="location.href='/qna_view?qna_no=${detail.qna_no}'"
-                                class="btn-cancel">
-                            취소
-                        </button>
+                        <button type="button" class="btn-cancel" onclick="cancelModify()">취소</button>
                     </td>
                 </tr>
             </table>
@@ -82,15 +80,19 @@
 </main>
 
 
+<!-- JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/lang/summernote-ko-KR.min.js"></script>
 
 <script>
+/* 수정 중 임시 이미지 저장용 배열 */
+let tempImages = [];
+
 $(document).ready(function () {
 
-    /* 🔥 Summernote 초기화 - write.jsp와 100% 동일 */
+    /* Summernote 초기화 */
     $('#summernote').summernote({
         height: 300,
         minHeight: 440,
@@ -100,13 +102,17 @@ $(document).ready(function () {
             ['style', ['bold','italic','underline','clear']],
             ['font', ['fontname','fontsize','color']],
             ['para', ['ul','ol','paragraph']],
-            ['insert', ['link','imageUpload','videoUpload']],   // ★ 동일
+            ['insert', ['link','imageUpload','videoUpload']],
             ['view', ['codeview']]
         ],
 
+        popover: {
+            image: []   // 이미지 팝업 제거 → 이동 가능
+        },
+
         buttons: {
 
-            /* 🔥 이미지 업로드 버튼 */
+            /* 이미지 업로드 버튼 */
             imageUpload: function (context) {
                 var ui = $.summernote.ui;
 
@@ -126,7 +132,7 @@ $(document).ready(function () {
                 return button.render();
             },
 
-            /* 🔥 영상 업로드 버튼 */
+            /* 영상 업로드 버튼 */
             videoUpload: function (context) {
                 var ui = $.summernote.ui;
 
@@ -146,17 +152,22 @@ $(document).ready(function () {
 
                 return button.render();
             }
+        },
+
+        callbacks: {
+            onInit: function() {
+                $('.note-editable img').attr('draggable', 'true');
+            }
         }
     });
 
-    /* 🔥 기존 QNA 내용 삽입 (escapeXml=false 적용) */
+    /* 기존 QnA 내용 삽입 (escapeXml=false) */
     $('#summernote').summernote(
         'code',
         `<c:out value="${detail.qna_content}" escapeXml="false"/>`
     );
 
-
-    /* 파일 선택 UI */
+    /* 첨부파일 이름 출력 */
     $('#qna_file').on('change', function () {
         var fileName = $(this).val().split('\\').pop();
         $('#file_name_display').text(fileName || "선택된 파일 없음");
@@ -164,7 +175,7 @@ $(document).ready(function () {
 });
 
 
-/* 🔥 이미지 업로드 함수 */
+/* 이미지 업로드 처리 */
 function uploadImageToServer(file, context) {
     var formData = new FormData();
     formData.append("file", file);
@@ -177,17 +188,20 @@ function uploadImageToServer(file, context) {
         processData: false,
         success: function (data) {
             if (data.responseCode === "success") {
+
+                tempImages.push(data.url); // 수정 중 임시 이미지 저장
+
                 var tag = '<img src="' + data.url + '" style="max-width:100%;">';
                 context.invoke('editor.pasteHTML', tag);
             } else {
-                alert(data.message || "이미지 업로드 실패");
+                alert("이미지 업로드 실패");
             }
         }
     });
 }
 
 
-/* 🔥 영상 업로드 함수 */
+/* 영상 업로드 */
 function uploadVideoToServer(file, context) {
     var formData = new FormData();
     formData.append("file", file);
@@ -200,6 +214,9 @@ function uploadVideoToServer(file, context) {
         processData: false,
         success: function (data) {
             if (data.responseCode === "success") {
+
+				tempImages.push(data.url); // 수정 중 임시 비디오 저장
+				
                 var tag =
                     '<video controls style="max-width:100%;">' +
                         '<source src="' + data.url + '" type="video/mp4">' +
@@ -207,10 +224,29 @@ function uploadVideoToServer(file, context) {
 
                 context.invoke('editor.pasteHTML', tag);
             } else {
-                alert(data.message || "영상 업로드 실패");
+                alert("영상 업로드 실패");
             }
         }
     });
+}
+
+
+/* 취소 버튼 → 임시 이미지 삭제 */
+function cancelModify() {
+
+    if (tempImages.length > 0) {
+        $.ajax({
+            url: "/upload/cleanup-temp",
+            type: "POST",
+            traditional: true,
+            data: { files: tempImages },
+            success: function () {
+                console.log("임시 이미지 삭제 완료");
+            }
+        });
+    }
+
+    location.href = "/qna_view?qna_no=${detail.qna_no}";
 }
 </script>
 

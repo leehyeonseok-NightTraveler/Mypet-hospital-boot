@@ -24,6 +24,7 @@
 
         <form method="post" action="/qna_write_ok" enctype="multipart/form-data">
 
+            <!-- 제목 + 첨부파일 -->
             <table class="table qna-form-table">
                 <tr>
                     <td class="field-label">제목</td>
@@ -46,6 +47,7 @@
                 </tr>
             </table>
 
+            <!-- 작성 영역 -->
             <table class="qna-content-area">
                 <tr class="content-row">
                     <td colspan="2">
@@ -55,7 +57,7 @@
                 <tr class="button-row">
                     <td colspan="2">
                         <input type="submit" value="등록" class="btn-submit">
-                        <button type="button" onclick="location.href='/qna_page'" class="btn-cancel">취소</button>
+                        <button type="button" onclick="cancelWrite()" class="btn-cancel">취소</button>
                     </td>
                 </tr>
             </table>
@@ -69,6 +71,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/lang/summernote-ko-KR.min.js"></script>
 
 <script>
+    // 사용자가 업로드한 임시 이미지 저장용 배열
+    let tempImages = [];
+
     $(document).ready(function() {
 
         $('#summernote').summernote({
@@ -80,12 +85,15 @@
                 ['style', ['bold','italic','underline','clear']],
                 ['font', ['fontname','fontsize','color']],
                 ['para', ['ul','ol','paragraph']],
-                ['insert', ['link','imageUpload','videoUpload']],  // ⭐ picture 제거 후 imageUpload 추가
+                ['insert', ['link','imageUpload','videoUpload']], 
                 ['view', ['codeview']]
             ],
+            popover: {
+                image: []   // 이미지 팝오버 제거 → 이동 가능
+            },
             buttons: {
 
-                // ⭐ 이미지 업로드 버튼
+                // 이미지 업로드 버튼
                 imageUpload: function (context) {
                     var ui = $.summernote.ui;
 
@@ -106,7 +114,7 @@
                     return button.render();
                 },
 
-                // ⭐ 영상 업로드 버튼 (기존 기능 유지)
+                // 영상 업로드 버튼
                 videoUpload: function (context) {
                     var ui = $.summernote.ui;
 
@@ -126,72 +134,104 @@
 
                     return button.render();
                 }
+            },
+
+            // 초기 설정 및 네이티브 이동 허용
+            callbacks: {
+                onInit: function() {
+                    $('.note-editable img').attr('draggable', 'true');
+                },
+                onImageUpload: function(files) {},
+                onPaste: function(e) {},
+                onDrop: function(e) {}
             }
         });
 
 
-        // ⭐ 이미지 업로드 함수
-        function uploadImageToServer(file, context) {
-            var formData = new FormData();
-            formData.append("file", file);
-
-            $.ajax({
-                url: "/upload/summernote",
-                type: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (data) {
-                    if (data.responseCode === "success") {
-
-                        var tag = '<img src="' + data.url +
-                                  '" style="max-width:100%; height:auto;">';
-
-                        context.invoke('editor.pasteHTML', tag);
-                    } else {
-                        alert(data.message || "이미지 업로드 실패");
-                    }
-                }
-            });
-        }
-
-
-        // ⭐ 영상 업로드 함수 (기존 그대로)
-        function uploadVideoToServer(file, context) {
-            var formData = new FormData();
-            formData.append("file", file);
-
-            $.ajax({
-                url: "/upload/summernote/video",
-                type: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (data) {
-                    if (data.responseCode === "success") {
-
-                        var tag =
-                            '<video controls style="max-width:100%;">' +
-                                '<source src="' + data.url + '" type="video/mp4">' +
-                            '</video><br>';
-
-                        context.invoke('editor.pasteHTML', tag);
-
-                    } else {
-                        alert(data.message || "영상 업로드 실패");
-                    }
-                }
-            });
-        }
-
-
-        // 파일 이름 표시
+        // 첨부파일 이름 표시
         $('#qna_file').on('change', function() {
             var fileName = $(this).val().split('\\').pop();
             $('#file_name_display').text(fileName || "선택된 파일 없음");
         });
 
     });
+
+
+    /* 이미지 업로드 처리 */
+    function uploadImageToServer(file, context) {
+        var formData = new FormData();
+        formData.append("file", file);
+
+        $.ajax({
+            url: "/upload/summernote",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data.responseCode === "success") {
+
+                    tempImages.push(data.url); // 임시 저장 목록에 추가
+
+                    var tag = '<img src="' + data.url +
+                        '" style="max-width:100%; height:auto;">';
+
+                    context.invoke('editor.pasteHTML', tag);
+                } else {
+                    alert("이미지 업로드 실패");
+                }
+            }
+        });
+    }
+
+    /* 영상 업로드 처리 */
+    function uploadVideoToServer(file, context) {
+        var formData = new FormData();
+        formData.append("file", file);
+
+        $.ajax({
+            url: "/upload/summernote/video",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data.responseCode === "success") {
+
+					tempImages.push(data.url);// 수정 중 임시 비디오 저장
+					
+                    var tag =
+                        '<video controls style="max-width:100%;">' +
+                        '<source src="' + data.url + '" type="video/mp4">' +
+                        '</video><br>';
+
+                    context.invoke('editor.pasteHTML', tag);
+
+                } else {
+                    alert("영상 업로드 실패");
+                }
+            }
+        });
+    }
+
+    /* 취소 버튼 클릭 → 임시 이미지 삭제 요청 */
+    function cancelWrite() {
+
+        if (tempImages.length > 0) {
+            $.ajax({
+                url: "/upload/cleanup-temp",
+                type: "POST",
+                traditional: true,
+                data: { files: tempImages },
+                success: function() {
+                    console.log("임시 파일 삭제 완료");
+                }
+            });
+        }
+
+        location.href = "/qna_page";
+    }
+
 </script>
 
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
