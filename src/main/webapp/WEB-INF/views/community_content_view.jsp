@@ -129,10 +129,12 @@
                                                 ${comment.comment_content}
 
                                                 <!-- 본인 댓글만 삭제 버튼 보임 -->
-                                                <c:if test="${comment.user_no == sessionScope.user_no}">
+                                                <c:if
+                                                    test="${comment.user_no == sessionScope.user_no or sessionScope.role == 'ADMIN'}">
                                                     <button class="comment-del-btn"
                                                         onclick="deleteComment(${comment.comment_no})">×</button>
                                                 </c:if>
+
                                             </td>
                                             <td>${comment.created_at2}</td>
                                         </tr>
@@ -193,6 +195,28 @@
                         });
                     }
 
+                </script>
+                <script>
+                    function deleteComment(commentNo) {
+                        if (!confirm("댓글을 삭제할까요?")) return;
+
+                        $.ajax({
+                            url: "/comment/deleteComment",
+                            type: "POST",
+                            data: { comment_no: commentNo },
+                            success: function (result) {
+                                if (result === "success") {
+                                    alert("삭제되었습니다.");
+                                    location.reload();
+                                } else {
+                                    alert("삭제 실패");
+                                }
+                            },
+                            error: function () {
+                                alert("서버 오류");
+                            }
+                        });
+                    }
                 </script>
 
 

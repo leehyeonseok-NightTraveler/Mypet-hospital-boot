@@ -14,7 +14,7 @@ import com.boot.dto.Mypet_Community_CommentDTO;
 public class CommunityCommentServiceImpl implements CommunityCommentService{
 
 	@Autowired
-	private SqlSession sqlSession;
+	private SqlSession sqlSession;	
 
 	@Override
 	public void save(HashMap<String, String> param) {
@@ -27,6 +27,12 @@ public class CommunityCommentServiceImpl implements CommunityCommentService{
 		CommunityCommentDAO dao = sqlSession.getMapper(CommunityCommentDAO.class);
 		ArrayList<Mypet_Community_CommentDTO> list = dao.findAll(param);
 		return list;
+	}
+
+	@Override
+	public int deleteComment(int comment_no) {
+		CommunityCommentDAO dao = sqlSession.getMapper(CommunityCommentDAO.class);
+	    return dao.deleteComment(comment_no);
 	}
 	
 }
