@@ -7,12 +7,17 @@
 
             <head>
                 <meta charset="UTF-8">
-                <title>공지사항</title>
+                <title>자유게시판</title>
 
                 <!-- 정적 리소스 경로 Spring Boot 표준 적용 -->
                 <link rel="stylesheet" href="/css/mainpage.css">
                 <link rel="stylesheet" href="/css/community_list.css">
                 <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
+
+                <script>
+                    const paramType = "${param.type}";
+                    const paramKeyword = "${param.keyword}";
+                </script>
             </head>
 
             <body>
@@ -21,8 +26,7 @@
                 <jsp:include page="/WEB-INF/views/common/header.jsp" />
 
                 <main>
-                    <h2 class="notice-title">자유게시판</h2>
-
+                    <a href="/community_list" class="notice-title">자유게시판</a>
                     <table class="table">
                         <thead>
                             <tr class="column">
@@ -52,11 +56,26 @@
                                 </tr>
                             </c:forEach>
 
-                            <tr class="divider_tr">
-                                <td colspan="5"></td>
-                            </tr>
                             <tr class="button_tr">
-                                <td colspan="5">
+                                <td colspan="4" class="search">
+                                    <form action="/community_search" method="get" class="search-form">
+                                        <select name="type">
+                                            <option value="title" ${param.type=='title' ? 'selected' : '' }>제목</option>
+                                            <option value="content" ${param.type=='content' ? 'selected' : '' }>내용
+                                            </option>
+                                            <option value="title_content" ${param.type=='title_content' ? 'selected'
+                                                : '' }>제목+내용</option>
+                                        </select>
+
+                                        <input type="text" name="keyword" placeholder="검색어 입력"
+                                            value="${param.keyword}" />
+
+                                        <button type="submit" class="search-btn">검색</button>
+                                    </form>
+                                </td>
+
+
+                                <td>
                                     <form action="/community_write_view" method="get">
                                         <button type="submit" class="button">글쓰기</button>
                                     </form>
@@ -90,9 +109,12 @@
                             </c:if>
                         </ul>
                     </div>
+
                     <form method="get" id="actionForm">
                         <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
                         <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
+                        <input type="hidden" name="type" value="${param.type}">
+                        <input type="hidden" name="keyword" value="${param.keyword}">
                     </form>
 
 

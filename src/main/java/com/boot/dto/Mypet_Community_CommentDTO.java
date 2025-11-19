@@ -14,6 +14,8 @@ public class Mypet_Community_CommentDTO {
 	private int comment_no;
 	private int post_no;
 	private int user_no;
+	private String user_name;
 	private String comment_content;
-	private Date created_date;
+	private Date created_at;			
+	private String created_at2;
 }

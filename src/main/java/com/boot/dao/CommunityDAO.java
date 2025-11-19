@@ -2,6 +2,8 @@ package com.boot.dao;
 
 import java.util.ArrayList; 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -26,4 +28,13 @@ public interface CommunityDAO {
 	
 	public void communityModify(HashMap<String, String> param);
 	public void communityDelete(HashMap<String, String> param);
+	
+//	글 검색
+	List<Mypet_CommunityDTO> searchPosts(Map<String, String> param);
+	
+	// 페이징 검색 추가 (Criteria 기반)
+	List<Mypet_CommunityDTO> searchPostsPaging(Criteria cri);
+
+	// 검색 총 개수
+	int searchCount(Criteria cri);
 }

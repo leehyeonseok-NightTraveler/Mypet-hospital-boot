@@ -9,6 +9,7 @@
 
             <!-- 정적 리소스 -->
             <link rel="stylesheet" href="/css/mainpage.css">
+            <link rel="stylesheet" href="/css/community_write.css">
 
             <!-- Bootstrap & Summernote -->
             <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
@@ -17,7 +18,8 @@
             <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
             <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/lang/summernote-ko-KR.min.js"></script>
+            <script
+                src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/lang/summernote-ko-KR.min.js"></script>
 
             <script src="${pageContext.request.contextPath}/js/community_write.js"></script>
 
@@ -48,31 +50,41 @@
 
             <main>
                 <div class="container">
-                    <h3>자유 게시판</h3>
+                    <a href="/community_list" class="caption">자유게시판</a>
 
-                    <form method="post" action="/community_write">
+                    <form method="post" action="/community_write" enctype="multipart/form-data">
 
-                        <div>
-                            <label>제목</label>
-                            <input type="text" class="form-control" name="post_title" required>
+                        <!-- 제목 -->
+                        <div class="row-box">
+                            <div class="cell label">제목</div>
+                            <div class="cell input">    
+                                <input type="text" name="post_title">
+                            </div>
                         </div>
-                        <div>
-                            <label>파일</label>
-                            <input type="text" class="form-control" name="post_file">
+
+                        <!-- 파일 -->
+                        <div class="row-box">
+                            <div class="cell label">파일</div>
+                            <div class="cell input">
+                                <input type="text" name="uploadFile">
+                            </div>
                         </div>
-                        <div>
+
+                        <!-- 내용 -->
+                        <div class="row-box" style="display:block; border:none; margin-top:10px;">
                             <textarea id="summernote" name="post_content"></textarea>
                         </div>
 
-                        <div>
+                        <!-- 버튼 그룹 -->
+                        <div class="button-group">
                             <input type="submit" value="등록" class="btn-submit">
-                        </div>
-                        <div>
                             <button type="button" onclick="location.href='/community_list'" class="btn-cancel">
                                 취소
                             </button>
                         </div>
+
                     </form>
+
                 </div>
             </main>
 

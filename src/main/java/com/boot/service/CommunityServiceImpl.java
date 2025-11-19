@@ -2,6 +2,8 @@ package com.boot.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +81,28 @@ public class CommunityServiceImpl implements CommunityService{
 //		게시글 삭제
 		CommunityDAO dao = session.getMapper(CommunityDAO.class);
 		dao.communityDelete(param);
+	}
+	
+	
+	@Autowired
+	private CommunityDAO communityDAO;
+
+	@Override
+	public List<Mypet_CommunityDTO> searchPosts(Map<String, String> param) {
+		
+		return communityDAO.searchPosts(param);
+	}
+
+	@Override
+	public List<Mypet_CommunityDTO> searchPostsPaging(Criteria cri) {
+		
+		return communityDAO.searchPostsPaging(cri);
+	}
+
+	@Override
+	public int searchCount(Criteria cri) {
+		
+		return communityDAO.searchCount(cri);
 	}
 
 }

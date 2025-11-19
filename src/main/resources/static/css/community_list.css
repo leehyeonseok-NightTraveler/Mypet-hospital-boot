@@ -53,9 +53,8 @@ header, footer {
 	padding: 10px 0; /* 너무 넓다면 5px 정도로 줄여도 좋아 */
 }
 
-/* 공지사항 제목 */
 .notice-title {
-	width: 80%;
+	width: 20%;
 	margin: 20px auto 30px;
 	text-align: center;
 	font-size: 2rem;
@@ -69,7 +68,6 @@ header, footer {
 	width: 80%;
 	border-collapse: collapse;
 	margin: 0 auto;
-	table-layout: fixed;
 	background-color: #fff;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 	border-radius: 8px;
@@ -148,6 +146,7 @@ header, footer {
 	border-radius: 6px;
 	cursor: pointer;
 	transition: background-color 0.3s ease, box-shadow 0.3s ease;
+	white-space: nowrap;
 }
 
 .button:hover {
@@ -193,3 +192,62 @@ header, footer {
   font-weight: bold;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
+
+/* 검색 영역 form 정렬 */
+.search-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* 선택창(select) */
+.search-form select {
+    padding: 8px 10px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background-color: #fff;
+    transition: border-color 0.2s ease;
+}
+
+.search-form select:focus {
+    outline: none;
+    border-color: #2196F3;
+    box-shadow: 0 0 4px rgba(33, 150, 243, 0.3);
+}
+
+/* 입력창(input) */
+.search-form input[type="text"] {
+    padding: 8px 12px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    width: 200px;
+    transition: border-color 0.2s ease;
+}
+
+.search-form input[type="text"]:focus {
+    outline: none;
+    border-color: #2196F3;
+    box-shadow: 0 0 4px rgba(33, 150, 243, 0.3);
+}
+
+/* 검색 버튼 */
+.search-btn {
+    background-color: #2196F3;
+    color: white;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-btn:hover {
+    background-color: #1976D2;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
