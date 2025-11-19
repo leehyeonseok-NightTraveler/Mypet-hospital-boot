@@ -111,91 +111,106 @@
                 </tbody>
             </table>
         </div>
-		
-		<div class="user-membership-box">
-		    <h3>멤버십 정보</h3>
 
-		    <p><strong>현재 등급:</strong> ${UserInfo.current_grade}</p>
-		    <p><strong>만료일:</strong> ${UserInfo.grade_expiry_date}</p>
+        <div class="user-membership-box">
+            <h3>멤버십 정보</h3>
 
-		    <h4>등급 이력</h4>
-		    <table class="membership-table">
-		        <thead>
-		        <tr>
-		            <th>등급</th>
-		            <th>시작일</th>
-		            <th>종료일</th>
-		            <th>평가일</th>
-		        </tr>
-		        </thead>
-		        <tbody>
-		        <c:forEach var="g" items="${GradeHistory}">
-		            <tr>
-						<td><span class="grade-badge grade-${g.grade}">${g.grade}</span></td>
-		                <td>${g.start_date}</td>
-		                <td>${g.end_date}</td>
-		                <td>${g.evaluation_date}</td>
-		            </tr>
-		        </c:forEach>
-		        </tbody>
-		    </table>
+            <p><strong>현재 등급:</strong> ${UserInfo.current_grade}</p>
+            <p><strong>만료일:</strong> ${UserInfo.grade_expiry_date}</p>
 
-			<h4>
-			    서비스 이용 내역
-			    <a href="<c:url value='/user_servicehistory?user_no=${UserInfo.user_no}'/>"
-			       class="btn-history-add">+ 등록</a>
-			</h4>
-		    <table class="membership-table">
-		        <thead>
-		        <tr>
-		            <th>방문일</th>
-		            <th>종류</th>
-		            <th>항목</th>
-		            <th>메모</th>
-		            <th>완료 여부</th>
-					<th>완료일</th>
-					<th>완료 처리</th>
-		        </tr>
-		        </thead>
-		        <tbody>
-		        <c:forEach var="s" items="${ServiceHistory}">
-		            <tr>
-		                <td>${s.service_date}</td>
-		                <td>${s.service_type}</td>
-		                <td>${s.service_item}</td>
-		                <td>${s.details_memo}</td>
-		                <td>${s.completion_status}</td>
-						<td>${s.completion_date}</td>
-						<td>
-						    <c:choose>
-						        <c:when test="${s.completion_status eq 'N'}">
-						           <form action="<c:url value='/user_serviceComplete'/>"
-						                  method="post" style="display:inline;">
-						                <input type="hidden" name="service_no" value="${s.service_no}">
-						                <input type="hidden" name="user_no" value="${UserInfo.user_no}">
-						                <button type="submit" class="btn-finish">완료</button>
-						           </form>
-						        </c:when>
-											
-						        <c:otherwise>
-						            <span class="finished-text">완료됨</span>
-						        </c:otherwise>
-						   </c:choose>
-						</td>
-		            </tr>
-		        </c:forEach>
-		        </tbody>
-		    </table>
-		</div>
+            <h4>등급 이력</h4>
+            <table class="membership-table">
+                <thead>
+                <tr>
+                    <th>등급</th>
+                    <th>시작일</th>
+                    <th>종료일</th>
+                    <th>평가일</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach var="g" items="${GradeHistory}">
+                    <tr>
+                        <td><span class="grade-badge grade-${g.grade}">${g.grade}</span></td>
+                        <td>${g.start_date}</td>
+                        <td>${g.end_date}</td>
+                        <td>${g.evaluation_date}</td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
 
-		
+            <h4>
+                서비스 이용 내역
+                <a href="<c:url value='/user_servicehistory?user_no=${UserInfo.user_no}'/>"
+                   class="btn-history-add">+ 등록</a>
+            </h4>
+            <table class="membership-table">
+                <thead>
+                <tr>
+                    <th>방문일</th>
+                    <th>종류</th>
+                    <th>항목</th>
+                    <th>메모</th>
+                    <th>완료 여부</th>
+                    <th>완료일</th>
+                    <th>완료 처리</th>
+                    <th>확인서 발급</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach var="s" items="${ServiceHistory}">
+                    <tr>
+                        <td>${s.service_date}</td>
+                        <td>${s.service_type}</td>
+                        <td>${s.service_item}</td>
+                        <td>${s.details_memo}</td>
+                        <td>${s.completion_status}</td>
+                        <td>${s.completion_date}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${s.completion_status eq 'N'}">
+                                    <form action="<c:url value='/user_serviceComplete'/>"
+                                          method="post" style="display:inline;">
+                                        <input type="hidden" name="service_no" value="${s.service_no}">
+                                        <input type="hidden" name="user_no" value="${UserInfo.user_no}">
+                                        <button type="submit" class="btn-finish">완료</button>
+                                    </form>
+                                </c:when>
+
+                                <c:otherwise>
+                                    <span class="finished-text">완료됨</span>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${s.completion_status eq 'Y'}">
+                                    <%-- 💡 수정: Form 제출 대신 openCertificateModal 함수 호출 --%>
+                                    <button type="button" class="btn-certificate"
+                                            onclick="openCertificateModal('${s.service_no}', '${UserInfo.user_no}', '${s.pet_no}');">
+                                        확인서 발급
+                                    </button>
+                                </c:when>
+                                <c:otherwise>
+                                    <span class="disabled-text">-</span>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </div>
+
+
         <div class="user-detail-actions" id="user-detail-actions">
             <a href="<c:url value='/user_manage'>
             <c:param name="pageNum" value="${cri.pageNum}"/>
             <c:param name="amount" value="${cri.amount}"/>
             </c:url>" class="btn-back" id="btn-back">목록으로</a>
         </div>
-		
+
 
         <%-- 활동정지 해제(ACTIVE)를 위한 숨겨진 POST 폼 --%>
         <form method="post" action="UserStatusProcess" id="activateForm" style="display:none;">
@@ -206,12 +221,11 @@
             <input type="hidden" name="suspension_reason" value=""/>
         </form>
 
-        <%-- 💡 CSS 파일로 스타일 분리 --%>
-        <div id="modalOverlay"></div>
-        <%-- 모달 배경 오버레이. display:none; 등 스타일은 CSS 파일로 이동 --%>
+        <%-- 기존 모달 오버레이 --%>
+        <div id="modalOverlay" style="display:none;"></div>
 
-        <%-- 💡 CSS 파일로 스타일 분리 --%>
-        <div id="suspendModal">
+        <%-- 기존 활동정지 모달 --%>
+        <div id="suspendModal" style="display:none;">
             <h3>회원 활동정지 사유 입력</h3>
 
             <%-- 정지 처리 폼 (POST) --%>
