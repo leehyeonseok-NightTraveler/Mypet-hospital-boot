@@ -7,6 +7,8 @@ import com.boot.util.ImageHashUtil;
 
 import java.io.File;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @Slf4j
@@ -110,4 +112,28 @@ public class UploadServiceImpl implements UploadService {
         }
         return false;
     }
+    
+    @Override
+    public void deleteAttachment(String folder, String filename) {
+        if (filename == null || filename.isEmpty()) return;
+        deleteFile(folder + "/" + filename);
+    }
+
+    @Override
+    public void deleteSummernoteFiles(String folder, String html) {
+        if (html == null || html.trim().isEmpty()) return;
+
+        // 이미지 삭제
+        Matcher img = Pattern.compile(folder + "_img/([^\"']+)").matcher(html);
+        while (img.find()) {
+            deleteFile(folder + "_img/" + img.group(1));
+        }
+
+        // 영상 삭제
+        Matcher video = Pattern.compile(folder + "_video/([^\"']+)").matcher(html);
+        while (video.find()) {
+            deleteFile(folder + "_video/" + video.group(1));
+        }
+    }
+
 }

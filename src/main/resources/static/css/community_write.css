@@ -1,49 +1,59 @@
-
-/* 전체 컨테이너 너비 줄이기 */
+/* -------------------------
+   컨테이너
+-------------------------- */
 .container {
-    max-width: 900px;   /* 원하는 너비로 조절 (600~800px 추천) */
+    max-width: 900px;
     width: 90%;
-    margin: 0 auto;     /* 가운데 정렬 */
+    margin: 0 auto;
 }
 
-/* 한 줄 (row) */
+/* -------------------------
+   제목 / 파일 입력 줄
+-------------------------- */
 .row-box {
     display: grid;
-    grid-template-columns: 120px 1fr; /* 왼쪽 라벨 120px, 오른쪽 입력칸 자동 확장 */
+    grid-template-columns: 120px 1fr;
     border: 1px solid rgb(210, 210, 210);
     margin-bottom: 5px;
     overflow: hidden;
 }
 
-.row-box .label {
-    border-radius: 0 !important;
+.row-box .cell {
+    padding: 10px 12px;
 }
 
-/* 왼쪽 라벨 */
 .row-box .label {
     background: #dddddd;
     font-weight: 500;
-	font-size: medium;
+    font-size: medium;
     color: #333;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* 오른쪽 입력칸 */
 .row-box .input {
-    border-right: none;
-	font-size: small;
+    font-size: small;
 }
 
+/* 모든 입력칸 */
 .row-box .input input {
     width: 100%;
     padding: 8px;
     border: 1px solid #ccc;
+    box-sizing: border-box;
 }
 
+/* 파일 input은 border 제거 */
+.row-box .input input[type="file"],
+.row-box .input input[type="text"][readonly] {
+    border: none !important;
+    background: transparent;
+}
 
-/* 등록/취소 버튼 오른쪽 정렬 */
+/* -------------------------
+   버튼 그룹
+-------------------------- */
 .button-group {
     margin-top: 20px;
     display: flex;
@@ -51,7 +61,6 @@
     gap: 12px;
 }
 
-/* 버튼 */
 .btn-submit {
     background-color: #2196F3;
     color: white;
@@ -61,7 +70,6 @@
     cursor: pointer;
     font-weight: bold;
 }
-
 .btn-cancel {
     background-color: #e53935;
     color: #FFF;
@@ -69,7 +77,7 @@
     border: none;
     border-radius: 6px;
     cursor: pointer;
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .btn-submit:hover {
@@ -79,25 +87,32 @@
     background-color: #c62828;
 }
 
-.row-box .cell.input input[type="text"],
-.row-box .cell.input input[type="file"] {
-    width: 100%;
-    padding: 8px;
-    border: none !important;
-    outline: none !important;
-    background: transparent;
-    box-sizing: border-box;
-}
-
+/* -------------------------
+   Summernote 스타일 보정
+-------------------------- */
 .note-editor {
     border-radius: 0 !important;
 }
-.row-box .cell {
-    padding: 2px 2px; /* ← 세로 12px 패딩 추가 */
+
+.note-editor .note-editable {
+    min-height: 300px;
+    padding: 15px;
+    font-size: 14px;
+    line-height: 1.6;
 }
 
+/* 이미지를 드래그했을 때 자연스럽게 보이도록 */
+.note-editable img {
+    max-width: 100%;
+    height: auto;
+    cursor: move;
+}
+
+/* -------------------------
+   페이지 제목
+-------------------------- */
 .caption {
-    display: block;          /* 가운데 정렬 안정화 */
+    display: block;
     width: 20%;
     margin: 20px auto 30px;
     text-align: center;
@@ -105,10 +120,35 @@
     font-weight: 700;
     color: #0d47a1;
     padding-bottom: 10px;
-    text-decoration: none;   /* 기본 밑줄 제거 */
+    text-decoration: none;
 }
 
 .caption:hover {
-    text-decoration: none;   /* hover 시 밑줄 제거 */
-    color: #0a3980;          /* 선택: 아주 살짝 진해지는 효과 */
+    text-decoration: none;
+    color: #0a3980;
+}
+
+/* 파일 선택 버튼 커스텀 */
+.file-select-btn {
+    background-color: #2196F3;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: 600;
+    margin-right: 10px;
+    user-select: none;
+    border: none;
+}
+
+/* 파일 이름 표시 */
+.file-name-display {
+    font-size: 14px;
+    color: #333;
+}
+
+/* 실제 input[type=file]은 숨김 */
+input[type="file"] {
+    display: none !important;
 }
