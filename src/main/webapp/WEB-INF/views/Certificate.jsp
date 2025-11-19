@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="now" value="<%= new java.util.Date() %>"/>
 
 <!DOCTYPE html>
@@ -43,8 +44,25 @@
         </tr>
         <tr>
             <th colspan="2" class="th-user-id">주민등록번호</th>
-            <td colspan="4"></td>
+            <td colspan="4">
+                <%-- 💡 수정된 출력 로직: 앞 6자리와 뒷 7자리를 모두 노출합니다. --%>
+                <c:set var="residentId" value="${residentId}"/> <%-- Controller에서 받은 13자리 값 --%>
+
+                <c:choose>
+                    <c:when test="${not empty residentId and fn:length(residentId) == 13}">
+                        <%-- 앞 6자리 추출 --%>
+                        <c:out value="${fn:substring(residentId, 0, 6)}"/>
+                        -
+                        <%-- 뒷 7자리 추출 --%>
+                        <c:out value="${fn:substring(residentId, 6, 13)}"/>
+                    </c:when>
+                    <c:otherwise>
+                        주민등록번호 정보 없음
+                    </c:otherwise>
+                </c:choose>
+            </td>
         </tr>
+        <tr class="row-large">
         <tr class="row-large">
             <th class="th-address">주소</th>
             <td colspan="5">

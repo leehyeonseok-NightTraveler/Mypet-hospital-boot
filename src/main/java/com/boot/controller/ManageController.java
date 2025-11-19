@@ -142,15 +142,22 @@ public class ManageController {
     public String Certificate(@RequestParam int user_no,
                               @RequestParam int service_no,
                               @RequestParam int pet_no,
+                              // 💡 추가: 주민등록번호 13자리를 String으로 받습니다.
+                              @RequestParam String id_number,
                               HttpSession session, Model model,
                               RedirectAttributes rttr) {
         String Role = (String) session.getAttribute("role");
 
+        // 1. 관리자 권한 확인 (기존 로직 유지)
         if (!"ADMIN".equals(Role)) {
             rttr.addFlashAttribute("alertMsg", "관리자만 접근 가능합니다.");
             return "redirect:/mainpage";
         }
 
+        // 2. 서버에서 주민등록번호 일치 여부를 검증하는 로직이 여기에 들어가야 합니다.
+        //    (현재는 단순 전달만 구현)
+
+        // 3. 확인서 데이터 로드 (기존 로직 유지)
         Map<String, Object> params = new HashMap<>();
 
         params.put("user_no", user_no);
@@ -161,7 +168,11 @@ public class ManageController {
         CertificateDTO cert = certificate.get(0);
         model.addAttribute("certificate", cert);
 
-        return "Certificate";
+        // 💡 추가: 주민등록번호를 모델에 담아 JSP로 전달합니다.
+        //    이 값은 Certificate.jsp에서 ${residentId}로 사용됩니다.
+        model.addAttribute("residentId", id_number);
+
+        return "Certificate"; // Certificate.jsp로 포워딩
     }
 
     @PostMapping("/user_serviceComplete")
