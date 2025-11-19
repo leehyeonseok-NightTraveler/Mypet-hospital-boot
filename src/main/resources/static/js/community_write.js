@@ -5,7 +5,7 @@ $(document).ready(function() {
         e.preventDefault();
 
         const title = $("input[name='post_title']").val().trim();
-        const content = $("textarea[name='post_content']").val().trim();
+        const content = $("#summernote").summernote('code').trim();
 
         if (title === "") {
             alert("제목을 입력해 주세요.");
@@ -13,12 +13,14 @@ $(document).ready(function() {
             return;
         }
 
-        if (content === "") {
+        // summernote 내용이 비었는지 검사
+        const plainText = $("<div>").html(content).text().trim();
+        if (plainText === "") {
             alert("내용을 입력해 주세요.");
-            $("textarea[name='post_content']").focus();
+            $("#summernote").summernote('focus');
             return;
         }
 
-        actionForm.attr("action", "community_write").submit();
+        actionForm.attr("action", "/community_write").submit();
     });
 });

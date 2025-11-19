@@ -16,5 +16,6 @@
         <mapper resource="mybatis/mappers/Mypet_Kakao_Mapper.xml"/>
         <mapper resource="mybatis/mappers/ManageMapper.xml"/>
         <mapper resource="mybatis/mappers/CommunityMapper.xml"/>
+        <mapper resource="mybatis/mappers/CommentMapper.xml"/>
     </mappers>
 </configuration>

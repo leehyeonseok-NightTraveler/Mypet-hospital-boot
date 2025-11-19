@@ -9,6 +9,7 @@
 
             <!-- 정적 리소스 -->
             <link rel="stylesheet" href="/css/mainpage.css">
+            <link rel="stylesheet" href="/css/community_write.css">
 
             <!-- Bootstrap & Summernote -->
             <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
@@ -17,7 +18,8 @@
             <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
             <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/lang/summernote-ko-KR.min.js"></script>
+            <script
+                src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/lang/summernote-ko-KR.min.js"></script>
 
             <!-- <script src="${pageContext.request.contextPath}/js/community_write.js"></script> -->
 
@@ -48,30 +50,33 @@
 
             <main>
                 <div class="container">
-                    <h3>자유 게시판</h3>
+                    <p class="caption">수정 페이지</p>
 
                     <form method="post" action="/community_modify_ok">
 
-                        <div>
-                            <label>제목</label>
-                            <input type="text" class="form-control" name="post_title" required value="${modify.post_title}">
+                        <div class="row-box">
+                            <div class="cell label">제목</div>
+                            <div class="cell input">
+                                <input type="text" name="post_title" required value="${content_view.post_title}">
+                            </div>
+                        </div>
+                        <div class="row-box">
+                            <div class="cell label">파일</div>
+                            <div class="cell input">
+                                <input type="text" name="post_file" value="${content_view.post_file}">
+                            </div>
                         </div>
                         <div>
-                            <label>파일</label>
-                            <input type="text" class="form-control" name="post_file" value="${modify.post_file}">
-                        </div>
-                        <div>
-                            <textarea id="summernote" name="post_content">${modify.post_content}</textarea>
+                            <textarea id="summernote" name="post_content">${content_view.post_content}</textarea>
                         </div>
 
-                        <div>
+                        <div class="button-group">
                             <input type="submit" value="수정 완료" class="btn-submit">
-                        </div>
-                        <div>
                             <button type="button" onclick="location.href='/community_list'" class="btn-cancel">
                                 취소
                             </button>
                         </div>
+
                         <input type="hidden" name="post_no" value="${modify.post_no}">
                     </form>
                 </div>

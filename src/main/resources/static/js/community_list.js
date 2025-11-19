@@ -1,32 +1,34 @@
-var actionForm = $("#actionForm");
+$(document).ready(function () {
+    const actionForm = $("#actionForm");
 
-//페이지 처리
-$(".paginate_button a").on("click",function(e){
-	e.preventDefault();
-	console.log("click~!!!");
-	console.log("@# href=>"+$(this).attr("href"));
+    // 페이지 클릭
+    $(".paginate_button a").on("click", function (e) {
+        e.preventDefault();
 
-	actionForm.find("input[name='pageNum']").val($(this).attr("href"));
-	//actionForm.submit();
-	// 버그 처리 (게시글 클릭 후 뒤로가기 누른 후 다른 페이지 클릭할 때 content_view 가 작동되는것을 해결)
-	actionForm.attr("action","community_list").submit();
-});// end of paginate_button click
+        const page = $(this).attr("href");
+        actionForm.find("input[name='pageNum']").val(page);
 
-//게시물 처리
-$(".move_link").on("click",function(e){
-	e.preventDefault();
-	console.log("move_link click~!!!");
-	console.log("@# href=>"+$(this).attr("href"));
-	
-	var targetBno = $(this).attr("href");
+        const type = actionForm.find("input[name='type']").val();
+        const keyword = actionForm.find("input[name='keyword']").val();
 
-	var bno = actionForm.find("input[name='boardNo]").val();
-	if(bno != ""){
-		actionForm.find("input[name='boardNo]").remove();
-	}
+        // 검색이면 => 무조건 검색 URL로 보낸다 (keyword 값이 비어있어도 검색으로 처리)
+        if (type && type !== "null" && type !== "undefined") {
+            actionForm.attr("action", "/community_search");
+        } else {
+            actionForm.attr("action", "/community_list");
+        }
 
-	//content_view?boardNo=${dto.boardNo} 를 actionForm 으로 처리
-	actionForm.append("<input type='hidden' name='boardNo' value='"+targetBno+"'>");
-	//컨트롤러에 content_view 로 찾아감
-	actionForm.attr("action","content_view").submit();
-});// end of paginate_button click
+        actionForm.submit();
+    });
+
+    // 게시글 클릭
+    $(".move_link").on("click", function (e) {
+        e.preventDefault();
+
+        const postNo = $(this).attr("href");
+
+        actionForm.append(`<input type="hidden" name="postNo" value="${postNo}">`);
+        actionForm.attr("action", "/community_content_view");
+        actionForm.submit();
+    });
+});
