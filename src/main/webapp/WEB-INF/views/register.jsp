@@ -61,11 +61,19 @@
                 <label for="user_email">이메일</label>
                 <input type="email" id="user_email" name="user_email">
             </div>
+			<!-- 주소 -->
+            <div class="input-group address">
+                <div class="address-group">
+                    <input type="text" id="postcode" placeholder="우편번호">
+                    <button type="button" class="btn-find-address" onclick="execDaumPostcode()">주소 찾기</button>
+                </div>
 
-			<div class="input-group address-group">
-               <input type="text" id="postcode" name="user_addr" placeholder="우편번호" readonly>
-               <button type="button" onclick="execDaumPostcode()" class="addr-btn">주소 검색</button>
-           </div>
+                <input type="text" id="address" name="user_addr" placeholder="기본 주소"
+                       value="${loginUser.user_addr}">
+
+                <input type="text" id="detailAddress" name="user_addr_detail"
+                       placeholder="상세 주소">
+            </div>
 
             <button type="submit" class="submit-btn">가입하기</button>
 
@@ -76,24 +84,27 @@
 <!-- 공통 Footer -->
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 <script>
-    // Daum Postcode API 스크립트
     function execDaumPostcode() {
         new daum.Postcode({
             oncomplete: function(data) {
+                // 1. 도로명/지번 주소 선택 로직
+                var addr = ''; // 주소 변수
+
+                if (data.userSelectedType === 'R') { // 도로명 주소 선택
+                    addr = data.roadAddress;
+                } else { // 지번 주소 선택
+                    addr = data.jibunAddress;
+                }
+
+                // 2. ID를 이용해 값을 넣어줍니다. (보내주신 HTML ID와 일치함)
                 document.getElementById('postcode').value = data.zonecode; // 우편번호
-                document.getElementById("address").value = data.address; // 기본 주소
-                document.getElementById("address").focus(); // 상세 주소로 포커스 이동 (ID 오타 수정됨)
+                document.getElementById("address").value = addr;           // 기본 주소
+
+                // 3. 상세 주소 입력칸으로 커서 이동
+                document.getElementById("detailAddress").focus();
             }
         }).open();
     }
-    
-    // 🔻🔻🔻 2. [추가] Flatpickr (달력) 실행 🔻🔻🔻
-    flatpickr("#birthday", {
-        "locale": "ko",                // 한국어 설정
-        dateFormat: "Y-m-d",         // DB에 YYYY-MM-DD 형식으로 전송
-        allowInput: true,            // 직접 입력 허용 (선택)
-        maxDate: "today"             // 오늘 이후 날짜는 선택 불가 (생일이므로)
-    });
 </script>
 
 </body>
