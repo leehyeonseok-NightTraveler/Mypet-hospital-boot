@@ -107,12 +107,14 @@
         WHERE qna_no = #{qna_no}
     </delete>
 
-    <update id="modifyQna" parameterType="com.boot.dto.Mypet_Qna_BoardDTO">
-        UPDATE qna_board
-        SET
-        qna_title = #{params.qna_title},
-        qna_content = #{params.qna_content}
-        WHERE qna_no = #{params.qna_no}
-    </update>
+    <update id="modifyQna" parameterType="map">
+	    UPDATE qna_board
+	    SET
+	        qna_title = #{params.qna_title},
+	        qna_content = #{params.qna_content},
+	        qna_file = #{params.qna_file}
+	    WHERE qna_no = #{params.qna_no}
+	</update>
+
 
 </mapper>

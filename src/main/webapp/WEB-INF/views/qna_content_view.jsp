@@ -43,20 +43,26 @@
                 <td class="info-value created-date">${detail.created_date}</td>
             </tr>
 
-            <tr class="info-row file-row">
-                <td class="info-label file-label">첨부파일</td>
-                <td colspan="5" class="info-value file-download-area">
-                    <c:choose>
-                        <c:when test="${not empty detail.qna_file}">
-                            <c:set var="fileName" value="${fn:substringAfter(detail.qna_file, '/')}" />
-                            <a href="/download?path=${detail.qna_file}" class="download-link">
-                                    ${fileName}
-                            </a>
-                        </c:when>
-                        <c:otherwise>첨부파일 없음</c:otherwise>
-                    </c:choose>
-                </td>
-            </tr>
+			<tr class="info-row file-row">
+			    <td class="info-label file-label">첨부파일</td>
+			    <td colspan="5" class="info-value file-download-area">
+			        <c:choose>
+			            <c:when test="${not empty detail.qna_file}">
+			                <c:url var="downloadUrl" value="/download">
+			                    <c:param name="folder" value="qna"/>
+			                    <c:param name="file" value="${detail.qna_file}"/>
+			                </c:url>
+
+			                <a href="${downloadUrl}">
+			                    ${detail.qna_file}
+			                </a>
+			            </c:when>
+
+			            <c:otherwise>첨부파일 없음</c:otherwise>
+			        </c:choose>
+			    </td>
+			</tr>
+
 
             <tr class="content-row question-content-row">
                 <td colspan="6"><div class="content-box">${detail.qna_content}</div></td>
