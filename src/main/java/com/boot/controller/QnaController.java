@@ -2,21 +2,22 @@ package com.boot.controller;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import com.boot.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.boot.dto.Mypet_Qna_BoardDTO;
-import com.boot.dto.Mypet_Qna_ReplyDTO;
-import com.boot.dto.Mypet_UserDTO;
 import com.boot.service.QnaService;
+import com.boot.service.UploadService;
 
 @Slf4j
 @Controller
@@ -24,89 +25,166 @@ import com.boot.service.QnaService;
 public class QnaController {
 
     private final QnaService service;
+    private final UploadService uploadService;
 
 
-    /* ============================
-     *      Q&A 목록 페이지
-     * ============================ */
     @GetMapping("/qna_page")
-    public String qnaPage(
-            Model model,
-            @RequestParam(value = "page", defaultValue = "1") int currentPage
-    ) {
+    public String qnaPage( Model model, Criteria cri) {
 
-        int pageSize = 10;
-        int start = (currentPage - 1) * pageSize + 1;
-        int end = currentPage * pageSize;
+        List<Mypet_Qna_BoardDTO> qnaList = service.getQnaList(cri);
+        model.addAttribute("qnaList", qnaList);
 
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("start", start);
-        map.put("end", end);
-
-        List<Mypet_Qna_BoardDTO> qnaList = service.list2(map);
-
-        model.addAttribute("dd", qnaList);
-        log.info("[Controller] Q&A 목록 불러오기 완료 ({}건)", qnaList.size());
-
-        int totalCount = service.getTotalCount2();
-        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
-
-        model.addAttribute("totalCount", totalCount);
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("totalPage", totalPage);
+        int total = service.getQnaTotal();
+        model.addAttribute("pageMaker", new PageDTO(total, cri));
 
         return "qna_page";
     }
 
 
-    /* ============================
-     *        Q&A 작성 페이지
-     * ============================ */
     @GetMapping("/qna_write")
     public String qnaWrite(HttpSession session) {
-
         Mypet_UserDTO loginUser = (Mypet_UserDTO) session.getAttribute("loginUser");
 
+        // 💡 로그인 여부 체크
         if (loginUser == null) return "redirect:/login";
 
         return "qna_write";
     }
 
 
-    /* ============================
-     *        Q&A 등록 처리
-     * ============================ */
     @PostMapping("/qna_write_ok")
     public String qnaWriteOk(
             Mypet_Qna_BoardDTO dto,
+            @RequestParam(value = "qna_file_upload", required = false) MultipartFile file,
             HttpSession session,
             RedirectAttributes ra
     ) {
-
         Mypet_UserDTO loginUser = (Mypet_UserDTO) session.getAttribute("loginUser");
 
         if (loginUser == null) return "redirect:/login";
 
         dto.setUser_no(loginUser.getUser_no());
-        log.info("[Controller] Q&A 등록 요청 수신: {}", dto);
+
+        // 💡 파일 처리: 파일이 존재하면 저장 후 DTO에 파일명 설정
+        if (file != null && !file.isEmpty()) {
+            String saved = uploadService.saveRawFile(file, "qna");
+            dto.setQna_file(saved);
+        }
 
         service.writeQna(dto);
 
         ra.addFlashAttribute("message", "문의가 등록되었습니다!");
         return "redirect:/qna_page";
     }
-    
-//    @GetMapping("/qna_view")
-//    public String qnaView(
-//            @RequestParam("qna_no") int qna_no,
-//            Model model) {
-//
-//        Mypet_Qna_BoardDTO dto = service.getQna(qna_no); // 질문
-//        Mypet_Qna_ReplyDTO reply = service.getReply(qna_no); // 답변
-//
-//        model.addAttribute("dto", dto);
-//        model.addAttribute("reply", reply);
-//
-//        return "qna_content_view";
-//    }
+
+    @GetMapping("/qna_view")
+    public String qnaView(
+            @RequestParam int qna_no,
+            Model model, HttpSession session,
+            Criteria cri) {
+
+        String role = null;
+        Integer userNo = null;
+
+        // 💡 사용자 또는 관리자 로그인 정보 확인 및 역할(Role) 설정
+        Object userObj = session.getAttribute("loginUser");
+        if (userObj != null && userObj instanceof Mypet_UserDTO) {
+            Mypet_UserDTO loginUser = (Mypet_UserDTO) userObj;
+            userNo = loginUser.getUser_no();
+        }
+
+        Object adminObj = session.getAttribute("loginAdmin");
+        if (adminObj != null && adminObj instanceof Mypet_AdminDTO) {
+            role = "ADMIN"; // 관리자일 경우 role 설정
+        }
+
+        // 💡 JSP에서 삭제/수정 권한 판단을 위해 모델에 role 및 userNo 전달
+        model.addAttribute("role", role);
+        model.addAttribute("user_no", userNo);
+
+        model.addAttribute("cri", cri);
+
+        // 질문 및 답변 조회
+        Mypet_Qna_BoardDTO detail = service.getQnaDetail(qna_no);
+        Mypet_Qna_ReplyDTO reply = service.getQnaReply(qna_no);
+
+        model.addAttribute("detail", detail);
+        model.addAttribute("reply", reply);
+
+        return "qna_content_view";
+    }
+
+    @PostMapping("/ReplyProcess")
+    public String ReplyProcess(@RequestParam String mode,
+                               @RequestParam String reply_content,
+                               @RequestParam int qna_no,
+                               HttpSession session) {
+        Object loginObj = session.getAttribute("loginAdmin");
+
+        // 💡 관리자 객체를 가져옴. (Null 체크는 호출하는 JSP에서 제어한다고 가정)
+        Mypet_AdminDTO loginAdmin = (Mypet_AdminDTO) loginObj;
+        int adminNo = loginAdmin.getAdmin_no();
+
+        String redirectPath;
+        Map<String, Object> params = new HashMap<>();
+
+        if ("create".equals(mode)) {
+            // 💡 답변 등록 로직: 답변 상태 업데이트 및 답변 저장
+            redirectPath = "redirect:/qna_view?qna_no=" + qna_no;
+
+            params.put("admin_no", adminNo);
+            params.put("qna_no", qna_no);
+            params.put("reply_content", reply_content);
+
+            service.qnaStatusUpdate(qna_no); // 상태를 '답변 완료' 등으로 변경
+            service.writeReply(params);
+        } else { // mode is "modify"
+            // 💡 답변 수정 로직
+            redirectPath = "redirect:/qna_view?qna_no=" + qna_no;
+
+            params.put("qna_no", qna_no);
+            params.put("reply_content", reply_content);
+
+            service.modifyReply(params);
+        }
+        return redirectPath;
+    }
+
+    @PostMapping("/qna_delete")
+    public String deleteQna(@RequestParam int qna_no) {
+        // 💡 Q&A 삭제 로직: 답변 먼저 삭제 후 질문 삭제
+        service.deleteReplyByQnaNo(qna_no);
+        service.deleteQna(qna_no);
+        return "redirect:/qna_page";
+    }
+
+    @GetMapping("/qna_modify")
+    public String qna_modify(@RequestParam int qna_no,Model model, Criteria cri){
+        Mypet_Qna_BoardDTO detail = service.getQnaDetail(qna_no);
+        model.addAttribute("modify", detail);
+        model.addAttribute("cri", cri);
+
+        return "qna_modify";
+    }
+
+    @PostMapping("/QnaModifyProcess")
+    public String QnaModifyProcess(@RequestParam String qna_title,
+                                   @RequestParam String qna_content,
+                                   @RequestParam int qna_no,
+                                   @RequestParam int pageNum,
+                                   @RequestParam int amount,
+                                   RedirectAttributes rttr,
+                                   Model model){
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("qna_title", qna_title);
+        params.put("qna_content", qna_content);
+        params.put("qna_no", qna_no);
+
+        service.modifyQna(params);
+
+        rttr.addAttribute("pageNum", pageNum);
+        rttr.addAttribute("amount", amount);
+        return  "redirect:/qna_page";
+    }
 }

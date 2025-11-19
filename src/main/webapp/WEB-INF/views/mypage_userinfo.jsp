@@ -23,17 +23,32 @@
         <h2>마이페이지 🐾</h2>
         <a href="/mypage_userinfo" class="active">내 정보</a>
         <a href="/mypage_petlist">펫 목록</a>
+		<a href="/mypage_membership">멤버십</a>
     </aside>
 
     <section class="content">
         <h2>내 정보</h2>
 
         <div class="profile-box">
-            <img src="/img/default_profile.png" class="profile-img">
+			<c:choose>
+			    <c:when test="${not empty loginUser.user_img}">
+			        <!-- 업로드된 이미지 보여주기 -->
+			        <img src="/upload/${loginUser.user_img}" class="profile-img">
+			    </c:when>
+			    <c:otherwise>
+			        <!-- 업로드 이미지가 없으면 기본 이미지 -->
+			        <img src="/img/default_profile.png" class="profile-img">
+			    </c:otherwise>
+			</c:choose>
 
             <div class="profile-name">
-                <h2>${loginUser.user_name} <span class="badge">일반회원</span></h2>
-                <p>${loginUser.user_id}</p>
+				<h2>
+				    ${loginUser.user_name}
+				    <span class="badge badge-${loginUser.current_grade}">
+				        ${loginUser.current_grade}
+				    </span>
+				</h2>
+                <p>${loginUser.user_email}</p>
             </div>
         </div>
 
@@ -44,6 +59,8 @@
                 <li><strong>주소:</strong> ${loginUser.user_addr}</li>
                 <li><strong>가입일:</strong> ${loginUser.user_regidate}</li>
                 <li><strong>회원 상태:</strong> ${loginUser.user_status}</li>
+				<li><strong>현재 멤버십 등급:</strong> ${loginUser.current_grade}</li>
+				<li><strong>멤버십 만료일:</strong> ${loginUser.grade_expiry_date}</li>
             </ul>
         </div>
 

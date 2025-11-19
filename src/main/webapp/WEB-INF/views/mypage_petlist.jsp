@@ -19,12 +19,13 @@
     <jsp:include page="/WEB-INF/views/common/header.jsp" />
 
     <!-- 본문 영역 -->
-    <main class="mypage-container">
+    <main class="mypage-container">	
 
         <aside class="sidemenu">
             <h2>마이페이지 🐾</h2>
             <a href="/mypage_userinfo">내 정보</a>
             <a href="/mypage_petlist" class="active">펫 목록</a>
+			<a href="/mypage_membership">멤버십</a>
         </aside>
 
         <section class="content">
@@ -37,9 +38,10 @@
                         <div class="pet-card clickable"
                              onclick="location.href='/mypage_petinfo?pet_no=${pet.pet_no}'">
 
-                            <img src="${pet.pet_img}" 
-                                 alt="펫 이미지" 
-                                 class="pet-img">
+							 <img src="/upload/${pet.pet_img}" 
+							      alt="펫 이미지" 
+							      class="pet-img">
+
 
                             <h3>${pet.pet_name}</h3>
                             <p>종: ${pet.pet_species}</p>

@@ -3,8 +3,26 @@
 
 <mapper namespace="com.boot.dao.ManageDAO">
     <select id="UserList" resultType="com.boot.dto.Mypet_UserDTO">
+        <![CDATA[
         SELECT *
-        FROM user_info
+        FROM (
+            SELECT rownum AS rn, inner_query.*
+            FROM (
+                SELECT
+                    user_no,
+                    user_id,
+                    user_name,
+                    user_phone,
+                    user_status
+                FROM user_info
+        ]]>
+        <![CDATA[
+                ORDER BY user_no DESC
+            ) inner_query
+            WHERE rownum <= #{cri.pageNum} * #{cri.amount}
+        )
+        WHERE rn > (#{cri.pageNum} - 1) * #{cri.amount}
+        ]]>
     </select>
 
     <select id="UserInfo" resultType="com.boot.dto.Mypet_UserDTO">
@@ -20,28 +38,153 @@
     </select>
 
     <select id="VeterinaryResList" resultType="com.boot.dto.MedicalResDTO">
-        SELECT vr.*, p.pet_breed
-        FROM veterinary_res vr
-        JOIN pet_info p ON vr.pet_no = p.pet_no
+        <![CDATA[
+        SELECT *
+        FROM (
+            SELECT rownum AS rn, inner_query.*
+            FROM (
+                SELECT
+                    vr.*,
+                    p.pet_breed
+                FROM veterinary_res vr
+                JOIN pet_info p ON vr.pet_no = p.pet_no
+        ]]>
+        <![CDATA[
+                ORDER BY vr.res_no DESC  /* 최신 예약순 정렬 */
+            ) inner_query
+            WHERE rownum <= #{cri.pageNum} * #{cri.amount}
+        )
+        WHERE rn > (#{cri.pageNum} - 1) * #{cri.amount}
+        ]]>
     </select>
 
     <select id="GroomingResList" resultType="com.boot.dto.GroomingResDTO">
-        SELECT gr.*, p.pet_breed
-        FROM grooming_res gr
-        JOIN pet_info p ON gr.pet_no = p.pet_no
+        <![CDATA[
+        SELECT *
+        FROM (
+            SELECT rownum AS rn, inner_query.*
+            FROM (
+                SELECT
+                    gr.*,
+                    p.pet_breed
+                FROM grooming_res gr
+                JOIN pet_info p ON gr.pet_no = p.pet_no
+        ]]>
+        <![CDATA[
+                ORDER BY gr.res_no DESC  /* 최신 예약순 정렬 */
+            ) inner_query
+            WHERE rownum <= #{cri.pageNum} * #{cri.amount}
+        )
+        WHERE rn > (#{cri.pageNum} - 1) * #{cri.amount}
+        ]]>
     </select>
 
     <update id="confirmRes" parameterType="map">
-        UPDATE ${params.tableName}
+        UPDATE ${tableName}
         SET res_status = '예약확정'
-        WHERE res_no = #{params.res_no}
+        WHERE res_no = #{res_no}
     </update>
 
     <update id="cancelRes" parameterType="map">
-        UPDATE ${params.tableName}
+        UPDATE ${tableName}
         SET res_status = '예약취소',
-        cancel_reason = #{params.cancel_reason}
-        WHERE res_no = #{params.res_no}
+        cancel_reason = #{cancel_reason}
+        WHERE res_no = #{res_no}
     </update>
+
+    <select id="getUserTotal" resultType="int">
+        SELECT NVL(COUNT(*), 0)
+        FROM user_info
+    </select>
+
+    <select id="getVetResTotal" resultType="int">
+        SELECT NVL(COUNT(*), 0)
+        FROM veterinary_res
+    </select>
+
+    <select id="getGroResTotal" resultType="int">
+        SELECT NVL(COUNT(*), 0)
+        FROM grooming_res
+    </select>
+
+    <update id="UserStatusProcess" parameterType="map">
+        UPDATE user_info
+        <set>
+            user_status = #{params.newStatus},
+            <if test="params.newStatus == 'INACTIVE'">
+                suspension_reason = #{params.suspension_reason}
+            </if>
+            <if test="params.newStatus == 'ACTIVE'">
+                suspension_reason = NULL
+            </if>
+        </set>
+        WHERE user_no = #{params.user_no}
+    </update>
+    
+    <select id="getGradeHistory" resultType="com.boot.dto.GradeHistoryDTO">
+	    SELECT *
+	    	FROM grade_history
+	    WHERE user_no = #{user_no}
+	    ORDER BY evaluation_date DESC
+	</select>
+
+	<select id="getServiceHistory" resultType="com.boot.dto.ServiceHistoryDTO">
+	    SELECT
+	        s.service_no,
+	        s.user_no,
+	        s.pet_no,
+	        p.pet_name,
+	        p.pet_breed,
+	        s.service_date,
+	        s.service_type,
+	        s.service_item,
+	        s.details_memo,
+	        s.completion_status,
+	        s.completion_date
+	    FROM service_history s
+	    JOIN pet_info p ON s.pet_no = p.pet_no
+	    WHERE s.user_no = #{user_no}
+	    ORDER BY s.service_date DESC
+	</select>
+
+	
+	<insert id="insertServiceHistory" parameterType="com.boot.dto.ServiceHistoryDTO">
+	    INSERT INTO service_history (
+	        service_no,
+	        user_no,
+	        pet_no,
+	        service_date,
+	        service_type,
+	        service_item,
+	        details_memo,
+	        completion_status,
+	        completion_date
+	    ) VALUES (
+	        SEQ_SERVICE_NO.NEXTVAL,
+	        #{user_no},
+	        #{pet_no},
+	        #{service_date},
+	        #{service_type},
+	        #{service_item},
+	        #{details_memo},
+	        'N',
+	        NULL
+	    )
+	</insert>
+
+	
+	<select id="getPetList" resultType="com.boot.dto.Mypet_PetDTO">
+	    SELECT *
+	    FROM pet_info
+	    WHERE user_no = #{user_no}
+	    ORDER BY pet_regdate DESC
+	</select>
+
+	
+	<update id="completeService">
+    UPDATE service_history
+    	SET completion_status = 'Y'
+    WHERE service_no = #{service_no}
+	</update>
 
 </mapper>
