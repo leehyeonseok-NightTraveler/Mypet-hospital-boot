@@ -62,7 +62,7 @@
                         AND user_name LIKE '%' || #{params.keyword} || '%'
                     </if>
                     <if test="params.status != null and params.status != ''">
-                        AND user_status = #{params.status}
+                        AND res_status = #{params.status}
                     </if>
                 </where>
                 <![CDATA[
@@ -91,7 +91,7 @@
                         AND user_name LIKE '%' || #{params.keyword} || '%'
                     </if>
                     <if test="params.status != null and params.status != ''">
-                        AND user_status = #{params.status}
+                        AND res_status = #{params.status}
                     </if>
                 </where>
                 <![CDATA[
@@ -138,7 +138,7 @@
                 AND user_name LIKE '%' || #{params.keyword} || '%'
             </if>
             <if test="params.status != null and params.status != ''">
-                AND user_status = #{params.status}
+                AND res_status = #{params.status}
             </if>
         </where>
     </select>
@@ -151,7 +151,7 @@
                 AND user_name LIKE '%' || #{params.keyword} || '%'
             </if>
             <if test="params.status != null and params.status != ''">
-                AND user_status = #{params.status}
+                AND res_status = #{params.status}
             </if>
         </where>
     </select>
