@@ -26,24 +26,31 @@ public class ManageController {
     /**
      * 회원 목록 관리 페이지를 처리합니다.
      * 관리자 권한을 확인하고, 페이징된 회원 목록을 모델에 담아 전달합니다.
+     *
      * @param cri 페이징/검색 조건을 담는 Criteria 객체
      */
     @GetMapping("/user_manage")
-    public String UserManagePage(Criteria cri, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+    public String UserManagePage(@RequestParam(value = "status", required = false) String status,
+                                 Criteria cri, HttpSession session, Model model,
+                                 RedirectAttributes rttr) {
         String Role = (String) session.getAttribute("role");
 
         // 관리자 권한 확인
         if (!"ADMIN".equals(Role)) {
-            redirectAttributes.addFlashAttribute("alertMsg", "관리자만 접근 가능합니다.");
+            rttr.addFlashAttribute("alertMsg", "관리자만 접근 가능합니다.");
             return "redirect:/mainpage";
         }
 
+        Map<String, Object> params = new HashMap<>();
+        params.put("status", status); // 상태 필터
+        params.put("keyword", cri.getKeyword());
+
         // 전체 회원 수 조회 및 PageDTO 생성 (페이징 정보)
-        int total = manageService.getUserTotal(cri);
+        int total = manageService.getUserTotal(params, cri);
         model.addAttribute("pageMaker", new PageDTO(total, cri));
 
         // 페이징된 회원 목록 조회
-        List<Mypet_UserDTO> UserList = manageService.UserList(cri);
+        List<Mypet_UserDTO> UserList = manageService.UserList(params, cri);
         model.addAttribute("UserList", UserList);
 
         return "user_manage";
@@ -52,16 +59,18 @@ public class ManageController {
     /**
      * 특정 회원의 상세 정보 페이지를 처리합니다.
      * 관리자 권한을 확인하고, 회원 정보와 반려동물 목록, 그리고 페이징 정보(cri)를 모델에 담아 전달합니다.
+     *
      * @param user_no 조회할 회원 번호
-     * @param cri 목록 복귀를 위한 페이징/검색 조건
+     * @param cri     목록 복귀를 위한 페이징/검색 조건
      */
     @GetMapping("/user_detail")
     public String UserViewPage(@RequestParam int user_no, Criteria cri,
-                               HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+                               HttpSession session, Model model,
+                               RedirectAttributes rttr) {
         String Role = (String) session.getAttribute("role");
 
         if (!"ADMIN".equals(Role)) {
-            redirectAttributes.addFlashAttribute("alertMsg", "관리자만 접근 가능합니다.");
+            rttr.addFlashAttribute("alertMsg", "관리자만 접근 가능합니다.");
             return "redirect:/mainpage";
         }
 
@@ -84,7 +93,7 @@ public class ManageController {
         return "user_detail";
     }
 
-    
+
     @GetMapping("/user_servicehistory")
     public String userServiceHistoryForm(@RequestParam("user_no") int userNo,
                                          Criteria cri,
@@ -134,32 +143,40 @@ public class ManageController {
             @RequestParam("service_no") int service_no,
             @RequestParam("user_no") int user_no
     ) {
-        manageService.completeService(service_no);  
+        manageService.completeService(service_no);
         return "redirect:/user_detail?user_no=" + user_no;
     }
 
-    
+
     /**
      * 진료 예약 목록 관리 페이지를 처리합니다.
      * 관리자 권한을 확인하고, 페이징된 진료 예약 목록을 모델에 담아 전달합니다.
+     *
      * @param cri 페이징/검색 조건을 담는 Criteria 객체
      */
     @GetMapping("/veterinaryRes_manage")
-    public String VeterinaryResManagePage(Criteria cri, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+    public String VeterinaryResManagePage(@RequestParam(value = "status", required = false) String status,
+                                          Criteria cri, HttpSession session,
+                                          Model model,
+                                          RedirectAttributes rttr) {
         String Role = (String) session.getAttribute("role");
 
         // 관리자 권한 확인
         if (!"ADMIN".equals(Role)) {
-            redirectAttributes.addFlashAttribute("alertMsg", "관리자만 접근 가능합니다.");
+            rttr.addFlashAttribute("alertMsg", "관리자만 접근 가능합니다.");
             return "redirect:/mainpage";
         }
 
+        Map<String, Object> params = new HashMap<>();
+        params.put("status", status); // 상태 필터
+        params.put("keyword", cri.getKeyword());
+
         // 전체 진료 예약 수 조회 및 PageDTO 생성
-        int total = manageService.getVetResTotal(cri);
+        int total = manageService.getVetResTotal(params, cri);
         model.addAttribute("pageMaker", new PageDTO(total, cri));
 
         // 페이징된 진료 예약 목록 조회
-        List<MedicalResDTO> VeterinaryResList = manageService.VeterinaryResList(cri);
+        List<MedicalResDTO> VeterinaryResList = manageService.VeterinaryResList(params, cri);
         model.addAttribute("VeterinaryResList", VeterinaryResList);
 
         return "veterinaryRes_manage";
@@ -168,24 +185,32 @@ public class ManageController {
     /**
      * 미용 예약 목록 관리 페이지를 처리합니다.
      * 관리자 권한을 확인하고, 페이징된 미용 예약 목록을 모델에 담아 전달합니다.
+     *
      * @param cri 페이징/검색 조건을 담는 Criteria 객체
      */
     @GetMapping("/groomingRes_manage")
-    public String GroomingResManagePage(Criteria cri, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+    public String GroomingResManagePage(@RequestParam(value = "status", required = false) String status,
+                                        Criteria cri, HttpSession session,
+                                        Model model,
+                                        RedirectAttributes rttr) {
         String Role = (String) session.getAttribute("role");
 
         // 관리자 권한 확인
         if (!"ADMIN".equals(Role)) {
-            redirectAttributes.addFlashAttribute("alertMsg", "관리자만 접근 가능합니다.");
+            rttr.addFlashAttribute("alertMsg", "관리자만 접근 가능합니다.");
             return "redirect:/mainpage";
         }
 
+        Map<String, Object> params = new HashMap<>();
+        params.put("status", status); // 상태 필터
+        params.put("keyword", cri.getKeyword());
+
         // 전체 미용 예약 수 조회 및 PageDTO 생성
-        int total = manageService.getGroResTotal(cri);
+        int total = manageService.getGroResTotal(params, cri);
         model.addAttribute("pageMaker", new PageDTO(total, cri));
 
         // 페이징된 미용 예약 목록 조회
-        List<GroomingResDTO> GroomingResList = manageService.GroomingResList(cri);
+        List<GroomingResDTO> GroomingResList = manageService.GroomingResList(params, cri);
         model.addAttribute("GroomingResList", GroomingResList);
 
         return "groomingRes_manage";
@@ -194,10 +219,11 @@ public class ManageController {
     /**
      * 진료 또는 미용 예약을 '확정' 처리합니다.
      * 처리 후, 리다이렉트를 통해 기존 페이징 상태를 유지하며 목록으로 돌아갑니다.
-     * @param resNo 예약 번호
-     * @param type 예약 타입 ("veterinary" 또는 "grooming")
+     *
+     * @param resNo   예약 번호
+     * @param type    예약 타입 ("veterinary" 또는 "grooming")
      * @param pageNum 복귀할 페이지 번호
-     * @param amount 페이지당 항목 수
+     * @param amount  페이지당 항목 수
      */
     @PostMapping("/confirmRes")
     public String confirmRes(
@@ -237,11 +263,12 @@ public class ManageController {
     /**
      * 진료 또는 미용 예약을 '취소' 처리합니다.
      * 처리 후, 리다이렉트를 통해 기존 페이징 상태를 유지하며 목록으로 돌아갑니다.
-     * @param resNo 예약 번호
-     * @param type 예약 타입 ("veterinary" 또는 "grooming")
+     *
+     * @param resNo        예약 번호
+     * @param type         예약 타입 ("veterinary" 또는 "grooming")
      * @param cancelReason 취소 사유
-     * @param pageNum 복귀할 페이지 번호
-     * @param amount 페이지당 항목 수
+     * @param pageNum      복귀할 페이지 번호
+     * @param amount       페이지당 항목 수
      */
     @PostMapping("/cancelRes")
     public String cancelRes(

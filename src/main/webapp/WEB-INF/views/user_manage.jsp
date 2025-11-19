@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="<c:url value='/css/user_manage.css'/>">
     <link rel="stylesheet" href="<c:url value='/css/mainpage.css'/>">
     <script src="<c:url value='/js/jquery.js'/>"></script>
+    <script src="<c:url value='/js/manage_page.js'/>"></script>
 </head>
 <body>
 <jsp:include page="/WEB-INF/views/common/header.jsp"/>
@@ -25,6 +26,20 @@
         <%-- 회원 목록을 표시하는 섹션 --%>
         <h2 class="section-title">회원정보관리</h2>
         <hr class="section-divider">
+
+        <form method="get" action="user_manage" class="search-form" id="searchForm">
+            <input type="text" name="keyword" id="keyword" placeholder="이름 검색" />
+            <select name="status" id="status">
+                <option value="">전체</option>
+                <option value="ACTIVE" ${param.status == 'ACTIVE' ? 'selected' : ''}>활동중</option>
+                <option value="INACTIVE" ${param.status == 'INACTIVE' ? 'selected' : ''}>활동정지</option>
+            </select>
+            <button type="submit">검색</button>
+
+            <!-- 🔄 초기화 버튼 (폼 안에 위치) -->
+            <button type="button" onclick="resetSearchForm()">초기화</button>
+        </form>
+
 
         <table id="list-table" class="list-table">
             <thead>

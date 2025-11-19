@@ -94,3 +94,10 @@ function confirmToggle(userNo, targetStatus, pageNum, amount) {
         document.getElementById('activateForm').submit();
     }
 }
+
+function resetSearchForm() {
+    document.getElementById('keyword').value = '';
+    document.getElementById('status').value = '';
+}
+
+

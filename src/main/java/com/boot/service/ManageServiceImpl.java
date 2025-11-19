@@ -2,6 +2,7 @@ package com.boot.service;
 
 import com.boot.dao.ManageDAO;
 import com.boot.dto.*;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,9 @@ public class ManageServiceImpl implements ManageService {
     private SqlSession sqlSession;
 
     @Override
-    public List<Mypet_UserDTO> UserList(Criteria cri) {
-       ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
-       return dao.UserList(cri);
+    public List<Mypet_UserDTO> UserList(Map<String, Object> params, Criteria cri) {
+        ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
+        return dao.UserList(params, cri);
     }
 
     @Override
@@ -34,15 +35,15 @@ public class ManageServiceImpl implements ManageService {
     }
 
     @Override
-    public List<MedicalResDTO> VeterinaryResList(Criteria cri) {
+    public List<MedicalResDTO> VeterinaryResList(Map<String, Object> params, Criteria cri) {
         ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
-        return dao.VeterinaryResList(cri);
+        return dao.VeterinaryResList(params, cri);
     }
 
     @Override
-    public List<GroomingResDTO> GroomingResList(Criteria cri) {
+    public List<GroomingResDTO> GroomingResList(Map<String, Object> params, Criteria cri) {
         ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
-        return dao.GroomingResList(cri);
+        return dao.GroomingResList(params, cri);
     }
 
     @Override
@@ -58,21 +59,21 @@ public class ManageServiceImpl implements ManageService {
     }
 
     @Override
-    public int getUserTotal(Criteria cri) {
+    public int getUserTotal(Map<String, Object> params, Criteria cri) {
         ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
-        return dao.getUserTotal(cri);
+        return dao.getUserTotal(params, cri);
     }
 
     @Override
-    public int getVetResTotal(Criteria cri) {
+    public int getVetResTotal(Map<String, Object> params, Criteria cri) {
         ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
-        return dao.getVetResTotal(cri);
+        return dao.getVetResTotal(params, cri);
     }
 
     @Override
-    public int getGroResTotal(Criteria cri) {
+    public int getGroResTotal(Map<String, Object> params, Criteria cri) {
         ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
-        return dao.getGroResTotal(cri);
+        return dao.getGroResTotal(params, cri);
     }
 
     @Override
@@ -80,7 +81,7 @@ public class ManageServiceImpl implements ManageService {
         ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
         dao.UserStatusProcess(params);
     }
-    
+
     @Override
     public List<GradeHistoryDTO> getGradeHistory(int user_no) {
         ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
@@ -92,19 +93,19 @@ public class ManageServiceImpl implements ManageService {
         ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
         return dao.getServiceHistory(user_no);
     }
-    
+
     @Override
     public void insertServiceHistory(ServiceHistoryDTO dto) {
         ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
         dao.insertServiceHistory(dto);
     }
-    
+
     @Override
     public void completeService(int service_no) {
         ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
         dao.completeService(service_no);
     }
-    
+
     @Override
     public List<Mypet_PetDTO> getPetList(int user_no) {
         ManageDAO dao = sqlSession.getMapper(ManageDAO.class);

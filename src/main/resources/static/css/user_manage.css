@@ -255,3 +255,76 @@ main {
     background-color: #f8f9fa;
     border-color: #e9ecef;
 }
+
+/* =======================================
+   Search Form Area (검색 폼 스타일)
+   ======================================= */
+
+.search-form {
+    /* 검색 폼 컨테이너 */
+    display: flex; /* 내부 요소들을 한 줄에 배치 */
+    justify-content: flex-end; /* 폼을 오른쪽으로 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    gap: 10px; /* 요소들 사이의 간격 */
+    margin-bottom: 25px; /* 테이블과의 하단 여백 */
+    padding: 15px;
+    background-color: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* 텍스트 입력 필드 및 드롭다운 */
+.search-form input[type="text"],
+.search-form select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    height: 38px; /* 버튼과 높이 맞추기 */
+}
+
+/* 입력 필드 포커스 효과 */
+.search-form input[type="text"]:focus,
+.search-form select:focus {
+    border-color: #4a90e2; /* 포커스 시 파란색 테두리 */
+    outline: none; /* 기본 아웃라인 제거 */
+}
+
+/* 검색 입력 필드 너비 조정 */
+.search-form input[type="text"] {
+    width: 200px; /* 적당한 너비 지정 */
+}
+
+/* 버튼 스타일 */
+.search-form button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    height: 38px;
+    transition: background-color 0.3s ease;
+}
+
+/* 검색 버튼 (Submit) */
+.search-form button[type="submit"] {
+    background-color: #4a90e2; /* 파란색 배경 */
+    color: white;
+}
+
+.search-form button[type="submit"]:hover {
+    background-color: #3a75c1; /* hover 시 약간 어둡게 */
+}
+
+/* 초기화 버튼 (Button) */
+.search-form button[type="button"] {
+    background-color: #6c757d; /* 회색 배경 */
+    color: white;
+}
+
+.search-form button[type="button"]:hover {
+    background-color: #5a6268; /* hover 시 약간 어둡게 */
+}
