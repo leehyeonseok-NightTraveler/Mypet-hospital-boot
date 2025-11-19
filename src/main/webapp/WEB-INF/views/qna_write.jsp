@@ -163,7 +163,7 @@
         formData.append("file", file);
 
         $.ajax({
-            url: "/upload/summernote",
+            url: "/upload/summernote?type=qna",
             type: "POST",
             data: formData,
             contentType: false,
@@ -190,7 +190,7 @@
         formData.append("file", file);
 
         $.ajax({
-            url: "/upload/summernote/video",
+			url: "/upload/summernote/video?type=qna",
             type: "POST",
             data: formData,
             contentType: false,

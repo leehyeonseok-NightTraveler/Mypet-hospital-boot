@@ -153,10 +153,10 @@ public class QnaController {
         Mypet_Qna_BoardDTO detail = service.getQnaDetail(qna_no);
 
         // 2) 첨부파일 삭제
-        deleteAttachment(detail.getQna_file());
+        uploadService.deleteAttachment("qna", detail.getQna_file());
 
         // 3) summernote 이미지/영상 삭제
-        deleteSummernoteFiles(detail.getQna_content());
+        uploadService.deleteSummernoteFiles("qna", detail.getQna_content());
 
         // 4) DB 삭제 (답변 먼저)
         service.deleteReplyByQnaNo(qna_no);
@@ -252,29 +252,5 @@ public class QnaController {
         return "redirect:/qna_view?qna_no=" + qna_no;
     }
     
-    private void deleteAttachment(String filename) {
-        if (filename == null || filename.isEmpty()) return;
-
-        uploadService.deleteFile("qna/" + filename);
-    }
-    
-    private void deleteSummernoteFiles(String html) {
-
-        if (html == null || html.trim().isEmpty()) return;
-
-        // 이미지 삭제
-        Matcher img = Pattern.compile("qna_img/([^\"']+)").matcher(html);
-        while (img.find()) {
-            String filename = img.group(1);
-            uploadService.deleteFile("qna_img/" + filename);
-        }
-
-        // 영상 삭제
-        Matcher video = Pattern.compile("qna_video/([^\"']+)").matcher(html);
-        while (video.find()) {
-            String filename = video.group(1);
-            uploadService.deleteFile("qna_video/" + filename);
-        }
-    }
 
 }

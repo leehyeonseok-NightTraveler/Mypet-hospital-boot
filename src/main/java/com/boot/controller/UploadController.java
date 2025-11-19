@@ -79,15 +79,19 @@ public class UploadController {
     
     @PostMapping("/upload/summernote")
     @ResponseBody
-    public Map<String, Object> uploadSummernote(@RequestParam("file") MultipartFile file) {
+    public Map<String, Object> uploadSummernote(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "type", defaultValue = "community") String type
+    ) {
 
         Map<String, Object> result = new HashMap<>();
 
         try {
-            // 원본명 + 자동번호 규칙 적용
-            String saved = uploadService.saveRawFile(file, "qna_img");
+            String folder = (type.equals("qna")) ? "qna_img" : "community_img";
 
-            result.put("url", "/display?path=qna_img/" + saved);
+            String saved = uploadService.saveRawFile(file, folder);
+
+            result.put("url", "/display?path=" + folder + "/" + saved);
             result.put("responseCode", "success");
 
         } catch (Exception e) {
@@ -98,12 +102,16 @@ public class UploadController {
         return result;
     }
 
+
     /** --------------------------
      *  Summernote 영상 업로드(mp4/webm)
      *  -------------------------- */
     @PostMapping("/upload/summernote/video")
     @ResponseBody
-    public Map<String, Object> uploadSummernoteVideo(@RequestParam("file") MultipartFile file) {
+    public Map<String, Object> uploadSummernoteVideo(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "type", defaultValue = "community") String type
+    ) {
 
         Map<String, Object> result = new HashMap<>();
 
@@ -117,10 +125,11 @@ public class UploadController {
                 return result;
             }
 
-            // 원본명 + 번호 방식 그대로 활용
-            String saved = uploadService.saveRawFile(file, "qna_video");
+            String folder = (type.equals("qna")) ? "qna_video" : "community_video";
 
-            result.put("url", "/display?path=qna_video/" + saved);
+            String saved = uploadService.saveRawFile(file, folder);
+
+            result.put("url", "/display?path=" + folder + "/" + saved);
             result.put("responseCode", "success");
 
         } catch (Exception e) {
@@ -130,24 +139,18 @@ public class UploadController {
 
         return result;
     }
+
     
     @PostMapping("/upload/cleanup-temp")
     @ResponseBody
     public void cleanupTempFiles(@RequestParam("files") List<String> files) {
 
         for (String url : files) {
-            if (url.contains("qna_img/")) {
-                // 이미지
-                String fileName = url.replace("/display?path=qna_img/", "");
-                uploadService.deleteFile("qna_img/" + fileName);
-
-            } else if (url.contains("qna_video/")) {
-                // 비디오
-                String fileName = url.replace("/display?path=qna_video/", "");
-                uploadService.deleteFile("qna_video/" + fileName);
-            }
+            String path = url.replace("/display?path=", "");
+            uploadService.deleteFile(path);
         }
     }
+
 
 
 
