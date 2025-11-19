@@ -67,6 +67,7 @@
                     <li><a href="/notices_list">공지사항</a></li>
                     <li><a href="#">자유게시판</a></li>
                     <li><a href="/qna_page">Q&A</a></li>
+					<li><a href="/calculate">계산기</a></li>
                 </ul>
             </li>
             <c:choose>
