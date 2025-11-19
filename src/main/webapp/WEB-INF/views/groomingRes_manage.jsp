@@ -36,9 +36,9 @@
             <input type="text" name="keyword" id="keyword" placeholder="회원이름 검색"/>
             <select name="status" id="status">
                 <option value="">전체</option>
-                <option value="COMPLETED" ${param.status == 'COMPLETED' ? 'selected' : ''}>예약완료</option>
-                <option value="CONFIRMED" ${param.status == 'CONFIRMED' ? 'selected' : ''}>예약확정</option>
-                <option value="CANCELLED" ${param.status == 'CANCELLED' ? 'selected' : ''}>예약취소</option>
+                <option value="예약완료" ${param.status == '예약완료' ? 'selected' : ''}>예약완료</option>
+                <option value="예약확정" ${param.status == '예약확정' ? 'selected' : ''}>예약확정</option>
+                <option value="예약취소" ${param.status == '예약취소' ? 'selected' : ''}>예약취소</option>
             </select>
             <button type="submit">검색</button>
 
