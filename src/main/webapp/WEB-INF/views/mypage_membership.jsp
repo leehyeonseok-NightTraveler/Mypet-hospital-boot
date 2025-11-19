@@ -9,43 +9,100 @@
 
     <link rel="stylesheet" href="/css/mainpage.css">
     <link rel="stylesheet" href="/css/userinfo_style.css">
-    <link rel="stylesheet" href="/css/membership.css">
+	<link rel="stylesheet" href="/css/membership.css">
 
-    <jsp:include page="/WEB-INF/views/common/header.jsp"/>
+<jsp:include page="/WEB-INF/views/common/header.jsp" />
 
-    <main class="mypage-container">
+<main class="mypage-container">
 
-        <!-- 왼쪽 메뉴 -->
-        <aside class="sidemenu">
-            <h2>마이페이지 🐾</h2>
-            <a href="/mypage_userinfo">내 정보</a>
-            <a href="/mypage_petlist">펫 목록</a>
-            <a href="/mypage_membership" class="active">멤버십</a>
-            <a href="/mypage_medical">진료 내역</a>
-            <a href="/mypage_grooming">미용 내역</a>
-        </aside>
+    <!-- 왼쪽 메뉴 -->
+    <aside class="sidemenu">
+        <h2>마이페이지 🐾</h2>
+        <a href="/mypage_userinfo">내 정보</a>
+        <a href="/mypage_petlist">펫 목록</a>
+        <a href="/mypage_membership" class="active">멤버십</a>
+		<a href="/mypage_medical">진료 내역</a>
+	    <a href="/mypage_grooming">미용 내역</a>
+    </aside>
 
-        <section class="content">
 
-            <h2>멤버십 정보</h2>
+    <section class="content">
 
-            <!-- 현재 멤버십 상태 -->
-            <div class="profile-box">
-                <h2>
-                    ${loginUser.user_name}
-                    <span class="badge badge-${currentGrade}">
-                        ${currentGrade}
-                    </span>
-                </h2>
+        <h2>멤버십 정보</h2>
 
-                <p>멤버십 만료일: <strong>${expiryDate}</strong></p>
-            </div>
+        <!-- 현재 멤버십 상태 -->
+        <div class="profile-box">
+            <h2>
+                ${loginUser.user_name}
+                <span class="badge badge-${currentGrade}">
+                    ${currentGrade}
+                </span>
+            </h2>
 
-            <!-- 멤버십 혜택 안내 -->
-            <div class="section">
-                <h3 class="section-title">멤버십 혜택 안내</h3>
+            <p>멤버십 만료일: <strong>${expiryDate}</strong></p>
+        </div>
+		
+		<!-- 멤버십 혜택 안내 -->
+		<div class="section">
+		    <h3 class="section-title">멤버십 혜택 안내</h3>
 
-                <table>
+		    <table>
+		        <tr>
+		            <th>등급</th>
+		            <th>혜택 내용</th>
+		        </tr>
+
+		        <tr>
+		            <td><span class="badge badge-플래티넘">플래티넘</span></td>
+		            <td>
+		                ✔ 진료 20% 할인<br>
+		                ✔ 미용 20% 할인<br>
+		                ✔ 연 1회 무료 종합검진<br>
+		                ✔ 우선 예약
+		            </td>
+		        </tr>
+
+		        <tr>
+		            <td><span class="badge badge-골드">골드</span></td>
+		            <td>
+		                ✔ 진료 10% 할인<br>
+		                ✔ 미용 10% 할인<br>
+		                ✔ 연 1회 부분 검진 무료
+		            </td>
+		        </tr>
+
+		        <tr>
+		            <td><span class="badge badge-브론즈">브론즈</span></td>
+		            <td>
+		                ✔ 진료 5% 할인<br>
+		                ✔ 미용 5% 할인
+		            </td>
+		        </tr>
+
+		        <tr>
+		            <td><span class="badge badge-노말">노말</span></td>
+		            <td>
+		                ✔ 신규 고객 기본 혜택 제공
+		            </td>
+		        </tr>
+		    </table>
+		</div>
+
+
+        <!-- 등급 이력 -->
+        <div class="section">
+            <h3 class="section-title">등급 이력</h3>
+
+            <table>
+                <tr>
+                    <th>등급</th>
+                    <th>시작일</th>
+                    <th>종료일</th>
+                    <th>기준 방문 횟수</th>
+                    <th>평가일</th>
+                </tr>
+
+                <c:forEach var="g" items="${gradeHistory}">
                     <tr>
                         <th>등급</th>
                         <th>혜택 내용</th>
