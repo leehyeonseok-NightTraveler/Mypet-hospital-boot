@@ -2,7 +2,6 @@ package com.boot.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -12,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.boot.dao.UserDAO;
 import com.boot.dto.Criteria;
@@ -90,6 +88,7 @@ public class CommunityController {
 	    service.increaseViewCount(postNo);
 
 	    // 댓글/본문 조회용 파라미터
+	    // post_no 파라미터 셋팅
 	    param.put("post_no", String.valueOf(postNo));
 
 	    // 댓글 목록
@@ -97,6 +96,7 @@ public class CommunityController {
 	    model.addAttribute("commentList", commentList);
 
 	    // 게시글 본문
+	    // 게시글 상세 데이터
 	    Mypet_CommunityDTO dto = service.communityContentView(param);
 	    model.addAttribute("content_view", dto);
 
@@ -268,7 +268,3 @@ public class CommunityController {
 	}
 	
 }
-
-
-
-

@@ -40,7 +40,7 @@
         ORDER BY comment_no
     </select>
     
-    <delete id="commentDelete">
+    <delete id="deleteComment">
 		delete from COMMUNITY_COMMENT where COMMENT_NO=#{comment_no}
 	</delete>
 
