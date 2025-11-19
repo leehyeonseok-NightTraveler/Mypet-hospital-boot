@@ -25,6 +25,9 @@
             <h2>마이페이지 🐾</h2>
             <a href="/mypage_userinfo">내 정보</a>
             <a href="/mypage_petlist" class="active">펫 목록</a>
+            <a href="/mypage_membership">멤버십</a>
+            <a href="/mypage_medical">진료 내역</a>
+            <a href="/mypage_grooming">미용 내역</a>
         </aside>
 
         <section class="content">
@@ -37,9 +40,10 @@
                         <div class="pet-card clickable"
                              onclick="location.href='/mypage_petinfo?pet_no=${pet.pet_no}'">
 
-                            <img src="${pet.pet_img}" 
-                                 alt="펫 이미지" 
-                                 class="pet-img">
+							 <img src="/upload/${pet.pet_img}" 
+							      alt="펫 이미지" 
+							      class="pet-img">
+
 
                             <h3>${pet.pet_name}</h3>
                             <p>종: ${pet.pet_species}</p>

@@ -1,0 +1,92 @@
+/* 공통 멤버십 뱃지 스타일 */
+.badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+}
+
+/* 등급별 색상 */
+.badge-플래티넘 { background:#4f9cff; }
+.badge-골드 { background:#e6b800; }
+.badge-브론즈 { background:#cd7f32; }
+.badge-노말 { background:#888; }
+
+/* 섹션 제목 */
+.section-title {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* 표 공통 스타일 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+table th, table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+
+table th {
+    background: #fafafa;
+    font-weight: bold;
+}
+
+table tr:hover {
+    background: #f5f9ff;
+}
+
+/* 메인 profile 박스 */
+.profile-box {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.profile-box h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section table td {
+    vertical-align: top;
+    line-height: 1.6;
+}
+
+.section-title {
+    margin-bottom: 12px;
+}
+
+.badge-플래티넘 {
+    background: linear-gradient(45deg, #d4af37, #f7e6a1);
+    color: #533f03;
+}
+
+.badge-골드 {
+    background-color: #ffd700;
+    color: #6c5200;
+}
+
+.badge-브론즈 {
+    background-color: #cd7f32;
+    color: white;
+}
+
+.badge-노말 {
+    background-color: #cfcfcf;
+    color: #333;
+}
+

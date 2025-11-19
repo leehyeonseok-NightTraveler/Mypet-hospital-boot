@@ -1,123 +1,223 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+         pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>Q&A 내용보기</title>
+    <meta charset="UTF-8">
+    <title>Q&A 내용보기</title>
 
-<link rel="stylesheet" href="/css/mainpage.css">
-<link rel="stylesheet" href="/css/qna_content_view.css">
-
+    <link rel="stylesheet" href="/css/mainpage.css">
+    <link rel="stylesheet" href="/css/qna_content_view.css">
 </head>
 <body>
 
-<!-- 공통 Header 삽입 -->
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
 
 <main>
-    <section class="notice-view">
-
-        <table border="1">
-
-            <!-- 제목 -->
-            <tr class="title">
-                <td>제목</td>
-                <td colspan="6">${dto.qna_title}</td>
+    <section class="qna-detail-section">
+        <table class="qna-detail-table">
+            <tr class="info-row qna-title-row">
+                <td class="info-label title-label">제목</td>
+                <td colspan="5" class="title-value">${detail.qna_title}</td>
             </tr>
 
-            <!-- 글 정보 -->
-            <tr class="writer_tr">
-                <td class="num">번호</td>
-                <td class="write_td">${dto.qna_no}</td>
+            <tr class="info-row meta-data-row">
+                <td class="info-label qna-num-label">번호</td>
+                <td class="info-value qna-num">${detail.qna_no}</td>
 
-                <td class="answered">답변여부</td>
-                <td class="answered2">${dto.is_answered}</td>
-
-                <td class="date">작성일</td>
-                <td colspan="2" class="write_td">${dto.created_date}</td>
-            </tr>
-
-            <!-- 첨부파일 -->
-            <tr>
-                <td class="file">첨부파일</td>
-                <td colspan="6" class="file2">${dto.qna_file}</td>
-            </tr>
-
-            <!-- 질문 내용 -->
-            <tr>
-                <td colspan="7">
-                    <div class="qna-content">
-                        ${dto.qna_content}
-                    </div>
+                <td class="info-label answered-label">답변여부</td>
+                <td class="info-value answered-status">
+                    <c:choose>
+                        <c:when test="${detail.is_answered eq 'Y'}">
+                            <span class="status-answered">답변 완료</span>
+                        </c:when>
+                        <c:otherwise>
+                            <span class="status-pending">답변 대기</span>
+                        </c:otherwise>
+                    </c:choose>
                 </td>
+
+                <td class="info-label date-label">작성일</td>
+                <td class="info-value created-date">${detail.created_date}</td>
             </tr>
 
-            <!-- 답변 영역 -->
-            <tr>
-                <td colspan="7" class="answer-title">답변</td>
+			<tr class="info-row file-row">
+			    <td class="info-label file-label">첨부파일</td>
+			    <td colspan="5" class="info-value file-download-area">
+			        <c:choose>
+			            <c:when test="${not empty detail.qna_file}">
+			                <c:url var="downloadUrl" value="/download">
+			                    <c:param name="folder" value="qna"/>
+			                    <c:param name="file" value="${detail.qna_file}"/>
+			                </c:url>
+
+			                <a href="${downloadUrl}">
+			                    ${detail.qna_file}
+			                </a>
+			            </c:when>
+
+			            <c:otherwise>첨부파일 없음</c:otherwise>
+			        </c:choose>
+			    </td>
+			</tr>
+
+
+            <tr class="content-row question-content-row">
+                <td colspan="6"><div class="content-box">${detail.qna_content}</div></td>
             </tr>
 
-            <tr class="writer_tr">
-                <td class="date">작성자</td>
-                <td>관리자</td>
-                <td class="date">작성일</td>
-                <td colspan="4">${reply.created_date}</td>
-            </tr>
+            <c:if test="${not empty reply}">
+                <tr class="answer-header">
+                    <td colspan="6" class="answer-title">답변</td>
+                </tr>
 
-            <tr>
-                <td colspan="7">
-                    <div class="qna-content">
-                        ${reply.reply_content}
-                    </div>
-                </td>
-            </tr>
+                <tr class="info-row reply-meta-row">
+                    <td class="info-label reply-writer-label">작성자</td>
+                    <td class="info-value reply-writer">관리자</td>
+                    <td class="info-label reply-date-label">작성일</td>
+                    <td colspan="3" class="info-value reply-date">${reply.created_date}</td>
+                </tr>
+
+                <tr class="content-row answer-content-row">
+                    <td colspan="6"><div class="content-box answer-content-box">${reply.reply_content}</div></td>
+                </tr>
+            </c:if>
 
         </table>
 
-        <!-- 관리자 버튼 -->
-        <c:if test="${sessionScope.role == 'ADMIN'}">
+        <c:if test="${role eq 'ADMIN'}">
+            <div id="reply-form-area" style="display:none;">
+                <form action="/ReplyProcess" method="post" id="replyForm">
+                    <input type="hidden" name="qna_no" value="${detail.qna_no}" />
+                    <input type="hidden" name="mode" id="replyMode" value="" />
 
-            <!-- 답변하기 -->
-            <div class="btn-box">
-                <button type="button" 
-                        onclick="location.href='/qna_reply_write?qna_no=${dto.qna_no}'"
-                        class="btn-list">
-                    답변하기
-                </button>
-            </div>
+                    <h4><span id="formTitle">답변 작성</span></h4>
 
-            <!-- 수정 / 삭제 -->
-            <div class="btn-box">
-                <button type="button"
-                    onclick="location.href='/qna_modify_view?qna_no=${dto.qna_no}'"
-                    class="btn-submit">
-                    수정
-                </button>
+                    <textarea name="reply_content" id="replyContentArea" rows="6" required placeholder="답변 내용을 입력하세요."></textarea>
 
-                <form action="/qna_delete" method="post" style="display:inline;">
-                    <input type="hidden" name="qna_no" value="${dto.qna_no}" />
-                    <button type="submit" class="btn-delete">삭제</button>
+                    <div style="text-align: right; margin-top: 10px;">
+                        <button type="submit" class="btn btn-reply-submit" id="submitButton">답변 등록</button>
+                        <button type="button" class="btn btn-reply-cancel" onclick="hideReplyForm()">취소</button>
+                    </div>
                 </form>
             </div>
-
         </c:if>
 
-        <!-- 목록보기 -->
-        <div class="btn-box">
-            <button type="button"
-                onclick="location.href='/qna_page'"
-                class="btn-list">
-                목록보기
-            </button>
+        <div class="button-container">
+            <c:if test="${role eq 'ADMIN'}">
+                <div class="admin-buttons">
+
+                    <c:choose>
+                        <c:when test="${empty reply}">
+                            <button type="button"
+                                    onclick="loadCreateForm()"
+                                    class="btn btn-reply">
+                                답변하기
+                            </button>
+                        </c:when>
+                        <c:otherwise>
+                            <button type="button"
+                                    onclick="loadModifyForm('${reply.reply_content}')"
+                                    class="btn btn-reply-modify">
+                                답변 수정
+                            </button>
+                        </c:otherwise>
+                    </c:choose>
+
+                    <form action="/qna_delete" method="post" class="inline-form">
+                        <input type="hidden" name="qna_no" value="${detail.qna_no}" />
+                        <button type="submit" class="btn btn-delete">삭제</button>
+                    </form>
+                </div>
+            </c:if>
+
+            <c:if test="${role ne 'ADMIN' and user_no eq detail.user_no}">
+                <div class="user-buttons">
+                    <button type="button"
+                            onclick="location.href='/qna_modify?qna_no=${detail.qna_no}&pageNum=${cri.pageNum}&amount=${cri.amount}'"
+                            class="btn btn-modify">
+                        질문 수정
+                    </button>
+
+                    <form action="/qna_delete" method="post" class="inline-form">
+                        <input type="hidden" name="qna_no" value="${detail.qna_no}" />
+                        <button type="submit" class="btn btn-delete">삭제</button>
+                    </form>
+                </div>
+            </c:if>
+
+            <div class="common-buttons">
+                <a href="<c:url value='/qna_page'>
+                <c:param name="pageNum" value="${cri.pageNum}"/>
+                <c:param name="amount" value="${cri.amount}"/>
+                </c:url>" class="btn btn-list" id="btn-back">목록으로</a>
+            </div>
         </div>
 
     </section>
 </main>
 
-<!-- 공통 Footer 삽입 -->
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
+
+<script>
+    // 공통 요소 정의
+    const formArea = document.getElementById('reply-form-area');
+    const replyButton = document.querySelector('.btn-reply');
+    const adminButtons = document.querySelector('.admin-buttons');
+    const formTitle = document.getElementById('formTitle');
+    const replyMode = document.getElementById('replyMode');
+    const replyContentArea = document.getElementById('replyContentArea');
+    const submitButton = document.getElementById('submitButton');
+
+
+    // 1. 답변 작성 폼 로드 (초기 상태)
+    function loadCreateForm() {
+        if (formArea && replyButton) {
+            formTitle.textContent = '답변 작성';
+            replyMode.value = 'create';
+            replyContentArea.value = ''; // 내용을 비움
+            submitButton.textContent = '답변 등록';
+
+            formArea.style.display = 'block';
+            replyButton.style.display = 'none';
+            formArea.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    // 2. 답변 수정 폼 로드 (기존 내용 채우기)
+    function loadModifyForm(content) {
+        if (formArea && adminButtons) {
+            formTitle.textContent = '답변 수정';
+            replyMode.value = 'modify'; // 모드를 'modify'로 변경
+            replyContentArea.value = content.trim(); // 기존 내용을 채움
+            submitButton.textContent = '수정 완료';
+
+            // 답변이 있는 경우, 기존 버튼 영역을 숨깁니다.
+            adminButtons.style.display = 'none';
+
+            formArea.style.display = 'block';
+            formArea.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    // 3. 폼 숨기기 (취소)
+    function hideReplyForm() {
+        if (formArea) {
+            formArea.style.display = 'none';
+
+            // 작성 모드였으면 '답변하기' 버튼을 다시 보여줌
+            if (replyMode.value === 'create' && replyButton) {
+                replyButton.style.display = 'block';
+            }
+            // 수정 모드였으면 'admin-buttons' 영역을 다시 보여줌
+            if (replyMode.value === 'modify' && adminButtons) {
+                adminButtons.style.display = 'flex'; // 기존 레이아웃에 맞게 flex 또는 block 사용
+            }
+        }
+    }
+</script>
 
 </body>
 </html>

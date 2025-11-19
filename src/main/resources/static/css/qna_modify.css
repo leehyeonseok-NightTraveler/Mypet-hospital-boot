@@ -1,0 +1,200 @@
+@charset "UTF-8";
+
+/* ================================================= */
+/* 1. 레이아웃 및 제목 스타일 (작성 페이지와 동일) */
+/* ================================================= */
+.container {
+    margin: 30px auto;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.qna-title-header {
+    background-color: #55adf6;
+    padding: 20px;
+    border-radius: 3px;
+    color: white;
+    text-align: center;
+}
+
+/* Q&A 수정 페이지 제목 색상 변경 (선택 사항: 수정 페이지임을 시각적으로 강조) */
+/* .qna-modify-header {
+    background-color: #ff9800;
+} */
+
+
+/* ================================================= */
+/* 2. 테이블 구조 및 입력 필드 스타일 (작성 페이지와 동일) */
+/* ================================================= */
+
+.qna-form-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.qna-form-table td {
+    padding: 12px 10px;
+    border: 1px solid #ccc;
+    word-wrap: break-word;
+}
+
+.field-label {
+    width: 10%;
+    min-width: 80px;
+    text-align: center;
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-control {
+    border-radius: 4px;
+    box-shadow: none;
+}
+
+.qna-content-area {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: -1px;
+}
+
+.content-row td {
+    padding: 0;
+    border: none !important;
+}
+
+.button-row td {
+    padding: 20px 0;
+    text-align: center;
+    border: none !important;
+    background-color: transparent;
+}
+
+
+/* ================================================= */
+/* 2-1. 커스텀 첨부파일 필드 스타일 (작성 페이지와 동일) */
+/* ================================================= */
+
+/* 첨부파일 셀 내부 정렬 */
+.file-upload-cell {
+    /* 기존 파일 정보, 새 파일 버튼, 파일명 표시를 모두 담는 컨테이너 */
+    display: flex;
+    flex-wrap: wrap; /* 요소가 많아지면 다음 줄로 넘어갈 수 있도록 */
+    align-items: center;
+    gap: 15px; /* 내부 요소 간 간격 */
+}
+
+/* 파일 선택 버튼 (label 기반) */
+.file-select-btn {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #333;
+    background-color: #f7f7f7;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.file-select-btn:hover {
+    background-color: #e6e6e6;
+}
+
+/* 파일 이름 표시 영역 */
+.file-name-display {
+    display: inline-block;
+    padding: 6px 0;
+    vertical-align: middle;
+    color: #555;
+    font-size: 14px;
+    max-width: 70%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    /* '새 파일 선택' 옆에 표시되는 영역이므로, 기존 파일 영역과 겹치지 않도록 조정 */
+}
+
+
+/* ================================================= */
+/* 2-2. Q&A 수정 페이지 전용 파일 처리 스타일 */
+/* ================================================= */
+
+/* 기존 파일 정보 및 삭제 체크박스를 감싸는 그룹 */
+.file-control-group {
+    display: flex;
+    align-items: center;
+    /* 새 파일 선택 버튼 및 파일명 표시와 분리되는 공간 */
+    padding-right: 15px;
+    border-right: 1px solid #ddd;
+    height: 100%;
+}
+
+/* 현재 파일명 표시 */
+.current-file-name {
+    font-size: 14px;
+    color: #007bff; /* 기존 파일 강조 */
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+/* 파일 삭제 체크박스 레이블 */
+.file-control-group label {
+    font-size: 14px;
+    color: #dc3545; /* 삭제는 빨간색으로 경고 */
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+
+/* ================================================= */
+/* 3. 버튼 스타일 (작성 페이지와 동일) */
+/* ================================================= */
+.btn-submit, .btn-cancel {
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-submit {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-cancel {
+    background-color: #6c757d;
+    color: white;
+    margin-left: 10px;
+}
+
+
+/* ================================================= */
+/* 4. Summernote 위젯 스타일 오버라이드 (작성 페이지와 동일) */
+/* ================================================= */
+
+.note-editor.note-frame {
+    min-height: 500px !important;
+    border-radius: 0 !important;
+    border: 1px solid #ccc;
+}
+
+.note-editable {
+    min-height: 440px !important;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.note-toolbar {
+    padding: 4px 8px !important;
+}
+
+.note-toolbar .btn {
+    padding: 2px 5px !important;
+    font-size: 12px !important;
+}

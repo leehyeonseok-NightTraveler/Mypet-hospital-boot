@@ -81,10 +81,10 @@
                     <label for="service_item">미용 스타일</label>
                     <select id="service_item" name="service_item">
                         <option value="">미용 스타일 선택</option>
-                        <option value="clipping">전체 미용 (클리핑)</option>
-                        <option value="scissoring">전체 미용 (가위컷)</option>
-                        <option value="partial">목욕 및 부분 미용</option>
-                        <option value="spa">스파 / 마사지</option>
+                        <option value="전체 미용 (클리핑)">전체 미용 (클리핑)</option>
+                        <option value="전체 미용 (가위컷)">전체 미용 (가위컷)</option>
+                        <option value="목욕 및 부분 미용">목욕 및 부분 미용</option>
+                        <option value="스파 / 마사지">스파 / 마사지</option>
                     </select>
                 </div>
 
