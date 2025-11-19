@@ -61,16 +61,16 @@
 	            FROM COMMUNITY
 	            <where>
 	                <if test="type != null and type.equals('title')">
-	                    POST_TITLE LIKE '%' || #{keyword} || '%'
+	                    AND POST_TITLE LIKE '%' || #{keyword} || '%'
 	                </if>
 	
 	                <if test="type != null and type.equals('content')">
-	                    POST_CONTENT LIKE '%' || #{keyword} || '%'
+	                    AND POST_CONTENT LIKE '%' || #{keyword} || '%'
 	                </if>
 	
 	                <if test="type != null and type.equals('title_content')">
-	                    (POST_TITLE LIKE '%' || #{keyword} || '%'
-	                     OR POST_CONTENT LIKE '%' || #{keyword} || '%')
+	                    AND (POST_TITLE LIKE '%' || #{keyword} || '%'
+	                         OR POST_CONTENT LIKE '%' || #{keyword} || '%')
 	                </if>
 	            </where>
 	            ORDER BY POST_NO DESC
@@ -82,31 +82,27 @@
 
 
 
+
 	
 	<select id="searchCount" resultType="int">
 	    SELECT COUNT(*)
-	    FROM COMMUNITY
-	    <where>
-	        <if test="type != null and type.equals('title')">
-	            POST_TITLE LIKE '%' || #{keyword} || '%'
-	        </if>
-	
-	        <if test="type != null and type.equals('content')">
-	            POST_CONTENT LIKE '%' || #{keyword} || '%'
-	        </if>
-	
-	        <if test="type != null and type.equals('title_content')">
-	            (POST_TITLE LIKE '%' || #{keyword} || '%'
-	             OR POST_CONTENT LIKE '%' || #{keyword} || '%')
-	        </if>
-	
-	        <if test="keyword == null or keyword == ''">
-	            1 = 1
-	        </if>
-	    </where>
-	</select>
+		    FROM COMMUNITY
+		    <where>
+		        <if test="type != null and type.equals('title')">
+		            AND POST_TITLE LIKE '%' || #{keyword} || '%'
+		        </if>
+		        
+		        <if test="type != null and type.equals('content')">
+		            AND POST_CONTENT LIKE '%' || #{keyword} || '%'
+		        </if>
+		        
+		        <if test="type != null and type.equals('title_content')">
+		            AND (POST_TITLE LIKE '%' || #{keyword} || '%'
+		                OR POST_CONTENT LIKE '%' || #{keyword} || '%')
+		        </if>
+		    </where>
+		</select>
 
-	
 </mapper>
 
 
