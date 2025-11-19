@@ -107,5 +107,84 @@
         FROM grooming_res
     </select>
 
+    <update id="UserStatusProcess" parameterType="map">
+        UPDATE user_info
+        <set>
+            user_status = #{params.newStatus},
+            <if test="params.newStatus == 'INACTIVE'">
+                suspension_reason = #{params.suspension_reason}
+            </if>
+            <if test="params.newStatus == 'ACTIVE'">
+                suspension_reason = NULL
+            </if>
+        </set>
+        WHERE user_no = #{params.user_no}
+    </update>
+    
+    <select id="getGradeHistory" resultType="com.boot.dto.GradeHistoryDTO">
+	    SELECT *
+	    	FROM grade_history
+	    WHERE user_no = #{user_no}
+	    ORDER BY evaluation_date DESC
+	</select>
+
+	<select id="getServiceHistory" resultType="com.boot.dto.ServiceHistoryDTO">
+	    SELECT
+	        s.service_no,
+	        s.user_no,
+	        s.pet_no,
+	        p.pet_name,
+	        p.pet_breed,
+	        s.service_date,
+	        s.service_type,
+	        s.service_item,
+	        s.details_memo,
+	        s.completion_status,
+	        s.completion_date
+	    FROM service_history s
+	    JOIN pet_info p ON s.pet_no = p.pet_no
+	    WHERE s.user_no = #{user_no}
+	    ORDER BY s.service_date DESC
+	</select>
+
+	
+	<insert id="insertServiceHistory" parameterType="com.boot.dto.ServiceHistoryDTO">
+	    INSERT INTO service_history (
+	        service_no,
+	        user_no,
+	        pet_no,
+	        service_date,
+	        service_type,
+	        service_item,
+	        details_memo,
+	        completion_status,
+	        completion_date
+	    ) VALUES (
+	        SEQ_SERVICE_NO.NEXTVAL,
+	        #{user_no},
+	        #{pet_no},
+	        #{service_date},
+	        #{service_type},
+	        #{service_item},
+	        #{details_memo},
+	        'N',
+	        NULL
+	    )
+	</insert>
+
+	
+	<select id="getPetList" resultType="com.boot.dto.Mypet_PetDTO">
+	    SELECT *
+	    FROM pet_info
+	    WHERE user_no = #{user_no}
+	    ORDER BY pet_regdate DESC
+	</select>
+
+	
+	<update id="completeService">
+    UPDATE service_history
+    	SET completion_status = 'Y'
+    WHERE service_no = #{service_no}
+	</update>
 
 </mapper>

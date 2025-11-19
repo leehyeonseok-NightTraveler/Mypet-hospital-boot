@@ -2,7 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <link rel="stylesheet" href="/css/auto_search.css">
+<link rel="stylesheet" href="/css/custom_chat.css">
 <script src="/js/auto_search.js"></script>
+<script src="/js/custom_chat_widget.js"></script>
 
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -80,6 +82,39 @@
             </c:choose>
         </ul>
     </div>
+	
+	<!-- 오른쪽 하단 챗봇 -->
+	<div id="custom-chat-widget">
+	    
+	    <div id="chat-toggle-btn" class="chat-toggle-btn">
+	        <img src="/img/chatbot.svg" id="chat-icon-open-img" alt="챗봇 아이콘" style="width:60%; height:60%;">
+	        <i class="fas fa-times" id="chat-icon-close" style="display:none;"></i>
+	    </div>
+
+	    <div id="chat-menu-popup" class="chat-menu-popup hidden">
+	        <div class="menu-item" onclick="openChatPopup()">
+	            <i class="fas fa-comment-alt menu-icon"></i>
+	            <div class="menu-text">
+	                <span class="menu-title">FAQ 챗봇</span>
+	                <span class="menu-desc">자주 묻는 질문 자동 응답</span>
+	            </div>
+	        </div>
+
+	    </div>
+
+	    <div id="chat-popup-container" class="chat-popup-container hidden">
+	        <div class="popup-header">
+	            <span class="hospital-name">마이펫병원</span>
+	        </div>
+	        <div id="message-area" class="popup-messages"></div>
+	        <div class="popup-input-area">
+	            <input type="text" id="user-input" placeholder="메시지를 입력해주세요...">
+	            <button id="send-btn" class="send-btn">
+	                <i class="fas fa-arrow-up"></i>
+	            </button>
+	        </div>
+	    </div>
+	</div>
 </header>
 
 <form id="searchForm" action="/search_results" method="get" style="display:none;">

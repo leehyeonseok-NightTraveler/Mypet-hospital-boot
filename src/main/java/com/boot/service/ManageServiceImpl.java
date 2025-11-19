@@ -75,5 +75,41 @@ public class ManageServiceImpl implements ManageService {
         return dao.getGroResTotal(cri);
     }
 
+    @Override
+    public void UserStatusProcess(Map<String, Object> params) {
+        ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
+        dao.UserStatusProcess(params);
+    }
+    
+    @Override
+    public List<GradeHistoryDTO> getGradeHistory(int user_no) {
+        ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
+        return dao.getGradeHistory(user_no);
+    }
+
+    @Override
+    public List<ServiceHistoryDTO> getServiceHistory(int user_no) {
+        ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
+        return dao.getServiceHistory(user_no);
+    }
+    
+    @Override
+    public void insertServiceHistory(ServiceHistoryDTO dto) {
+        ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
+        dao.insertServiceHistory(dto);
+    }
+    
+    @Override
+    public void completeService(int service_no) {
+        ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
+        dao.completeService(service_no);
+    }
+    
+    @Override
+    public List<Mypet_PetDTO> getPetList(int user_no) {
+        ManageDAO dao = sqlSession.getMapper(ManageDAO.class);
+        return dao.PetList(user_no);
+    }
+
 
 }

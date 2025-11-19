@@ -56,29 +56,89 @@ public class ManageController {
      * @param cri 목록 복귀를 위한 페이징/검색 조건
      */
     @GetMapping("/user_detail")
-    public String UserViewPage(@RequestParam int user_no, Criteria cri, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+    public String UserViewPage(@RequestParam int user_no, Criteria cri,
+                               HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         String Role = (String) session.getAttribute("role");
 
-        // 관리자 권한 확인
         if (!"ADMIN".equals(Role)) {
             redirectAttributes.addFlashAttribute("alertMsg", "관리자만 접근 가능합니다.");
             return "redirect:/mainpage";
         }
 
-        // 회원 상세 정보 조회
+        // 회원 정보
         Mypet_UserDTO UserInfo = manageService.UserInfo(user_no);
         model.addAttribute("UserInfo", UserInfo);
 
-        // 해당 회원의 반려동물 목록 조회
+        // 펫 목록
         List<Mypet_PetDTO> PetList = manageService.PetList(user_no);
         model.addAttribute("PetList", PetList);
 
-        // 목록 복귀 시 상태 유지를 위해 cri 객체 전달
+        // ★ 멤버십 등급 이력 추가
+        model.addAttribute("GradeHistory", manageService.getGradeHistory(user_no));
+
+        // ★ 멤버십 이용(방문) 이력 추가
+        model.addAttribute("ServiceHistory", manageService.getServiceHistory(user_no));
+
         model.addAttribute("cri", cri);
 
         return "user_detail";
     }
 
+    
+    @GetMapping("/user_servicehistory")
+    public String userServiceHistoryForm(@RequestParam("user_no") int userNo,
+                                         Criteria cri,
+                                         HttpSession session,
+                                         Model model,
+                                         RedirectAttributes rttr) {
+
+        String role = (String) session.getAttribute("role");
+
+        if (!"ADMIN".equals(role)) {
+            rttr.addFlashAttribute("alertMsg", "관리자만 접근 가능합니다.");
+            return "redirect:/mainpage";
+        }
+
+        // 1) 유저 정보 기본 전달
+        model.addAttribute("user_no", userNo);
+        model.addAttribute("cri", cri);
+
+        // 2) 펫 리스트 조회
+        List<Mypet_PetDTO> petList = manageService.getPetList(userNo);
+
+        // 3) JSP 전달
+        model.addAttribute("PetList", petList);
+
+        return "user_servicehistory";
+    }
+
+
+    @PostMapping("/user_servicehistoryProcess")
+    public String userServiceHistoryProcess(ServiceHistoryDTO dto,
+                                            @RequestParam int pageNum,
+                                            @RequestParam int amount,
+                                            RedirectAttributes rttr) {
+
+        manageService.insertServiceHistory(dto);
+
+        rttr.addAttribute("user_no", dto.getUser_no());
+        rttr.addAttribute("pageNum", pageNum);
+        rttr.addAttribute("amount", amount);
+        rttr.addFlashAttribute("msg", "진료 내역이 등록되었습니다.");
+
+        return "redirect:/user_detail";
+    }
+
+    @PostMapping("/user_serviceComplete")
+    public String serviceComplete(
+            @RequestParam("service_no") int service_no,
+            @RequestParam("user_no") int user_no
+    ) {
+        manageService.completeService(service_no);  
+        return "redirect:/user_detail?user_no=" + user_no;
+    }
+
+    
     /**
      * 진료 예약 목록 관리 페이지를 처리합니다.
      * 관리자 권한을 확인하고, 페이징된 진료 예약 목록을 모델에 담아 전달합니다.
@@ -216,7 +276,41 @@ public class ManageController {
         rttr.addAttribute("pageNum", pageNum);
         rttr.addAttribute("amount", amount);
         rttr.addFlashAttribute("msg", "예약이 취소 처리되었습니다.");
-
+        //
         return redirectPath;
+    }
+
+    @PostMapping("/UserStatusProcess")
+    public String UserStatusProcess(@RequestParam("user_no") int userNo,
+                                    @RequestParam("targetStatus") String newStatus,
+                                    @RequestParam(value = "suspension_reason", required = false) String suspensionReason,
+                                    @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                                    @RequestParam(value = "amount", defaultValue = "10") int amount,
+                                    RedirectAttributes rttr) {
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("user_no", userNo);
+        params.put("newStatus", newStatus);
+
+        String msg;
+
+        if ("ACTIVE".equals(newStatus)) {
+            // 활동 해제 요청: 사유를 NULL로 설정하여 DB에서 초기화
+            params.put("suspension_reason", null);
+            msg = "활동정지가 해제되었습니다.";
+        } else {
+            // 활동 정지 요청: 전송된 사유를 사용
+            params.put("suspension_reason", suspensionReason);
+            msg = "활동정지 처리되었습니다. 사유가 기록되었습니다.";
+        }
+
+        manageService.UserStatusProcess(params);
+
+        rttr.addAttribute("user_no", userNo);
+        rttr.addAttribute("pageNum", pageNum);
+        rttr.addAttribute("amount", amount);
+        rttr.addFlashAttribute("msg", msg);
+
+        return "redirect:/user_detail";
     }
 }

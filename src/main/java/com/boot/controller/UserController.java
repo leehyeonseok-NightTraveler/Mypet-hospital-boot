@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.boot.dto.FindAccountDTO;
 import com.boot.dto.Mypet_AdminDTO;
 import com.boot.dto.Mypet_UserDTO;
+import com.boot.service.UploadService;
 import com.boot.service.UserService;
 
 @Slf4j
@@ -31,9 +33,10 @@ import com.boot.service.UserService;
 @RequiredArgsConstructor
 public class UserController {
 
-	@Autowired
-	private UserService userService;
-	
+  private final UserService userService;
+    
+  private final UploadService uploadService;
+  
 	//이메일 전송 객체[디펜던시에 추가됨]
 	@Autowired
 	private JavaMailSender mailSender;
@@ -105,6 +108,7 @@ public class UserController {
             Mypet_UserDTO user = (Mypet_UserDTO) loginObj;
             session.setAttribute("role", "USER");
             session.setAttribute("loginUser", user);
+            session.setAttribute("user_no", user.getUser_no());
             log.info("일반 사용자 로그인 성공: {}", user_id);
             return "mainpage";
         }
@@ -186,10 +190,15 @@ public class UserController {
             }
             map.put("user_pwd", user_pwd);
         }
-
+        
         try {
             userService.updateUserInfo(map);
-
+            
+            // 이미지 업로드 처리 추가
+            if (user_img != null && !user_img.isEmpty()) {
+                userService.replaceUserImage(loginUser.getUser_no(), user_img);
+            }
+            
             // DB 기준 세션 갱신
             Mypet_UserDTO updatedUser = userService.getUserByNo(loginUser.getUser_no());
             if (updatedUser != null) {
@@ -378,4 +387,40 @@ public class UserController {
     }
 
     
+    @PostMapping("/user/uploadImg")
+    @ResponseBody
+    public ResponseEntity<String> uploadUserImg(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("userNo") int userNo) {
+
+        try {
+            boolean ok = userService.replaceUserImage(userNo, file);
+
+            if (!ok) return ResponseEntity.status(400).body("duplicate");
+
+            return ResponseEntity.ok("success");
+
+        } catch (Exception e) {
+            log.error("유저 이미지 업로드 실패", e);
+            return ResponseEntity.status(500).body("fail");
+        }
+    }
+    
+    @GetMapping("/mypage_membership")
+    public String mypageMembership(HttpSession session, Model model) {
+
+        Mypet_UserDTO loginUser = (Mypet_UserDTO) session.getAttribute("loginUser");
+        if (loginUser == null) return "redirect:/login";
+
+        int userNo = loginUser.getUser_no();
+
+        model.addAttribute("currentGrade", loginUser.getCurrent_grade());
+        model.addAttribute("expiryDate", loginUser.getGrade_expiry_date());
+
+        model.addAttribute("gradeHistory", userService.getGradeHistory(userNo));
+        model.addAttribute("serviceHistory", userService.getServiceHistory(userNo));
+
+        return "mypage_membership";
+    }
+
 }

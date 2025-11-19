@@ -84,43 +84,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // ----------------------------------------------------
 
     // 메시지 출력 헬퍼 함수
-	function displayMessage(text, isBot) {
-	    const msgArea = document.getElementById('message-area');
-	    const msgDiv = document.createElement('div');
-	    msgDiv.classList.add(isBot ? 'bot-message' : 'user-message');
-
-	    if (isBot) {
-	        // 1. 마크다운 링크 처리 ([예약](url))
-	        text = text.replace(
-	            /\[([^\]]+)\]\(http:\/\/localhost:8686\/reservation\)/g,
-	            '<a href="http://localhost:8686/reservation" target="_blank" style="color:#007bff;font-weight:bold;text-decoration:underline;">$1</a>'
-	        );
-
-	        // 2. 괄호 안에 있는 링크 처리 <http://...>
-	        text = text.replace(
-	            /<http:\/\/localhost:8686\/reservation>/g,
-	            '<a href="http://localhost:8686/reservation" target="_blank" style="color:#007bff;font-weight:bold;text-decoration:underline;">예약하기 페이지</a>'
-	        );
-
-	        // 3. 그냥 텍스트로 나온 링크 처리
-	        text = text.replace(
-	            /http:\/\/localhost:8686\/reservation/g,
-	            '<a href="http://localhost:8686/reservation" target="_blank" style="color:#007bff;font-weight:bold;text-decoration:underline;">예약하기 페이지</a>'
-	        );
-
-	        // 4. 링크는 없는데 "예약"이라는 단어가 들어간 문장은 자동으로 링크 추가
-//	        if (text.includes('예약') && !text.includes('reservation')) {
-//	            text = text.replace(
-//	                /예약/g,
-//	                '<a href="http://localhost:8686/reservation" target="_blank" style="color:#007bff;font-weight:bold;text-decoration:underline;">예약</a>'
-//	            );
-//	        }
-	    }
-
-	    msgDiv.innerHTML = text;
-	    msgArea.appendChild(msgDiv);
-	    msgArea.scrollTop = msgArea.scrollHeight;
-	}
+    function displayMessage(text, isBot) {
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add(isBot ? 'bot-message' : 'user-message');
+        msgDiv.innerHTML = text; 
+        msgArea.appendChild(msgDiv);
+        msgArea.scrollTop = msgArea.scrollHeight; 
+    }
 
     // 챗봇 시작 및 초기 FAQ 버튼 출력
     function startWorkflow() {

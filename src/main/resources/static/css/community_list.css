@@ -1,0 +1,195 @@
+.div_page ul {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0;
+    text-align: center;
+}
+
+.div_page ul li {
+    display: inline-block;
+    margin: 0 4px;
+}
+
+.div_page ul li a {
+    text-decoration: none;
+    padding: 8px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333;
+    background: #f9f9f9;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.div_page ul li a:hover {
+    background: #eaeaea;
+    border-color: #bbb;
+    transform: translateY(-2px);
+}
+
+/* 현재 페이지 스타일 */
+.div_page ul li.active a {
+    background: #2196F3;
+    color: white;
+    border-color: #4c8bf5;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(76,139,245,0.4);
+    cursor: default;
+    transform: none;
+}
+
+
+/* 전체 레이아웃 */
+main {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px 10px;
+}
+
+header, footer {
+	margin: 0;
+	padding: 10px 0; /* 너무 넓다면 5px 정도로 줄여도 좋아 */
+}
+
+/* 공지사항 제목 */
+.notice-title {
+	width: 80%;
+	margin: 20px auto 30px;
+	text-align: center;
+	font-size: 2rem;
+	font-weight: 700;
+	color: #0d47a1;
+	padding-bottom: 10px;
+}
+
+/* 테이블 */
+.table {
+	width: 80%;
+	border-collapse: collapse;
+	margin: 0 auto;
+	table-layout: fixed;
+	background-color: #fff;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+/* 테이블 셀 */
+.table th, .table td {
+	padding: 12px 16px;
+	border-bottom: 1px solid #e0e0e0;
+	word-wrap: break-word;
+	font-size: 0.95rem;
+	color: #333;
+	text-align: center;
+}
+
+/* 열 너비 */
+#number {
+	width: 7%;
+}
+
+.table td:nth-child(2), .table th:nth-child(2) {
+	width: 51%;
+	text-align: center;
+}
+
+#writer {
+	width: 12%;
+}
+
+#date {
+	width: 20%;
+}
+
+#count {
+	width: 10%;
+}
+
+/* 헤더 */
+.table th {
+	background-color: #e3f2fd;
+	font-weight: bold;
+	color: #1976D2;
+	font-size: 1rem;
+}
+
+/* 행 hover 효과 */
+.table tr:hover td {
+	background-color: #f5faff;
+}
+
+/* 글쓰기 버튼 행 */
+.table tr.button_tr td {
+	border: none;
+	background-color: transparent;
+	text-align: right;
+	padding: 20px;
+}
+
+/* 구분선 전용 행 */
+.divider_tr td {
+	height: 1px;
+	background-color: #e0e0e0;
+	padding: 0;
+	border: none;
+}
+
+/* 버튼 스타일 */
+.button {
+	background-color: #2196F3;
+	color: white;
+	padding: 10px 20px;
+	font-size: 0.95rem;
+	font-weight: bold;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.button:hover {
+	background-color: #1976D2;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pagination {
+  width: 70%;
+  max-width: 800px;
+  margin: 40px auto;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.page-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover {
+  background-color: #2196F3;
+  color: #fff;
+  border-color: #2196F3;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.page-btn.active,
+.page-btn.active:hover {
+  background-color: #1976D2;
+  color: #fff;
+  border-color: #1976D2;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}

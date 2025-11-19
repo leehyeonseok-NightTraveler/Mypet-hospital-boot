@@ -91,6 +91,8 @@ public class NaverLoginController {
         model.addAttribute("userDTO", tempUser);
         model.addAttribute("socialType", "naver");
         
+        model.addAttribute("formAction", "/auth/naver/register_process");
+        
         return "register_social"; 
     }
 

@@ -13,22 +13,23 @@ public class ImageHashUtil {
      * 16자리만 사용해 보기 좋게 포맷된 문자열 반환
      * 예: E3B0-C442-98FC-1C14
      */
-    public static String getReadableHash(byte[] fileBytes) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hashBytes = digest.digest(fileBytes);
+	public static String getReadableHash(byte[] fileBytes) {
+	    try {
+	        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+	        byte[] hashBytes = digest.digest(fileBytes);
 
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hashBytes) {
-                sb.append(String.format("%02x", b));
-            }
+	        // 해시 HEX 변환
+	        StringBuilder sb = new StringBuilder();
+	        for (byte b : hashBytes) {
+	            sb.append(String.format("%02X", b)); // ← 처음부터 대문자
+	        }
 
-            // 앞 16자리 추출 + 보기 좋은 포맷 (대문자 + 하이픈)
-            String shortHash = sb.toString().substring(0, 16).toUpperCase();
-            return shortHash.replaceAll("(.{4})(?!$)", "$1-");
+	        // 앞 16자리 + 4자리 구분
+	        String shortHash = sb.substring(0, 16);
+	        return shortHash.replaceAll("(.{4})(?!$)", "$1-");
 
-        } catch (Exception e) {
-            throw new RuntimeException("이미지 해시 생성 실패", e);
-        }
-    }
+	    } catch (Exception e) {
+	        throw new RuntimeException("이미지 해시 생성 실패", e);
+	    }
+	}
 }

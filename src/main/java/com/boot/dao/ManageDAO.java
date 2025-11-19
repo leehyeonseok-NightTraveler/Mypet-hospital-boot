@@ -17,4 +17,11 @@ public interface ManageDAO {
     int getUserTotal(@Param("cri") Criteria cri);
     int getVetResTotal(@Param("cri") Criteria cri);
     int getGroResTotal(@Param("cri") Criteria cri);
+    void UserStatusProcess(@Param("params")  Map<String, Object> params);
+    List<GradeHistoryDTO> getGradeHistory(int user_no);
+    List<ServiceHistoryDTO> getServiceHistory(int user_no);
+    void insertServiceHistory(ServiceHistoryDTO dto);
+    void completeService(int service_no);
+    List<Mypet_PetDTO> getPetList(int user_no);
+
 }

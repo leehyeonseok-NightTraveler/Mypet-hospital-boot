@@ -42,6 +42,8 @@
                 <a href="/auth/kakao/login" class="kakao-login-button">
                     <img src="/img/kakao_login.png" >
                 </a>
+				<a href="<c:url value='/auth/google/login' />" class="google-login-button">
+				        <img src="/img/google_login.png"> </a>
 				<a href="/auth/naver/login">
 				    <img src="/img/naver_login.png" height="50" alt="네이버로 로그인하기">
 				</a>
