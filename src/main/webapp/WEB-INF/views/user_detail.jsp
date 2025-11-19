@@ -226,22 +226,35 @@
 
         <%-- 기존 활동정지 모달 --%>
         <div id="suspendModal" style="display:none;">
-            <h3>회원 활동정지 사유 입력</h3>
+        </div>
 
-            <%-- 정지 처리 폼 (POST) --%>
-            <form method="post" action="UserStatusProcess" id="suspendForm">
-                <input type="hidden" name="user_no" id="suspendUserNo"/>
-                <input type="hidden" name="targetStatus" value="INACTIVE"/>
-                <input type="hidden" name="pageNum" id="suspendPageNum"/>
-                <input type="hidden" name="amount" id="suspendAmount"/>
+        <%-- 💡 수정: 확인서 발급을 위한 주민등록번호 입력 모달 --%>
+        <div id="certificateModal" style="display:none;" class="custom-modal">
+            <h3>확인서 발급을 위한 본인 확인</h3>
+            <p>※ 보호자님의 주민등록번호 **13자리**를 입력해주세요. (하이픈 제외)</p>
 
-                <label for="suspension_reason">정지 사유:</label><br>
-                <textarea name="suspension_reason" id="suspension_reason" rows="4" cols="40" required></textarea><br><br>
+            <%-- 확인서 발급 처리 폼 --%>
+            <form method="get" action="<c:url value='/Certificate'/>" id="certificateForm">
+                <input type="hidden" name="service_no" id="certServiceNo"/>
+                <input type="hidden" name="user_no" id="certUserNo"/>
+                <input type="hidden" name="pet_no" id="certPetNo"/>
 
-                <button type="submit" class="btn-suspend-submit">정지 처리</button>
-                <button type="button" class="btn-suspend-close" onclick="closeSuspendModal()">닫기</button>
+                <label for="id_number">주민등록번호 13자리:</label><br>
+                <input type="password" name="id_number" id="id_number"
+                       maxlength="13" placeholder="예: 9001011234567" required
+                       autocomplete="off"
+                       oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+
+
+                <p class="cert-error-message" id="certErrorMessage" style="color:red; display:none; margin-top: 10px;">
+                    주민등록번호 **13자리**를 정확히 입력해주세요.
+                </p>
+
+                <button type="button" class="btn-cert-submit" onclick="submitCertificateForm()">확인 및 발급</button>
+                <button type="button" class="btn-cert-close" onclick="closeCertificateModal()">닫기</button>
             </form>
         </div>
+
     </section>
 </main>
 
