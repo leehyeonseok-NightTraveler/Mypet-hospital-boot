@@ -1,5 +1,7 @@
 package com.boot.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,4 +49,11 @@ public class HomeController {
 
     @GetMapping("/pet_add")
     public String petAdd() { return "pet_add"; }
+    
+	@RequestMapping("/community_write_view")
+	public String community_write_view(HttpSession session) {
+		String role = (String) session.getAttribute("role");
+		if (role == null) {return "login";}
+		return "community_write_view";}
+	
 }
