@@ -1,0 +1,218 @@
+/* ==================================== */
+/* 1. 기본 설정 및 문서 구조 (A4 규격) */
+/* ==================================== */
+body {
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', 'Nanum Gothic', Dotum, sans-serif;
+    /* A4 폭 기준으로 중앙 정렬 */
+    width: auto;
+    max-width: none;
+    margin: 0 auto;
+    padding: 0;
+    font-size: 12px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+/* ------------------------------------ */
+/* 버튼 스타일 (개선됨) */
+/* ------------------------------------ */
+.button-container {
+    /* A4 용지 규격과 동일한 폭으로 설정하여 certificate-container와 정렬 */
+    width: 210mm;
+    /* 상단/하단 마진을 추가하여 증명서 컨테이너와 분리 */
+    margin: 20px auto 20px;
+    height: 40px;
+    text-align: right;
+}
+.print-button {
+    /* 기존 스타일 유지 */
+    display: inline-block;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    border-radius: 4px;
+
+    /* 개선된 스타일 적용 */
+    border: none; /* 기존 1px solid #ccc 제거 */
+    background-color: #5a67d8; /* 세련된 블루 계열로 변경 */
+    color: #ffffff; /* 흰색 글씨로 가독성 확보 */
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 은은한 그림자 추가 */
+    transition: background-color 0.2s, box-shadow 0.2s; /* 부드러운 전환 효과 */
+}
+
+/* 마우스 오버 시 효과 */
+.print-button:hover {
+    background-color: #4c51bf; /* 약간 어두운 색상으로 변경 */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15); /* 그림자 깊이 증가 */
+}
+
+/* ------------------------------------ */
+/* 증명서 컨테이너 (A4 용지) */
+/* ------------------------------------ */
+.certificate-container {
+    /* A4 용지 규격 */
+    width: 210mm;
+    min-height: 297mm;
+    /* 버튼 컨테이너 아래 중앙에 위치 */
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 10mm;
+    box-sizing: border-box;
+    page-break-after: always;
+}
+
+h2 {
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* ==================================== */
+/* 2. 테이블 기본 스타일 및 글꼴 (변동 없음) */
+/* ==================================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-bottom: 10px;
+}
+
+th, td {
+    border: 0.5px solid #000;
+    padding: 5px 8px;
+    height: 22px;
+    vertical-align: middle;
+    line-height: 1.2;
+    font-size: 11px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+th {
+    text-align: center;
+    background-color: #f7f7f7;
+    font-weight: bold;
+    color: #333;
+}
+td {
+    text-align: left;
+}
+
+/* ------------------------------------ */
+/* 항목 그룹 헤더 스타일 (변동 없음) */
+/* ------------------------------------ */
+.group-header td {
+    background-color: #eee;
+    font-weight: bold;
+    text-align: center;
+    padding: 3px 8px;
+    height: 20px;
+    font-size: 12px;
+    color: #444;
+    border-bottom: 1px solid #000;
+    border-top: 1px solid #000;
+}
+
+/* ------------------------------------ */
+/* TH 항목별 너비 조정 (유지) */
+/* ------------------------------------ */
+.th-user-name, .th-user-age, .th-pet-name, .th-pet-gender, .th-pet-age, .th-pet-species, .th-pet-breed {
+    width: 12%;
+}
+.th-address, .th-date, .th-service-type, .th-service-item, .th-in, .th-out {
+    width: 12%;
+}
+.th-memo {
+    width: 12%;
+}
+.th-user-id {
+    width: 38%;
+}
+
+/* ------------------------------------ */
+/* 칸 높이 비율 조정 및 세로 중앙 정렬 적용 (유지) */
+/* ------------------------------------ */
+
+/* 주소 칸 */
+.row-large th,
+.row-large td {
+    height: 40px;
+    vertical-align: middle;
+    white-space: normal;
+    text-overflow: clip;
+    overflow: visible;
+}
+
+/* 추가사항(메모) 칸 */
+.row-memo th,
+.row-memo td {
+    height: 80px;
+    vertical-align: middle;
+    white-space: normal;
+    text-overflow: clip;
+    overflow: visible;
+}
+
+/* 주민등록번호와 날짜 칸 (줄바꿈 허용 유지) */
+table tr:nth-child(3) td, /* 주민등록번호 값 */
+table tr:nth-child(10) td /* 날짜 값 */
+{
+    white-space: normal;
+}
+
+
+/* 확인 문구 칸 */
+.confirmation-text {
+    text-align: center;
+    font-weight: 500;
+    height: 35px;
+    background-color: #ffffff;
+    white-space: normal;
+}
+
+/* 발급 정보 섹션 */
+.footer-info {
+    line-height: 1.5;
+    padding: 10px 14px;
+    background-color: #ffffff;
+    text-align: left;
+    font-size: 11px;
+    height: 200px;
+    vertical-align: middle;
+    white-space: normal;
+}
+
+.right-align-text {
+    margin-top: 10px;
+    text-align: right;
+    font-weight: bold;
+}
+
+/* ==================================== */
+/* 3. 인쇄 및 PDF 최적화 (유지) */
+/* ==================================== */
+@media print {
+    .button-container, .print-button { display: none !important; }
+    body {
+        margin: 0; padding: 0; width: 210mm; max-width: 210mm; background-color: #fff;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .certificate-container {
+        /* 인쇄 시 여백 */
+        margin: 0; padding: 20mm; width: 210mm; min-height: 297mm; border: none; box-shadow: none;
+    }
+    th, td {
+        font-size: 11px !important;
+        white-space: normal !important;
+        text-overflow: clip !important;
+    }
+    th {
+        background-color: #f7f7f7 !important;
+        color: #333 !important;
+    }
+    .group-header td { background-color: #eee !important; color: #444 !important; }
+}

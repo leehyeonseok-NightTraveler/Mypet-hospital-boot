@@ -12,7 +12,6 @@
 main {
     /* 메인 콘텐츠 영역의 레이아웃 설정 */
     width: 80%; /* 전체 너비의 80% 사용 */
-    min-height: 200px; /* 최소 높이 지정 */
     margin-left: 200px; /* 좌측 공간(플로팅 메뉴)을 확보하기 위한 왼쪽 마진 */
 }
 
@@ -173,4 +172,159 @@ main {
     /* .col-status가 두 번 정의되어 있습니다. user-view는 아마도 버튼/링크 열일 것입니다. */
     width: 100px;
     font-weight: bold;
+}
+
+/* =======================================
+   Pagination Area (페이지네이션)
+   ======================================= */
+
+/* 페이지네이션 컨테이너 */
+.pagination-container {
+    /* 전체 테이블 영역 중앙에 배치 */
+    display: flex;
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center;
+    margin-top: 30px; /* 테이블과의 상단 여백 */
+    padding: 10px 0;
+}
+
+/* 페이지 번호 리스트 */
+.pagination-list {
+    display: flex;
+    list-style: none; /* 리스트 마커 제거 */
+    padding: 0;
+    margin: 0;
+    gap: 4px; /* 항목 간 간격 */
+    background-color: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 개별 페이지 항목 (li) */
+.pagination-item {
+    /* 기본 설정 */
+    display: list-item;
+    line-height: 1; /* 링크 높이에 맞춤 */
+}
+
+/* 페이지 링크 (a) */
+.pagination-link {
+    display: block;
+    padding: 8px 12px;
+    min-width: 30px; /* 최소 너비 확보 */
+    text-align: center;
+    color: #555;
+    background-color: #ffffff;
+    border: 1px solid #e9ecef; /* 연한 테두리 */
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+/* Hover 및 Focus 효과 */
+.pagination-link:hover,
+.pagination-link:focus {
+    background-color: #f0f3f5;
+    color: #333;
+    border-color: #ccc;
+}
+
+/* 활성화된 페이지 번호 (.active 클래스가 li에 붙는 경우) */
+.pagination-item.active .pagination-link {
+    background-color: #4a90e2; /* 기존 CSS의 활성화 색상 */
+    color: white;
+    border-color: #4a90e2;
+    font-weight: bold;
+    pointer-events: none; /* 클릭 비활성화 (선택 사항) */
+}
+
+/* 이전/다음 버튼 스타일 */
+.pagination-item.prev .pagination-link,
+.pagination-item.next .pagination-link {
+    font-weight: bold;
+    color: #333;
+    padding: 8px 15px; /* 좌우 패딩을 더 넓게 */
+}
+
+/* 이전/다음 버튼: 비활성화 상태 (JSTL로 c:if 조건이 false일 때) */
+.pagination-item.disabled .pagination-link {
+    color: #adb5bd;
+    cursor: not-allowed;
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+}
+
+/* =======================================
+   Search Form Area (검색 폼 스타일)
+   ======================================= */
+
+.search-form {
+    /* 검색 폼 컨테이너 */
+    display: flex; /* 내부 요소들을 한 줄에 배치 */
+    justify-content: flex-end; /* 폼을 오른쪽으로 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    gap: 10px; /* 요소들 사이의 간격 */
+    margin-bottom: 25px; /* 테이블과의 하단 여백 */
+    padding: 15px;
+    background-color: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* 텍스트 입력 필드 및 드롭다운 */
+.search-form input[type="text"],
+.search-form select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    height: 38px; /* 버튼과 높이 맞추기 */
+}
+
+/* 입력 필드 포커스 효과 */
+.search-form input[type="text"]:focus,
+.search-form select:focus {
+    border-color: #4a90e2; /* 포커스 시 파란색 테두리 */
+    outline: none; /* 기본 아웃라인 제거 */
+}
+
+/* 검색 입력 필드 너비 조정 */
+.search-form input[type="text"] {
+    width: 200px; /* 적당한 너비 지정 */
+}
+
+/* 버튼 스타일 */
+.search-form button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    height: 38px;
+    transition: background-color 0.3s ease;
+}
+
+/* 검색 버튼 (Submit) */
+.search-form button[type="submit"] {
+    background-color: #4a90e2; /* 파란색 배경 */
+    color: white;
+}
+
+.search-form button[type="submit"]:hover {
+    background-color: #3a75c1; /* hover 시 약간 어둡게 */
+}
+
+/* 초기화 버튼 (Button) */
+.search-form button[type="button"] {
+    background-color: #6c757d; /* 회색 배경 */
+    color: white;
+}
+
+.search-form button[type="button"]:hover {
+    background-color: #5a6268; /* hover 시 약간 어둡게 */
 }

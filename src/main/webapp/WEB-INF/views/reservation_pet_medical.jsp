@@ -81,13 +81,13 @@
                     <label for="service_item">진료 항목</label>
                     <select id="service_item" name="service_item">
                         <option value="">진료 항목 선택</option>
-                        <option value="checkup">기본 검진</option>
-                        <option value="vaccination">예방 접종</option>
-                        <option value="internal">내과 진료</option>
-                        <option value="surgery">외과/정형외과</option>
-                        <option value="dermatology">피부과 진료</option>
-                        <option value="dentistry">치과 진료</option>
-                        <option value="neutering">중성화 수술</option>
+                        <option value="기본 검진">기본 검진</option>
+                        <option value="예방 접종">예방 접종</option>
+                        <option value="내과 진료">내과 진료</option>
+                        <option value="외과/정형외과">외과/정형외과</option>
+                        <option value="피부과 진료">피부과 진료</option>
+                        <option value="치과 진료">치과 진료</option>
+                        <option value="중성화 수술">중성화 수술</option>
                     </select>
                 </div>
 

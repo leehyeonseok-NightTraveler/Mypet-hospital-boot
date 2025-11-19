@@ -1,201 +1,295 @@
 @charset "UTF-8";
 
-/* 전체 레이아웃 */
+/* ================================================= */
+/* 1. 기본 레이아웃 및 컨테이너 */
+/* ================================================= */
+
 main {
-	margin: 20px auto;
-	padding: 0 16px;
-	max-width: 900px;
-	width: 90%;
-	box-sizing: border-box;
+    margin: 30px auto; /* 상하 여백 증가 */
+    padding: 0 16px;
+    max-width: 900px;
+    width: 90%;
+    box-sizing: border-box;
 }
 
-/* Q&A 섹션 */
-.qna-view {
-	background-color: #fefefe;
-	border-radius: 8px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-	padding: 16px;
+/* Q&A 상세 섹션 (JSP의 section.qna-detail-section) */
+.qna-detail-section {
+    background-color: #fefefe;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* 그림자 강조 */
+    padding: 20px; /* 내부 패딩 증가 */
 }
 
-/* 테이블 */
-table {
-	width: 100%;
-	border-collapse: collapse;
-	background-color: #fff;
-	margin: 0 auto;
+/* ================================================= */
+/* 2. 테이블 기본 스타일 (.qna-detail-table) */
+/* ================================================= */
+
+.qna-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    margin: 0 auto;
+    border-radius: 6px;
+    overflow: hidden; /* 테이블 라운딩을 위해 */
 }
 
-table td {
-	border: 1px solid #e0e0e0;
-	padding: 10px;
-	vertical-align: middle;
+.qna-detail-table td {
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+    vertical-align: middle;
 }
 
-/* 제목 행 */
-.title {
-	background-color: #e3f2fd;
-	font-size: 17px;
-	font-weight: bold;
-	text-align: center;
-	color: #0d47a1;
-	padding: 12px;
+/* ================================================= */
+/* 3. 정보 행 (제목, 메타데이터) 스타일 */
+/* ================================================= */
+
+/* 3.1 제목 행 */
+.qna-title-row {
+    background-color: #e3f2fd;
 }
 
-/* 작성자 정보 행 */
-.writer_tr {
-	background-color: #f9f9f9;
-	font-size: 13px;
-	color: #333;
-	text-align: center;
+.qna-title-row .title-label {
+    width: 10%; /* 레이블 너비 고정 */
+    font-weight: bold;
+    text-align: center;
+    color: #0d47a1;
+    background-color: #e3f2fd;
 }
 
-.writer {
-	width: 140px;
-	font-weight: bold;
-	color: #555;
+.qna-title-row .title-value {
+    font-size: 16px;
+    font-weight: 500;
+    color: #222;
 }
 
-.date, .num, .answered {
-	width: 90px;
-	background-color: #f0f0f0;
-	font-weight: bold;
-	color: #444;
+/* 3.2 메타 데이터 행 (번호, 답변 여부, 작성일) */
+.meta-data-row, .reply-meta-row {
+    background-color: #f9f9f9;
+    font-size: 14px;
+    text-align: center;
 }
 
-/* 첨부파일 */
-.file {
-	width: 90px;
-	background-color: #f0f0f0;
-	text-align: center;
-	font-size: 13px;
-	font-weight: bold;
-	color: #444;
+/* 레이블 셀 (.info-label) 공통 스타일 */
+.info-label {
+    width: 90px;
+    background-color: #f0f0f0;
+    font-weight: bold;
+    color: #444;
 }
 
-.file2 {
-	background-color: #fafafa;
-	text-align: left;
-	font-size: 13px;
-	color: #333;
-	padding-left: 10px;
+/* 값 셀 (.info-value) 공통 스타일 */
+.info-value {
+    color: #333;
+    text-align: left;
+    padding-left: 10px;
+    word-break: break-all;
 }
 
-/* 본문 텍스트 영역 */
-.qna-content {
-	width: 100%;
-	margin: 10px auto;
-	padding: 16px;
-	font-size: 15px;
-	line-height: 1.6;
-	background-color: #fff;
-	color: #222;
-	box-sizing: border-box;
-	white-space: pre-wrap;
-	word-break: break-word;
-	border: 1px solid #e0e0e0;
-	border-radius: 4px;
-	min-height: 200px;
+/* 메타데이터 셀 너비 조정 */
+.meta-data-row .info-label,
+.meta-data-row .info-value {
+    /* 번호, 답변여부, 작성일, 값에 대한 너비 설정 */
+    width: 90px; /* 레이블 */
+}
+.meta-data-row .qna-num,
+.meta-data-row .answered-status {
+    width: 170px; /* 값 셀 너비 */
 }
 
-/* 답변 영역 */
+
+/* 3.3 답변 상태 시각화 */
+.answered-status {
+    font-weight: bold;
+}
+.status-answered {
+    color: #4CAF50; /* 녹색 */
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: #e8f5e9;
+}
+.status-pending {
+    color: #FF9800; /* 주황색 */
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: #fff3e0;
+}
+
+/* 3.4 첨부 파일 행 */
+.file-row {
+    font-size: 14px;
+    background-color: #fafafa;
+}
+.file-row .file-download-area {
+    text-align: left;
+}
+.file-row .download-link {
+    color: #2196F3;
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+
+/* ================================================= */
+/* 4. 내용 및 답변 컨텐츠 영역 */
+/* ================================================= */
+
+.content-row td {
+    padding: 20px 10px;
+}
+
+/* 실제 내용이 담기는 div */
+.content-box, .answer-content-box {
+    padding: 16px;
+    font-size: 15px;
+    line-height: 1.7;
+    background-color: #fff;
+    color: #222;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-height: 150px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.answer-content-box {
+    background-color: #fafafa;
+}
+
+/* 답변 제목 (answer-header) */
+.answer-header {
+    background-color: #e3f2fd;
+}
 .answer-title {
-	background-color: #e3f2fd;
-	font-weight: bold;
-	color: #0d47a1;
-	text-align: center;
-	padding: 12px;
+    font-weight: bold;
+    color: #0d47a1;
+    text-align: center;
+    padding: 12px;
 }
 
-.answer-content {
-	background-color: #fafafa;
-	padding: 16px;
-	font-size: 14px;
-	color: #333;
-	border: 1px solid #e0e0e0;
-	border-radius: 4px;
-	margin-top: 10px;
-	white-space: pre-wrap;
-	word-break: break-word;
+
+/* ================================================= */
+/* 5. 버튼 영역 (.button-container) */
+/* ================================================= */
+
+.button-container {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-between; /* 목록보기는 왼쪽/관리자 버튼은 오른쪽 정렬 대비 */
+    flex-wrap: wrap;
 }
 
-/* 버튼 영역 */
-.btn-box {
-	margin-top: 20px;
-	display: flex;
-	justify-content: flex-end;
-	gap: 8px;
-	flex-wrap: wrap;
+.admin-buttons, .common-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
 
-/* 버튼 스타일 */
-.btn-box button {
-	padding: 8px 16px;
-	font-size: 13px;
-	font-weight: bold;
-	color: #fff;
-	border: none;
-	border-radius: 6px;
-	cursor: pointer;
-	transition: all 0.2s ease;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+.inline-form {
+    display: inline-block;
 }
 
-.btn-submit, .btn-list {
-	background-color: #2196F3;
+/* 버튼 공통 스타일 (.btn) */
+.btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.btn-submit:hover, .btn-list:hover {
-	background-color: #1976D2;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+/* 버튼 색상 */
+.btn-list, .btn-reply { /* 목록보기, 답변하기 */
+    background-color: #607D8B; /* Dark Gray / Blue Gray */
 }
-
+.btn-modify {
+    background-color: #2196F3; /* Blue */
+}
 .btn-delete {
-	background-color: #e53935;
+    background-color: #e53935; /* Red */
 }
 
+/* 호버 효과 */
+.btn:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    opacity: 0.9;
+}
+.btn-list:hover, .btn-reply:hover {
+    background-color: #546E7A;
+}
+.btn-modify:hover {
+    background-color: #1976D2;
+}
 .btn-delete:hover {
-	background-color: #c62828;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+    background-color: #c62828;
 }
 
+/* ================================================= */
+/* 6. 인라인 답변 폼 영역 (추가) */
+/* ================================================= */
 
-.qna-content{
-	width: 100%;
-	max-width: 80vw; /* 브라우저 너비의 80% */
-	margin: 10px auto;
-	padding: 16px;
-	font-size: 15px;
-	line-height: 1.6;
-	background-color: #fff;
-	color: #222;
-	box-sizing: border-box;
-	white-space: pre-wrap;
-	word-break: break-word;
-	border: 1px solid #e0e0e0;
-	border-radius: 4px;
-	min-height: 200px;
+#reply-form-area {
+    /* JSP의 JavaScript로 display: none/block이 제어됨 */
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #b3e5fc; /* 밝은 하늘색 테두리 */
+    border-radius: 6px;
+    background-color: #e1f5fe; /* 폼 배경색 */
 }
 
-.write_td {
-	width: 200px;
+#reply-form-area h4 {
+    font-size: 16px;
+    color: #01579b;
+    margin-bottom: 10px;
 }
-.answered2 {
-	width: 170px;
+
+#reply-form-area textarea {
+    border: 1px solid #b0bec5;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 14px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.2s;
+    width: 100%; /* 너비를 100%로 설정 */
+    box-sizing: border-box; /* 패딩이 너비를 초과하지 않도록 */
 }
 
+#reply-form-area textarea:focus {
+    border-color: #4fc3f7;
+    outline: none;
+}
 
+/* 답변 등록 버튼 */
+.btn-reply-submit {
+    /* .btn-reply-submit과 .btn-reply-cancel이 새로운 버튼 스타일이므로 .btn 기본 스타일을 상속하지 않음 */
+    background-color: #4CAF50; /* Green */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.btn-reply-submit:hover {
+    background-color: #388E3C;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/* 답변 취소 버튼 */
+.btn-reply-cancel {
+    background-color: #9E9E9E; /* Gray */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.btn-reply-cancel:hover {
+    background-color: #757575;
+}

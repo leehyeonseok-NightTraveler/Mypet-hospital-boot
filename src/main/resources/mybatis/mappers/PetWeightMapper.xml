@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.PetMapper">
+	
+	<select id="getPetByNo" parameterType="int" resultType="com.boot.dto.Mypet_PetDTO">
+        SELECT * FROM  pet_info-- (실제 펫 테이블 이름으로 수정)
+        WHERE pet_no = #{petNo} 
+    </select>
+	
+    <insert id="insertWeight" parameterType="map">
+        INSERT INTO PET_WEIGHT_HISTORY (weight_no, pet_no, weight_kg)
+        VALUES (SEQ_PET_WEIGHT_NO.NEXTVAL, #{pet_no}, #{weight_kg})
+    </insert>
+
+    <select id="getWeightHistory" parameterType="int" resultType="com.boot.dto.PetWeightDTO">
+        SELECT weight_kg, record_date
+        FROM PET_WEIGHT_HISTORY
+        WHERE pet_no = #{pet_no}
+        ORDER BY record_date ASC
+    </select>
+    
+    <select id="getLatestWeight" parameterType="int" resultType="double">
+        SELECT weight_kg
+        FROM (
+            SELECT weight_kg, record_date
+            FROM PET_WEIGHT_HISTORY
+            WHERE pet_no = #{pet_no}
+            ORDER BY record_date DESC
+        )
+        WHERE ROWNUM = 1
+    </select>
+
+</mapper>
+

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.*;
 
@@ -13,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.boot.dto.FindAccountDTO;
 import com.boot.dto.Mypet_AdminDTO;
 import com.boot.dto.Mypet_UserDTO;
+import com.boot.service.UploadService;
 import com.boot.service.UserService;
 
 @Slf4j
@@ -32,9 +33,10 @@ import com.boot.service.UserService;
 @RequiredArgsConstructor
 public class UserController {
 
-	@Autowired
-	private UserService userService;
-	
+  private final UserService userService;
+    
+  private final UploadService uploadService;
+  
 	//이메일 전송 객체[디펜던시에 추가됨]
 	@Autowired
 	private JavaMailSender mailSender;
@@ -158,6 +160,7 @@ public class UserController {
      * ============================ */
     @PostMapping("/mypage_userinfo_edit_ok")
     public String mypageUserInfoEditOk(
+    		@RequestParam String user_name,
             @RequestParam(value = "user_pwd", required = false) String user_pwd,
             @RequestParam(value = "user_pwd_confirm", required = false) String user_pwd_confirm,
             @RequestParam("user_phone") String user_phone,
@@ -168,6 +171,7 @@ public class UserController {
             HttpSession session,
             RedirectAttributes ra
     ) {
+    	log.info("수정 요청 이름: {}", user_name);
 
         Mypet_UserDTO loginUser = (Mypet_UserDTO) session.getAttribute("loginUser");
         if (loginUser == null) {
@@ -177,6 +181,7 @@ public class UserController {
 
         HashMap<String, Object> map = new HashMap<>();
         map.put("user_no", loginUser.getUser_no());
+        map.put("user_name", user_name);
         map.put("user_phone", user_phone);
         map.put("user_email", user_email);
         map.put("user_addr", (user_addr != null ? user_addr : "") + " " + (user_addr_detail != null ? user_addr_detail : ""));
@@ -188,10 +193,15 @@ public class UserController {
             }
             map.put("user_pwd", user_pwd);
         }
-
+        
         try {
             userService.updateUserInfo(map);
-
+            
+            // 이미지 업로드 처리 추가
+            if (user_img != null && !user_img.isEmpty()) {
+                userService.replaceUserImage(loginUser.getUser_no(), user_img);
+            }
+            
             // DB 기준 세션 갱신
             Mypet_UserDTO updatedUser = userService.getUserByNo(loginUser.getUser_no());
             if (updatedUser != null) {
@@ -380,4 +390,40 @@ public class UserController {
     }
 
     
+    @PostMapping("/user/uploadImg")
+    @ResponseBody
+    public ResponseEntity<String> uploadUserImg(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("userNo") int userNo) {
+
+        try {
+            boolean ok = userService.replaceUserImage(userNo, file);
+
+            if (!ok) return ResponseEntity.status(400).body("duplicate");
+
+            return ResponseEntity.ok("success");
+
+        } catch (Exception e) {
+            log.error("유저 이미지 업로드 실패", e);
+            return ResponseEntity.status(500).body("fail");
+        }
+    }
+    
+    @GetMapping("/mypage_membership")
+    public String mypageMembership(HttpSession session, Model model) {
+
+        Mypet_UserDTO loginUser = (Mypet_UserDTO) session.getAttribute("loginUser");
+        if (loginUser == null) return "redirect:/login";
+
+        int userNo = loginUser.getUser_no();
+
+        model.addAttribute("currentGrade", loginUser.getCurrent_grade());
+        model.addAttribute("expiryDate", loginUser.getGrade_expiry_date());
+
+        model.addAttribute("gradeHistory", userService.getGradeHistory(userNo));
+        model.addAttribute("serviceHistory", userService.getServiceHistory(userNo));
+
+        return "mypage_membership";
+    }
+
 }

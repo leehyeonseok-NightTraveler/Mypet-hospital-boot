@@ -136,3 +136,17 @@
 .edit-btn:hover {
     background: #357abd;
 }
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* 각 등급별 색상 */
+.badge-플래티넘 { background: #4f9cff; }
+.badge-골드 { background: #e6b800; }
+.badge-브론즈 { background: #cd7f32; }
+.badge-노말 { background: #888; }

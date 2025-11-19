@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.Mypet_Google_DAO">
+
+    <select id="findUserBySocialId" parameterType="string" resultType="com.boot.dto.Mypet_UserDTO">
+        SELECT * FROM user_info WHERE social_id = #{social_id}
+    </select>
+    
+    <insert id="socialJoin_withDetails" parameterType="com.boot.dto.Mypet_UserDTO">
+        INSERT INTO user_info (
+          user_no, user_id, user_name, user_email, 
+          user_status, social_type, social_id,
+          user_phone, user_gender, user_birthday, user_addr
+        ) VALUES (
+          SEQ_USER_NO.NEXTVAL, #{user_id}, #{user_name}, #{user_email, jdbcType=VARCHAR},
+          #{user_status}, 
+          #{social_type}, #{social_id},
+          #{user_phone}, #{user_gender, jdbcType=VARCHAR}, #{user_birthday, jdbcType=DATE}, #{user_addr, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <update id="socialUpdate_withDetails" parameterType="com.boot.dto.Mypet_UserDTO">
+        UPDATE user_info
+        SET
+            user_phone    = #{user_phone},
+            user_gender   = #{user_gender, jdbcType=VARCHAR},
+            user_birthday = #{user_birthday, jdbcType=DATE},
+            user_addr     = #{user_addr, jdbcType=VARCHAR},
+            user_status   = #{user_status}
+        WHERE
+            social_id = #{social_id}
+    </update>
+
+</mapper>

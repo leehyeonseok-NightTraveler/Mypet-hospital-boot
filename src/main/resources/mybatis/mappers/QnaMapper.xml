@@ -4,18 +4,6 @@
 
 <mapper namespace="com.boot.dao.QnaDAO">
 
-    <select id="getQnaList" resultType="com.boot.dto.Mypet_Qna_BoardDTO">
-        SELECT
-        qna_no,
-        user_no,
-        qna_title,
-        qna_file,
-        is_answered,
-        created_date
-        FROM qna_board
-        ORDER BY qna_no DESC
-    </select>
-
     <insert id="writeQna" parameterType="com.boot.dto.Mypet_Qna_BoardDTO">
         INSERT INTO qna_board (
         qna_no,
@@ -38,41 +26,95 @@
         )
     </insert>
 
-    <select id="getQnaDetail" parameterType="int"
-            resultType="com.boot.dto.Mypet_Qna_BoardDTO">
-        SELECT
-        qna_no,
-        user_no,
-        qna_title,
-        qna_content,
-        qna_file,
-        is_answered,
-        created_date
+    <select id="getQnaDetail" parameterType="int" resultType="com.boot.dto.Mypet_Qna_BoardDTO">
+        SELECT *
         FROM qna_board
         WHERE qna_no = #{qna_no}
     </select>
 
-    <select id="list2" parameterType="hashmap"
-            resultType="com.boot.dto.Mypet_Qna_BoardDTO">
+    <select id="getQnaList" parameterType="map" resultType="com.boot.dto.Mypet_Qna_BoardDTO">
         <![CDATA[
-          SELECT qna_no, user_no, qna_title, qna_content, qna_file, 
-                 is_answered, created_date, user_name
-          FROM (
-              SELECT ROWNUM AS rnum, q.*
-              FROM (
-                  SELECT qna_no, user_no, qna_title, qna_content, qna_file,
-                         is_answered, created_date, user_name
-                  FROM qna_board
-                  ORDER BY qna_no DESC
-              ) q
-              WHERE ROWNUM <= #{end}
-          )
-          WHERE rnum >= #{start}
+        SELECT *
+        FROM (
+            SELECT rownum AS rn, inner_query.*
+            FROM (
+                SELECT
+                    qb.qna_no,
+                    qb.user_no,
+                    qb.qna_title,
+                    qb.qna_content,
+                    qb.qna_file,
+                    qb.is_answered,
+                    qb.created_date,
+                    ui.user_name
+                FROM qna_board qb
+                LEFT JOIN user_info ui ON qb.user_no = ui.user_no
+                ORDER BY qb.qna_no DESC
+            ) inner_query
+            WHERE rownum <= #{cri.pageNum} * #{cri.amount}
+        )
+        WHERE rn > (#{cri.pageNum} - 1) * #{cri.amount}
         ]]>
     </select>
 
-    <select id="getTotalCount2" resultType="int">
+    <select id="getQnaTotal" resultType="int">
         SELECT COUNT(*) FROM qna_board
     </select>
+
+    <select id="getQnaReply" parameterType="int"
+            resultType="com.boot.dto.Mypet_Qna_ReplyDTO">
+        SELECT *
+        FROM qna_reply
+        WHERE qna_no = #{qna_no}
+    </select>
+
+    <insert id="writeReply" parameterType="com.boot.dto.Mypet_Qna_ReplyDTO">
+        INSERT INTO qna_reply (
+        reply_no,
+        qna_no,
+        admin_no,
+        admin_name,
+        reply_content,
+        created_date
+        ) VALUES (
+        SEQ_QNA_REPLY_NO.NEXTVAL,
+        #{params.qna_no}, #{params.admin_no}, 'ADMIN', #{params.reply_content},
+        SYSDATE
+        )
+    </insert>
+
+    <update id="qnaStatusUpdate" parameterType="com.boot.dto.Mypet_Qna_BoardDTO">
+        UPDATE qna_board
+        SET
+        is_answered = 'Y'
+        WHERE qna_no = #{params.qna_no}
+    </update>
+
+    <update id="modifyReply" parameterType="com.boot.dto.Mypet_Qna_ReplyDTO">
+        UPDATE qna_reply
+        SET
+        reply_content = #{params.reply_content}
+        WHERE qna_no = #{params.qna_no}
+    </update>
+
+    <delete id="deleteReplyByQnaNo" parameterType="int">
+        DELETE FROM qna_reply
+        WHERE qna_no = #{qna_no}
+    </delete>
+
+    <delete id="deleteQna" parameterType="int">
+        DELETE FROM qna_board
+        WHERE qna_no = #{qna_no}
+    </delete>
+
+    <update id="modifyQna" parameterType="map">
+	    UPDATE qna_board
+	    SET
+	        qna_title = #{params.qna_title},
+	        qna_content = #{params.qna_content},
+	        qna_file = #{params.qna_file}
+	    WHERE qna_no = #{params.qna_no}
+	</update>
+
 
 </mapper>
