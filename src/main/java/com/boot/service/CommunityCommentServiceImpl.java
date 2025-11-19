@@ -29,6 +29,12 @@ public class CommunityCommentServiceImpl implements CommunityCommentService{
 		return list;
 	}
 	
+	@Override
+	public int deleteComment(int comment_no) {
+		CommunityCommentDAO dao = sqlSession.getMapper(CommunityCommentDAO.class);
+	    return dao.deleteComment(comment_no);
+	}
+	
 }
 
 

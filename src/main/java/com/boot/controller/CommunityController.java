@@ -2,7 +2,6 @@ package com.boot.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -12,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.boot.dao.UserDAO;
 import com.boot.dto.Criteria;
@@ -69,28 +67,43 @@ public class CommunityController {
 	@RequestMapping("/community_content_view")
 	public String community_content_view(@RequestParam("postNo") int postNo,
 	                                     @RequestParam HashMap<String, String> param,
-	                                     Model model,HttpSession session) {
+	                                     Model model,
+	                                     HttpSession session) {
 
-		Object u = session.getAttribute("user_no");
-		int userNo = Integer.parseInt(u.toString());
-		Mypet_UserDTO user = dao.selectUserByNo(userNo);
-		model.addAttribute("user_name", user.getUser_name());
-		
+	    // 로그인 사용자 번호 (없으면 null)
+	    Integer userNo = (Integer) session.getAttribute("user_no");
+	    String role = (String) session.getAttribute("role");   // ADMIN 또는 null
+
+	    // JSP에서 사용하도록 세션 값 전달
+	    model.addAttribute("session_user_no", userNo);
+	    model.addAttribute("session_role", role);
+
+	    // 로그인 된 경우에만 user_name 을 조회
+	    if (userNo != null) {
+	        Mypet_UserDTO user = dao.selectUserByNo(userNo);
+	        model.addAttribute("user_name", user.getUser_name());
+	    }
+
+	    // 조회수 증가
 	    service.increaseViewCount(postNo);
 
-	    // ⭐ 삭제 + 상세 조회 모두 post_no 로 사용
+	    // post_no 파라미터 셋팅
 	    param.put("post_no", String.valueOf(postNo));
-	    
+
+	    // 댓글 목록
 	    ArrayList<Mypet_Community_CommentDTO> commentList = commentService.findAll(param);
 	    model.addAttribute("commentList", commentList);
-	    
+
+	    // 게시글 상세 데이터
 	    Mypet_CommunityDTO dto = service.communityContentView(param);
 	    model.addAttribute("content_view", dto);
 
+	    // 페이지 정보
 	    model.addAttribute("pageMaker", param);
-	    
+
 	    return "community_content_view";
 	}
+
 
 	
 	/* ============================
@@ -217,19 +230,3 @@ public class CommunityController {
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
