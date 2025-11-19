@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -11,7 +12,6 @@
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.css" rel="stylesheet">
-
 </head>
 <body>
 
@@ -48,7 +48,9 @@
 
             <table class="qna-content-area">
                 <tr class="content-row">
-                    <td colspan="2"> <textarea id="summernote" name="qna_content"></textarea></td>
+                    <td colspan="2">
+                        <textarea id="summernote" name="qna_content"></textarea>
+                    </td>
                 </tr>
                 <tr class="button-row">
                     <td colspan="2">
@@ -68,29 +70,127 @@
 
 <script>
     $(document).ready(function() {
+
         $('#summernote').summernote({
             height: 300,
-            minHeight: 440, // CSS min-height와 일치하도록 설정
+            minHeight: 440,
             lang : 'ko-KR',
             placeholder: '내용을 입력하세요...',
             toolbar: [
                 ['style', ['bold','italic','underline','clear']],
                 ['font', ['fontname','fontsize','color']],
                 ['para', ['ul','ol','paragraph']],
-                ['insert', ['link','picture']],
+                ['insert', ['link','imageUpload','videoUpload']],  // ⭐ picture 제거 후 imageUpload 추가
                 ['view', ['codeview']]
-            ]
-        });
+            ],
+            buttons: {
 
-        // 파일 이름 표시 로직 추가
-        $('#qna_file').on('change', function() {
-            var fileName = $(this).val().split('\\').pop(); // 파일 경로에서 파일명만 추출
-            if (fileName) {
-                $('#file_name_display').text(fileName);
-            } else {
-                $('#file_name_display').text("선택된 파일 없음");
+                // ⭐ 이미지 업로드 버튼
+                imageUpload: function (context) {
+                    var ui = $.summernote.ui;
+
+                    var button = ui.button({
+                        contents: '<i class="note-icon-picture"></i> 이미지',
+                        tooltip: '이미지 업로드',
+                        click: function () {
+                            var fileInput = $('<input type="file" accept="image/*">');
+                            fileInput.trigger('click');
+
+                            fileInput.on('change', function () {
+                                var file = this.files[0];
+                                uploadImageToServer(file, context);
+                            });
+                        }
+                    });
+
+                    return button.render();
+                },
+
+                // ⭐ 영상 업로드 버튼 (기존 기능 유지)
+                videoUpload: function (context) {
+                    var ui = $.summernote.ui;
+
+                    var button = ui.button({
+                        contents: '<i class="note-icon-video"></i> 영상',
+                        tooltip: '영상 업로드',
+                        click: function () {
+                            var fileInput = $('<input type="file" accept="video/mp4,video/webm">');
+                            fileInput.trigger('click');
+
+                            fileInput.on('change', function () {
+                                var file = this.files[0];
+                                uploadVideoToServer(file, context);
+                            });
+                        }
+                    });
+
+                    return button.render();
+                }
             }
         });
+
+
+        // ⭐ 이미지 업로드 함수
+        function uploadImageToServer(file, context) {
+            var formData = new FormData();
+            formData.append("file", file);
+
+            $.ajax({
+                url: "/upload/summernote",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data.responseCode === "success") {
+
+                        var tag = '<img src="' + data.url +
+                                  '" style="max-width:100%; height:auto;">';
+
+                        context.invoke('editor.pasteHTML', tag);
+                    } else {
+                        alert(data.message || "이미지 업로드 실패");
+                    }
+                }
+            });
+        }
+
+
+        // ⭐ 영상 업로드 함수 (기존 그대로)
+        function uploadVideoToServer(file, context) {
+            var formData = new FormData();
+            formData.append("file", file);
+
+            $.ajax({
+                url: "/upload/summernote/video",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data.responseCode === "success") {
+
+                        var tag =
+                            '<video controls style="max-width:100%;">' +
+                                '<source src="' + data.url + '" type="video/mp4">' +
+                            '</video><br>';
+
+                        context.invoke('editor.pasteHTML', tag);
+
+                    } else {
+                        alert(data.message || "영상 업로드 실패");
+                    }
+                }
+            });
+        }
+
+
+        // 파일 이름 표시
+        $('#qna_file').on('change', function() {
+            var fileName = $(this).val().split('\\').pop();
+            $('#file_name_display').text(fileName || "선택된 파일 없음");
+        });
+
     });
 </script>
 

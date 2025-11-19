@@ -3,6 +3,8 @@ package com.boot.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpSession;
 
@@ -115,7 +117,7 @@ public class QnaController {
                                HttpSession session) {
         Object loginObj = session.getAttribute("loginAdmin");
 
-        // 💡 관리자 객체를 가져옴. (Null 체크는 호출하는 JSP에서 제어한다고 가정)
+        // 관리자 객체를 가져옴. (Null 체크는 호출하는 JSP에서 제어한다고 가정)
         Mypet_AdminDTO loginAdmin = (Mypet_AdminDTO) loginObj;
         int adminNo = loginAdmin.getAdmin_no();
 
@@ -123,7 +125,7 @@ public class QnaController {
         Map<String, Object> params = new HashMap<>();
 
         if ("create".equals(mode)) {
-            // 💡 답변 등록 로직: 답변 상태 업데이트 및 답변 저장
+            // 답변 등록 로직: 답변 상태 업데이트 및 답변 저장
             redirectPath = "redirect:/qna_view?qna_no=" + qna_no;
 
             params.put("admin_no", adminNo);
@@ -133,7 +135,7 @@ public class QnaController {
             service.qnaStatusUpdate(qna_no); // 상태를 '답변 완료' 등으로 변경
             service.writeReply(params);
         } else { // mode is "modify"
-            // 💡 답변 수정 로직
+            // 답변 수정 로직
             redirectPath = "redirect:/qna_view?qna_no=" + qna_no;
 
             params.put("qna_no", qna_no);
@@ -146,11 +148,23 @@ public class QnaController {
 
     @PostMapping("/qna_delete")
     public String deleteQna(@RequestParam int qna_no) {
-        // 💡 Q&A 삭제 로직: 답변 먼저 삭제 후 질문 삭제
+
+        // 1) 게시글 상세 조회 → 첨부파일 + 서머노트 이미지/영상 모두 가져옴
+        Mypet_Qna_BoardDTO detail = service.getQnaDetail(qna_no);
+
+        // 2) 첨부파일 삭제
+        deleteAttachment(detail.getQna_file());
+
+        // 3) summernote 이미지/영상 삭제
+        deleteSummernoteFiles(detail.getQna_content());
+
+        // 4) DB 삭제 (답변 먼저)
         service.deleteReplyByQnaNo(qna_no);
         service.deleteQna(qna_no);
+
         return "redirect:/qna_page";
     }
+
 
     @GetMapping("/qna_modify")
     public String qnaModifyForm(
@@ -236,6 +250,31 @@ public class QnaController {
         rttr.addAttribute("amount", amount);
 
         return "redirect:/qna_view?qna_no=" + qna_no;
+    }
+    
+    private void deleteAttachment(String filename) {
+        if (filename == null || filename.isEmpty()) return;
+
+        uploadService.deleteFile("qna/" + filename);
+    }
+    
+    private void deleteSummernoteFiles(String html) {
+
+        if (html == null || html.trim().isEmpty()) return;
+
+        // 이미지 삭제
+        Matcher img = Pattern.compile("qna_img/([^\"']+)").matcher(html);
+        while (img.find()) {
+            String filename = img.group(1);
+            uploadService.deleteFile("qna_img/" + filename);
+        }
+
+        // 영상 삭제
+        Matcher video = Pattern.compile("qna_video/([^\"']+)").matcher(html);
+        while (video.find()) {
+            String filename = video.group(1);
+            uploadService.deleteFile("qna_video/" + filename);
+        }
     }
 
 }

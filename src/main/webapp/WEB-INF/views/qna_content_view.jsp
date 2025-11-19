@@ -43,29 +43,33 @@
                 <td class="info-value created-date">${detail.created_date}</td>
             </tr>
 
-			<tr class="info-row file-row">
-			    <td class="info-label file-label">첨부파일</td>
-			    <td colspan="5" class="info-value file-download-area">
-			        <c:choose>
-			            <c:when test="${not empty detail.qna_file}">
-			                <c:url var="downloadUrl" value="/download">
-			                    <c:param name="folder" value="qna"/>
-			                    <c:param name="file" value="${detail.qna_file}"/>
-			                </c:url>
+            <tr class="info-row file-row">
+                <td class="info-label file-label">첨부파일</td>
+                <td colspan="5" class="info-value file-download-area">
+                    <c:choose>
+                        <c:when test="${not empty detail.qna_file}">
+                            <c:url var="downloadUrl" value="/download">
+                                <c:param name="folder" value="qna"/>
+                                <c:param name="file" value="${detail.qna_file}"/>
+                            </c:url>
 
-			                <a href="${downloadUrl}">
-			                    ${detail.qna_file}
-			                </a>
-			            </c:when>
+                            <a href="${downloadUrl}">
+                                ${detail.qna_file}
+                            </a>
+                        </c:when>
 
-			            <c:otherwise>첨부파일 없음</c:otherwise>
-			        </c:choose>
-			    </td>
-			</tr>
+                        <c:otherwise>첨부파일 없음</c:otherwise>
+                    </c:choose>
+                </td>
+            </tr>
 
-
+            <!-- Summernote HTML 렌더링 -->
             <tr class="content-row question-content-row">
-                <td colspan="6"><div class="content-box">${detail.qna_content}</div></td>
+                <td colspan="6">
+                    <div class="content-box">
+						<c:out value="${detail.qna_content}" escapeXml="false"/>
+                    </div>
+                </td>
             </tr>
 
             <c:if test="${not empty reply}">
@@ -81,11 +85,20 @@
                 </tr>
 
                 <tr class="content-row answer-content-row">
-                    <td colspan="6"><div class="content-box answer-content-box">${reply.reply_content}</div></td>
+                    <td colspan="6">
+                        <div class="content-box answer-content-box">
+                            ${fn:replace(fn:replace(reply.reply_content, '&lt;', '<'), '&gt;', '>')}
+                        </div>
+                    </td>
                 </tr>
             </c:if>
-
         </table>
+
+        <!-- ⭐ 숨겨진 textarea raw injection 방지용 -->
+        <c:if test="${not empty reply}">
+            <input type="hidden" id="replyContentRaw"
+                   value="<c:out value='${reply.reply_content}' escapeXml='false' />" />
+        </c:if>
 
         <c:if test="${role eq 'ADMIN'}">
             <div id="reply-form-area" style="display:none;">
@@ -95,7 +108,8 @@
 
                     <h4><span id="formTitle">답변 작성</span></h4>
 
-                    <textarea name="reply_content" id="replyContentArea" rows="6" required placeholder="답변 내용을 입력하세요."></textarea>
+                    <textarea name="reply_content" id="replyContentArea"
+                              rows="6" required placeholder="답변 내용을 입력하세요."></textarea>
 
                     <div style="text-align: right; margin-top: 10px;">
                         <button type="submit" class="btn btn-reply-submit" id="submitButton">답변 등록</button>
@@ -117,9 +131,11 @@
                                 답변하기
                             </button>
                         </c:when>
+
                         <c:otherwise>
+                            <!-- ⭐ reply 내용 전달 제거 (문제 해결 핵심) -->
                             <button type="button"
-                                    onclick="loadModifyForm('${reply.reply_content}')"
+                                    onclick="loadModifyForm()"
                                     class="btn btn-reply-modify">
                                 답변 수정
                             </button>
@@ -150,8 +166,8 @@
 
             <div class="common-buttons">
                 <a href="<c:url value='/qna_page'>
-                <c:param name="pageNum" value="${cri.pageNum}"/>
-                <c:param name="amount" value="${cri.amount}"/>
+                    <c:param name='pageNum' value='${cri.pageNum}' />
+                    <c:param name='amount' value='${cri.amount}' />
                 </c:url>" class="btn btn-list" id="btn-back">목록으로</a>
             </div>
         </div>
@@ -162,7 +178,6 @@
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 
 <script>
-    // 공통 요소 정의
     const formArea = document.getElementById('reply-form-area');
     const replyButton = document.querySelector('.btn-reply');
     const adminButtons = document.querySelector('.admin-buttons');
@@ -171,50 +186,38 @@
     const replyContentArea = document.getElementById('replyContentArea');
     const submitButton = document.getElementById('submitButton');
 
-
-    // 1. 답변 작성 폼 로드 (초기 상태)
     function loadCreateForm() {
-        if (formArea && replyButton) {
-            formTitle.textContent = '답변 작성';
-            replyMode.value = 'create';
-            replyContentArea.value = ''; // 내용을 비움
-            submitButton.textContent = '답변 등록';
+        formTitle.textContent = '답변 작성';
+        replyMode.value = 'create';
+        replyContentArea.value = '';
+        submitButton.textContent = '답변 등록';
 
-            formArea.style.display = 'block';
-            replyButton.style.display = 'none';
-            formArea.scrollIntoView({ behavior: 'smooth' });
-        }
+        formArea.style.display = 'block';
+        replyButton.style.display = 'none';
+        formArea.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // 2. 답변 수정 폼 로드 (기존 내용 채우기)
-    function loadModifyForm(content) {
-        if (formArea && adminButtons) {
-            formTitle.textContent = '답변 수정';
-            replyMode.value = 'modify'; // 모드를 'modify'로 변경
-            replyContentArea.value = content.trim(); // 기존 내용을 채움
-            submitButton.textContent = '수정 완료';
+    function loadModifyForm() {
+        var raw = document.getElementById("replyContentRaw").value;
 
-            // 답변이 있는 경우, 기존 버튼 영역을 숨깁니다.
-            adminButtons.style.display = 'none';
+        formTitle.textContent = '답변 수정';
+        replyMode.value = 'modify';
+        replyContentArea.value = raw.trim();
+        submitButton.textContent = '수정 완료';
 
-            formArea.style.display = 'block';
-            formArea.scrollIntoView({ behavior: 'smooth' });
-        }
+        adminButtons.style.display = 'none';
+        formArea.style.display = 'block';
+        formArea.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // 3. 폼 숨기기 (취소)
     function hideReplyForm() {
-        if (formArea) {
-            formArea.style.display = 'none';
+        formArea.style.display = 'none';
 
-            // 작성 모드였으면 '답변하기' 버튼을 다시 보여줌
-            if (replyMode.value === 'create' && replyButton) {
-                replyButton.style.display = 'block';
-            }
-            // 수정 모드였으면 'admin-buttons' 영역을 다시 보여줌
-            if (replyMode.value === 'modify' && adminButtons) {
-                adminButtons.style.display = 'flex'; // 기존 레이아웃에 맞게 flex 또는 block 사용
-            }
+        if (replyMode.value === 'create') {
+            replyButton.style.display = 'block';
+        }
+        if (replyMode.value === 'modify') {
+            adminButtons.style.display = 'flex';
         }
     }
 </script>
