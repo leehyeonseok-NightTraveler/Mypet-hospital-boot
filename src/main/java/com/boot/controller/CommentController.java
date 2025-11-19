@@ -29,27 +29,34 @@ public class CommentController {
 	private UserDAO dao;
 	
 	@RequestMapping("/save")
-	public @ResponseBody ArrayList<Mypet_Community_CommentDTO> save(@RequestParam HashMap<String, String> param
-			, Model model,HttpSession session) {
-		
-		Object u = session.getAttribute("user_no");
-		if (u == null) {
+	@ResponseBody
+	public ArrayList<Mypet_Community_CommentDTO> save(
+	        @RequestParam HashMap<String, String> param,
+	        HttpSession session) {
+
+	    Mypet_UserDTO loginUser = (Mypet_UserDTO) session.getAttribute("loginUser");
+
+	    if (loginUser == null) {
 	        throw new RuntimeException("로그인이 필요합니다.");
 	    }
-		int userNo = Integer.parseInt(u.toString());
-		
-		Mypet_UserDTO user = dao.selectUserByNo(userNo);
-		
-		param.put("user_no", String.valueOf(user.getUser_no()));
-	    param.put("user_name", user.getUser_name());
-		
-		commentService.save(param);
-		
-		// 해당 게시글에 작성된 댓글 리스트를 가져옴
-		ArrayList<Mypet_Community_CommentDTO> commentList = commentService.findAll(param);
-		
-		return commentList;
+
+	    // 로그인 정보 입력
+	    param.put("user_no", String.valueOf(loginUser.getUser_no()));
+	    param.put("user_name", loginUser.getUser_name());
+
+	    // ★★★★★ 핵심 포인트 ★★★★★
+	    String postNo = param.get("post_no");
+	    param.put("post_no", postNo);
+
+	    // 저장
+	    commentService.save(param);
+
+	    // 조회
+	    return commentService.findAll(param);
 	}
+
+
+
 	
 	@PostMapping("/deleteComment")
 	@ResponseBody

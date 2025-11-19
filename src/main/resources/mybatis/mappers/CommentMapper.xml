@@ -33,7 +33,6 @@
             , user_no
             , user_name
             , comment_content
-            , created_at
             , TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI') AS created_at2
         FROM COMMUNITY_COMMENT
         WHERE post_no = #{post_no}
@@ -44,4 +43,8 @@
 		delete from COMMUNITY_COMMENT where COMMENT_NO=#{comment_no}
 	</delete>
 
+	<delete id="deleteByPostNo" parameterType="int">
+    	DELETE FROM COMMUNITY_COMMENT
+    	WHERE POST_NO = #{postNo}
+	</delete>
 </mapper>
