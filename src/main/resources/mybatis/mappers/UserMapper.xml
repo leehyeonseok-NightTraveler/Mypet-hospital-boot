@@ -54,7 +54,6 @@
         user_email,
         user_regidate,
         user_addr,
-        user_addr_detail,
         user_status,
         user_img,
         user_img_temp,
