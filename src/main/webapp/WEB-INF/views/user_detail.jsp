@@ -70,6 +70,7 @@
                                    class="btn-toggle-inline inactive">활동정지 해제</a>
                             </c:when>
                             <c:otherwise>
+                                <%-- 💡 활동정지 모달 열기 --%>
                                 <a href="#"
                                    onclick="openSuspendModal(
                                            '${UserInfo.user_no}',
@@ -186,7 +187,6 @@
                         <td>
                             <c:choose>
                                 <c:when test="${s.completion_status eq 'Y'}">
-                                    <%-- 💡 수정: Form 제출 대신 openCertificateModal 함수 호출 --%>
                                     <button type="button" class="btn-certificate"
                                             onclick="openCertificateModal('${s.service_no}', '${UserInfo.user_no}', '${s.pet_no}');">
                                         확인서 발급
@@ -221,14 +221,32 @@
             <input type="hidden" name="suspension_reason" value=""/>
         </form>
 
-        <%-- 기존 모달 오버레이 --%>
+        <%-- 모달 오버레이 --%>
         <div id="modalOverlay" style="display:none;"></div>
 
-        <%-- 기존 활동정지 모달 --%>
-        <div id="suspendModal" style="display:none;">
+        <%-- 💡 수정된 활동정지 모달: 모달 내용과 폼을 추가하여 POST 요청이 가능하게 함 --%>
+        <div id="suspendModal" style="display:none;" class="custom-modal">
+            <h3>회원 활동정지 처리</h3>
+            <p>※ 해당 회원을 활동정지 처리합니다. 사유를 **필수로 입력**해주세요.</p>
+
+            <%-- 활동정지 처리 폼 (POST 요청을 담당) --%>
+            <form method="post" action="UserStatusProcess" id="suspendForm">
+                <%-- openSuspendModal 함수에 의해 값이 채워짐 --%>
+                <input type="hidden" name="user_no" id="suspendUserNo"/>
+                <input type="hidden" name="targetStatus" value="INACTIVE"/>
+                <input type="hidden" name="pageNum" id="suspendPageNum"/>
+                <input type="hidden" name="amount" id="suspendAmount"/>
+
+                <label for="suspension_reason">활동정지 사유:</label><br>
+                <textarea name="suspension_reason" id="suspension_reason" rows="4"
+                          placeholder="활동정지 사유를 500자 이내로 입력해주세요." required></textarea>
+
+                <button type="submit" class="btn-suspend-submit">활동정지 처리</button>
+                <button type="button" class="btn-suspend-close" onclick="closeSuspendModal()">닫기</button>
+            </form>
         </div>
 
-        <%-- 💡 수정: 확인서 발급을 위한 주민등록번호 입력 모달 --%>
+        <%-- 확인서 발급 모달 --%>
         <div id="certificateModal" style="display:none;" class="custom-modal">
             <h3>확인서 발급을 위한 본인 확인</h3>
             <p>※ 보호자님의 주민등록번호 **13자리**를 입력해주세요. (하이픈 제외)</p>

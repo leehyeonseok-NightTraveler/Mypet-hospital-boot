@@ -40,16 +40,16 @@
             </div>
 
             <!-- 첨부파일 -->
-			<div class="row-box">
-			    <div class="cell label">파일</div>
-			    <div class="cell input">
-			        <input type="file" id="post_file" name="post_file_upload">
+            <div class="row-box">
+                <div class="cell label">파일</div>
+                <div class="cell input">
+                    <input type="file" id="post_file" name="post_file_upload">
 
-			        <label for="post_file" class="file-select-btn">파일 선택</label>
+                    <label for="post_file" class="file-select-btn">파일 선택</label>
 
-			        <span id="file_name_display" class="file-name-display">선택된 파일 없음</span>
-			    </div>
-			</div>
+                    <span id="file_name_display" class="file-name-display">선택된 파일 없음</span>
+                </div>
+            </div>
 
             <!-- 내용 -->
             <div class="row-box" style="display:block; border:none; margin-top:10px;">
@@ -83,7 +83,7 @@
                 ['style', ['bold','italic','underline','clear']],
                 ['font', ['fontname','fontsize','color']],
                 ['para', ['ul','ol','paragraph']],
-                ['insert', ['link','imageUpload','videoUpload']], 
+                ['insert', ['link','imageUpload','videoUpload']],
                 ['view', ['codeview']]
             ],
             popover: { image: [] },
@@ -159,10 +159,10 @@
         });
 
         /* 첨부파일 표시 */
-		$('#post_file').on('change', function() {
-		    let fileName = $(this).val().split('\\').pop();
-		    $('#file_name_display').text(fileName || "선택된 파일 없음");
-		});
+        $('#post_file').on('change', function() {
+            let fileName = $(this).val().split('\\').pop();
+            $('#file_name_display').text(fileName || "선택된 파일 없음");
+        });
     });
 
     /* -------------------------
