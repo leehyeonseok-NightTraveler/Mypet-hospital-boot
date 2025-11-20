@@ -22,6 +22,7 @@ import com.boot.service.CommunityCommentService;
 import com.boot.service.CommunityCommentServiceImpl;
 import com.boot.service.CommunityService;
 import com.boot.service.UploadService;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Controller
@@ -110,25 +111,35 @@ public class CommunityController {
 	/* ============================
      *       글 쓰기
      * ============================ */
-	
-	@RequestMapping("/community_write")
-	public String community_write(@RequestParam HashMap<String, String> param, HttpSession session) {
-		
-			Mypet_UserDTO user = (Mypet_UserDTO) session.getAttribute("loginUser");
-			
-			if (user == null) {
 
-		        return "redirect:login";
-		    }
-			
-			
-		    param.put("user_no", String.valueOf(user.getUser_no()));
-		    param.put("user_name", user.getUser_name());
-		
-		service.communityWrite(param);
-		
-		return "redirect:community_list";
-	}
+    @RequestMapping("/community_write")
+    public String community_write(
+            @RequestParam HashMap<String, String> param,
+            @RequestParam(value="post_file_upload", required=false) MultipartFile file,
+            HttpSession session
+    ) {
+
+        Mypet_UserDTO user = (Mypet_UserDTO) session.getAttribute("loginUser");
+
+        if (user == null) {
+            return "redirect:login";
+        }
+
+        param.put("user_no", String.valueOf(user.getUser_no()));
+        param.put("user_name", user.getUser_name());
+
+        // 🔥 일반 첨부파일 업로드 처리
+        if (file != null && !file.isEmpty()) {
+            // community 폴더에 원본명 유지로 저장됨
+            String saved = uploadService.saveRawFile(file, "community");
+            param.put("post_file", saved);   // DB 컬럼명에 맞춰 키 넣기!
+        }
+
+        // 게시글 저장
+        service.communityWrite(param);
+
+        return "redirect:community_list";
+    }
 
 	/* ============================
      *       글 삭제
